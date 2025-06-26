@@ -17,6 +17,7 @@ import {
   CommandShortcut,
 } from './ui/command';
 import Kbd from './ui/kbd';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar';
 
 export default function SearchButton() {
   const [open, setOpen] = useState<boolean>(false);
@@ -35,29 +36,33 @@ export default function SearchButton() {
   }, []);
 
   return (
-    <>
-      <Button
-        className="group/search w-full max-w-sm justify-between border border-primary/15 bg-sidebar-accent px-1.75 text-ga-purple-500 shadow-none hover:bg-sidebar-accent hover:text-ga-purple-700 dark:text-ga-purple-300 dark:hover:text-ga-purple-100"
-        onClick={() => setOpen(true)}
-        variant="secondary"
-      >
-        <div className="flex items-center gap-3.75">
-          <HugeiconsIcon
-            className="size-4.5"
-            icon={SearchIcon}
-            strokeWidth={2}
-          />
-          Search
-        </div>
-        <div className="flex gap-0.5">
-          <Kbd className="border-primary/30 group-hover/search:text-foreground">
-            ⌘
-          </Kbd>
-          <Kbd className="aspect-square border-primary/30 group-hover/search:text-foreground">
-            K
-          </Kbd>
-        </div>
-      </Button>
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton asChild>
+          <Button
+            className="group/search after:-inset-4 w-full max-w-sm justify-between border border-primary/15 bg-sidebar-accent px-1.5 text-ga-purple-500 shadow-none after:absolute after:content-[''] hover:bg-sidebar-accent hover:text-ga-purple-700 dark:text-ga-purple-300 dark:hover:text-ga-purple-100"
+            onClick={() => setOpen(true)}
+            variant="secondary"
+          >
+            <div className="flex items-center gap-3.75">
+              <HugeiconsIcon
+                className="size-4.5"
+                icon={SearchIcon}
+                strokeWidth={2}
+              />
+              Search
+            </div>
+            <div className="flex gap-0.5">
+              <Kbd className="border-primary/30 group-hover/search:text-foreground">
+                ⌘
+              </Kbd>
+              <Kbd className="aspect-square border-primary/30 group-hover/search:text-foreground">
+                K
+              </Kbd>
+            </div>
+          </Button>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
       <CommandDialog
         className="rounded-xl bg-popover p-2 pb-11"
         onOpenChange={setOpen}
@@ -107,6 +112,6 @@ export default function SearchButton() {
           </div>
         </div>
       </CommandDialog>
-    </>
+    </SidebarMenu>
   );
 }

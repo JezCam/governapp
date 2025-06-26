@@ -34,7 +34,7 @@ export default function AppSidebar() {
         <Badge className="font-bold text-white tracking-widest">PILOT</Badge>
       </SidebarHeader>
       <SidebarContent className="gap-0 overflow-clip border-sidebar-border border-y">
-        <div className="p-4">
+        <div className="px-4.25 py-4">
           <SearchButton />
         </div>
         <SidebarSeparator className="mx-auto my-0 w-full" />

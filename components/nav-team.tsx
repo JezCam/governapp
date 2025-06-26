@@ -1,7 +1,10 @@
+'use client';
+
 import { HugeiconsIcon } from '@hugeicons/react';
 import { UserGroupIcon } from '@hugeicons-pro/core-stroke-rounded';
 import { AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { ChevronRight } from 'lucide-react';
+import { useState } from 'react';
 import { Avatar } from './ui/avatar';
 import { Badge } from './ui/badge';
 import {
@@ -14,6 +17,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from './ui/sidebar';
 
 const teamMembers = [
@@ -50,10 +54,18 @@ const teamMembers = [
 ];
 
 export default function NavTeam() {
+  const [_open, setOpen] = useState(false);
+  const { open } = useSidebar();
+
   return (
     <SidebarGroup>
       <SidebarMenu>
-        <Collapsible className="group/collapsible" defaultOpen>
+        <Collapsible
+          className="group/collapsible"
+          defaultOpen
+          onOpenChange={setOpen}
+          open={open ? _open : true}
+        >
           <SidebarMenuItem>
             <CollapsibleTrigger asChild>
               <SidebarMenuButton className="h-12.5 min-w-fit gap-9.75 overflow-clip whitespace-nowrap rounded-xl border border-transparent font-medium transition-all transition-discrete group-data-[collapsible=icon]:h-0 group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:opacity-0">
@@ -69,7 +81,7 @@ export default function NavTeam() {
                 <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
               </SidebarMenuButton>
             </CollapsibleTrigger>
-            <CollapsibleContent className="[&>ul]:m-0 [&>ul]:border-none [&>ul]:p-2">
+            <CollapsibleContent className=" [&>ul]:m-0 [&>ul]:border-none [&>ul]:p-2">
               <SidebarMenu className="gap-2">
                 {teamMembers.map((member) => (
                   <SidebarMenuItem key={member.userId}>
