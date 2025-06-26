@@ -42,13 +42,18 @@ export default function AppSidebar() {
           <SearchButton />
         </div>
       </SidebarHeader>
-      <SidebarContent className="gap-0 overflow-x-clip border-sidebar-border border-y">
+
+      {/* Use the custom ScrollableSidebarContent component */}
+      <SidebarContent className="gap-0 border-sidebar-border border-y">
         <ScrollArea className="h-full">
-          <NavMain />
-          <SidebarSeparator className="mx-auto my-0 w-full" />
-          <NavTeam />
+          <div className="w-64 pr-1 transition-all duration-300 group-data-[collapsible=icon]:w-[70px]">
+            <NavMain />
+            <SidebarSeparator className="mx-auto my-0 w-full" />
+            <NavTeam />
+          </div>
         </ScrollArea>
       </SidebarContent>
+
       <SidebarFooter className="flex h-16">
         <OrganisationSwitcher />
       </SidebarFooter>
