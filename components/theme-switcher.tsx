@@ -15,14 +15,15 @@ export default function ThemeSwitcher() {
       data-state={resolvedTheme === 'light' ? 'checked' : 'unchecked'}
     >
       <span className="hidden">current theme: {resolvedTheme}</span>
-      <span
+      <button
         aria-controls={id}
         className="flex-1 cursor-pointer text-right font-medium text-sm group-data-[state=checked]:text-muted-foreground/70"
         id={`${id}-off`}
         onClick={() => setTheme('dark')}
+        type="button"
       >
         <MoonIcon aria-hidden="true" size={16} />
-      </span>
+      </button>
       <Switch
         aria-label="Toggle between dark and light mode"
         aria-labelledby={`${id}-off ${id}-on`}
@@ -30,14 +31,15 @@ export default function ThemeSwitcher() {
         id={id}
         onCheckedChange={(checked) => setTheme(checked ? 'light' : 'dark')}
       />
-      <span
+      <button
         aria-controls={id}
         className="flex-1 cursor-pointer text-left font-medium text-sm group-data-[state=unchecked]:text-muted-foreground/70"
         id={`${id}-on`}
         onClick={() => setTheme('light')}
+        type="button"
       >
         <SunIcon aria-hidden="true" size={16} />
-      </span>
+      </button>
     </div>
   );
 }

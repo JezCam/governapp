@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <AppSidebar />
       <main className="flex h-screen w-full flex-col">
         <AppHeader />
-        <div className="h-full w-full">{children}</div>
+        <div className="h-full w-full border-y">{children}</div>
         <AppFooter />
       </main>
     </SidebarProvider>

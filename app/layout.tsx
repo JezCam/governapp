@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { M_PLUS_Rounded_1c } from "next/font/google";
+import { M_PLUS_Rounded_1c } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 
-export const mPlusRounded1c = M_PLUS_Rounded_1c({
-  weight: ["400", "500", "700", "800"],
-  subsets: ["latin"],
-  variable: "--font-m-plus-rounded-1c",
+const mPlusRounded1c = M_PLUS_Rounded_1c({
+  weight: ['400', '500', '700', '800'],
+  subsets: ['latin'],
+  variable: '--font-m-plus-rounded-1c',
 });
 
 export const metadata: Metadata = {
