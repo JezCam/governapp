@@ -67,7 +67,7 @@ export default function NavTeam() {
         >
           <SidebarMenuItem>
             <CollapsibleTrigger asChild>
-              <SidebarMenuButton className="h-12.5 min-w-fit gap-9.75 overflow-clip whitespace-nowrap rounded-xl border border-transparent font-medium transition-all transition-discrete group-data-[collapsible=icon]:h-0 group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:opacity-0">
+              <SidebarMenuButton className="h-12.5 min-w-fit overflow-clip whitespace-nowrap rounded-xl border border-transparent font-medium transition-all transition-discrete group-data-[collapsible=icon]:h-0 group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:opacity-0">
                 <div className="flex items-center gap-2">
                   <div className="flex size-8 items-center justify-center [&>svg]:size-4.5">
                     <HugeiconsIcon
@@ -92,7 +92,7 @@ export default function NavTeam() {
                       className="h-fit gap-2.5 p-0.75"
                       tooltip={member.name}
                     >
-                      <Avatar className="size-7 border border-sidebar-border">
+                      <Avatar className="size-7 border border-sidebar-border shadow-sm">
                         <AvatarImage src={member.imageUrl} />
                         <AvatarFallback className="flex size-full items-center justify-center bg-background text-foreground">
                           {member.name.charAt(0)}

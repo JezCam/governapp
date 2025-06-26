@@ -47,7 +47,7 @@ export function NavMain() {
                 className={cn(
                   'h-fit rounded-xl border border-transparent font-medium transition-all',
                   pathname === page.url
-                    ? 'group-data-[collapsible=icon]:!bg-transparent group-data-[collapsible=icon]:!border-transparent border-sidebar-border bg-white group-data-[collapsible=icon]:rounded-2xl dark:border-border dark:bg-primary'
+                    ? 'group-data-[collapsible=icon]:!bg-transparent group-data-[collapsible=icon]:!border-transparent border-sidebar-border bg-white group-data-[collapsible=icon]:rounded-2xl dark:border-border dark:bg-ga-purple-800'
                     : ''
                 )}
                 tooltip={page.title}
@@ -57,7 +57,7 @@ export function NavMain() {
                     className={cn(
                       '!size-8 flex shrink-0 items-center justify-center rounded-sm border border-transparent transition-all [&>svg]:size-4.5 [&>svg]:text-sidebar-primary',
                       pathname === page.url
-                        ? 'rounded-sm border-primary bg-sidebar-primary/80 text-white shadow-highlight group-data-[collapsible=icon]:rounded-md dark:border-border-sidebar dark:bg-white dark:text-sidebar-accent [&>svg]:text-white dark:[&>svg]:text-sidebar-accent'
+                        ? 'rounded-sm border-primary bg-sidebar-primary/80 text-white shadow-highlight group-data-[collapsible=icon]:rounded-md dark:border-border-sidebar dark:bg-white dark:text-sidebar-accent [&>svg]:text-white dark:[&>svg]:text-primary'
                         : ''
                     )}
                   >

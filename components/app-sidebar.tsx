@@ -5,6 +5,7 @@ import NavTeam from './nav-team';
 import OrganisationSwitcher from './organisation-switcher';
 import SearchButton from './search-button';
 import { Badge } from './ui/badge';
+import { ScrollArea } from './ui/scroll-area';
 import {
   Sidebar,
   SidebarContent,
@@ -17,32 +18,36 @@ import {
 export default function AppSidebar() {
   return (
     <Sidebar className="border-sidebar-border" collapsible="icon">
-      <SidebarHeader className="flex h-16 flex-row items-center justify-between gap-6.25 overflow-clip px-4">
-        <div className="flex items-center gap-2 border border-transparent">
-          <div className="flex size-8 items-center justify-center rounded-md border border-sidebar-border bg-white shadow-sm">
-            <Image
-              alt="GovernApp Logomark"
-              height={20}
-              src={Logomark}
-              width={20}
-            />
+      <SidebarHeader className="gap-0 p-0">
+        <div className="flex h-16 flex-row items-center justify-between gap-6.25 overflow-clip px-4">
+          <div className="flex items-center gap-2 border border-transparent">
+            <div className="flex size-8 items-center justify-center rounded-md border border-sidebar-border bg-white shadow-sm">
+              <Image
+                alt="GovernApp Logomark"
+                height={20}
+                src={Logomark}
+                width={20}
+              />
+            </div>
+            <span className="font-extrabold text-ga-purple-800 text-lg transition-all group-data-[collapsible=icon]:translate-x-3 group-data-[collapsible=icon]:opacity-0 dark:text-white">
+              GovernApp
+            </span>
           </div>
-          <span className="font-extrabold text-ga-purple-800 text-lg transition-all group-data-[collapsible=icon]:translate-x-3 group-data-[collapsible=icon]:opacity-0 dark:text-white">
-            GovernApp
-          </span>
+          <Badge className="bg-sidebar-primary font-bold text-sidebar-accent tracking-widest">
+            PILOT
+          </Badge>
         </div>
-        <Badge className="bg-sidebar-primary font-bold text-sidebar-accent tracking-widest">
-          PILOT
-        </Badge>
-      </SidebarHeader>
-      <SidebarContent className="gap-0 overflow-clip border-sidebar-border border-y">
+        <SidebarSeparator className="mx-auto my-0 w-full" />
         <div className="px-4.25 py-4">
           <SearchButton />
         </div>
-        <SidebarSeparator className="mx-auto my-0 w-full" />
-        <NavMain />
-        <SidebarSeparator className="mx-auto my-0 w-full" />
-        <NavTeam />
+      </SidebarHeader>
+      <SidebarContent className="gap-0 overflow-x-clip border-sidebar-border border-y">
+        <ScrollArea className="h-full">
+          <NavMain />
+          <SidebarSeparator className="mx-auto my-0 w-full" />
+          <NavTeam />
+        </ScrollArea>
       </SidebarContent>
       <SidebarFooter className="flex h-16">
         <OrganisationSwitcher />

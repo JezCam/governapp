@@ -3,6 +3,7 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { SearchIcon } from '@hugeicons-pro/core-stroke-rounded';
 import { CornerDownLeft, CreditCard, Settings, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { pages } from './nav-main';
 import { Button } from './ui/button';
@@ -21,6 +22,7 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar';
 
 export default function SearchButton() {
   const [open, setOpen] = useState<boolean>(false);
+  const router = useRouter();
 
   // Toggle the menu when ⌘K is pressed
   useEffect(() => {
@@ -74,7 +76,13 @@ export default function SearchButton() {
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Pages">
             {pages.map((page) => (
-              <CommandItem key={page.title}>
+              <CommandItem
+                key={page.title}
+                onSelect={() => {
+                  router.push(page.url);
+                  setOpen(false);
+                }}
+              >
                 <HugeiconsIcon icon={page.icon} strokeWidth={2} />
                 <span>{page.title}</span>
               </CommandItem>
