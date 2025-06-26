@@ -45,7 +45,12 @@
 
   /* Custom shadows */
   --shadow-highlight:
-    var(--shadow-sm), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+    var(--shadow-sm), inset 0 1px 0 0
+    color-mix(
+      in oklab,
+      var(--color-white) /* #fff = #ffffff */ 20%,
+      transparent
+    );
 
   /* GovernApp Brand Colours */
   --color-ga-purple-50: #fbf6fd;

@@ -45,7 +45,7 @@ export function NavMain() {
               <SidebarMenuButton
                 asChild
                 className={cn(
-                  'h-fit rounded-xl border border-transparent font-medium',
+                  'h-fit rounded-xl border border-transparent font-medium transition-all',
                   pathname === item.url
                     ? 'border-sidebar-border bg-background group-data-[collapsible=icon]:rounded-2xl group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent'
                     : ''
