@@ -1,0 +1,112 @@
+'use client';
+
+import { HugeiconsIcon } from '@hugeicons/react';
+import { SearchIcon } from '@hugeicons-pro/core-stroke-rounded';
+import { CornerDownLeft, CreditCard, Settings, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { pages } from './nav-main';
+import { Button } from './ui/button';
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from './ui/command';
+import Kbd from './ui/kbd';
+
+export default function SearchButton() {
+  const [open, setOpen] = useState<boolean>(false);
+
+  // Toggle the menu when ⌘K is pressed
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setOpen((prev) => !prev);
+      }
+    };
+
+    document.addEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
+  }, []);
+
+  return (
+    <>
+      <Button
+        className="group/search w-full max-w-sm justify-between border border-primary/15 bg-sidebar-accent px-1.75 text-ga-purple-500 shadow-none hover:bg-sidebar-accent hover:text-ga-purple-700 dark:text-ga-purple-300 dark:hover:text-ga-purple-100"
+        onClick={() => setOpen(true)}
+        variant="secondary"
+      >
+        <div className="flex items-center gap-3.75">
+          <HugeiconsIcon
+            className="size-4.5"
+            icon={SearchIcon}
+            strokeWidth={2}
+          />
+          Search
+        </div>
+        <div className="flex gap-0.5">
+          <Kbd className="border-primary/30 group-hover/search:text-foreground">
+            ⌘
+          </Kbd>
+          <Kbd className="aspect-square border-primary/30 group-hover/search:text-foreground">
+            K
+          </Kbd>
+        </div>
+      </Button>
+      <CommandDialog
+        className="rounded-xl bg-popover p-2 pb-11"
+        onOpenChange={setOpen}
+        open={open}
+        showCloseButton={false}
+      >
+        <CommandInput placeholder="Search GovernApp..." />
+        <CommandList className="outline-hidden [scrollbar-width:none]">
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Pages">
+            {pages.map((page) => (
+              <CommandItem key={page.title}>
+                <HugeiconsIcon icon={page.icon} strokeWidth={2} />
+                <span>{page.title}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="Settings">
+            <CommandItem>
+              <User />
+              <span>Profile</span>
+              <CommandShortcut>⌘P</CommandShortcut>
+            </CommandItem>
+            <CommandItem>
+              <CreditCard />
+              <span>Billing</span>
+              <CommandShortcut>⌘B</CommandShortcut>
+            </CommandItem>
+            <CommandItem>
+              <Settings />
+              <span>Settings</span>
+              <CommandShortcut>⌘S</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+        <div className="absolute inset-x-0 bottom-0 z-20 flex h-10 items-center justify-between gap-2 rounded-b-xl border-t bg-secondary px-4 font-medium text-muted-foreground text-xs">
+          <div className="flex items-center gap-1.5">
+            <Kbd>
+              <CornerDownLeft />
+            </Kbd>
+            go to page
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Kbd className="">ESC</Kbd>
+            close
+          </div>
+        </div>
+      </CommandDialog>
+    </>
+  );
+}

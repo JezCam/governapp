@@ -3,6 +3,7 @@ import Logomark from '@/public/logomark.svg';
 import { NavMain } from './nav-main';
 import NavTeam from './nav-team';
 import OrganisationSwitcher from './organisation-switcher';
+import SearchButton from './search-button';
 import { Badge } from './ui/badge';
 import {
   Sidebar,
@@ -33,6 +34,10 @@ export default function AppSidebar() {
         <Badge className="font-bold text-white tracking-widest">PILOT</Badge>
       </SidebarHeader>
       <SidebarContent className="gap-0 overflow-clip border-sidebar-border border-y">
+        <div className="p-4">
+          <SearchButton />
+        </div>
+        <SidebarSeparator className="mx-auto my-0 w-full" />
         <NavMain />
         <SidebarSeparator className="mx-auto my-0 w-full" />
         <NavTeam />

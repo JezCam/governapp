@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 
-const items = [
+export const pages = [
   { title: 'Home', url: '/dashboard', icon: Home09Icon },
   {
     title: 'Organisation',
@@ -40,30 +40,32 @@ export function NavMain() {
     <SidebarGroup>
       <SidebarGroupContent>
         <SidebarMenu className="gap-0">
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
+          {pages.map((page) => (
+            <SidebarMenuItem key={page.title}>
               <SidebarMenuButton
                 asChild
                 className={cn(
                   'h-fit rounded-xl border border-transparent font-medium transition-all',
-                  pathname === item.url
-                    ? 'border-sidebar-border bg-background group-data-[collapsible=icon]:rounded-2xl group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent'
+                  pathname === page.url
+                    ? 'group-data-[collapsible=icon]:!bg-transparent group-data-[collapsible=icon]:!border-transparent border-sidebar-border bg-white group-data-[collapsible=icon]:rounded-2xl dark:border-border dark:bg-primary'
                     : ''
                 )}
-                tooltip={item.title}
+                tooltip={page.title}
               >
-                <Link href={item.url}>
+                <Link href={page.url}>
                   <div
                     className={cn(
                       '!size-8 flex shrink-0 items-center justify-center rounded-sm border border-transparent transition-all [&>svg]:size-4.5',
-                      pathname === item.url
-                        ? 'rounded-sm border-primary bg-primary/80 text-white shadow-highlight group-data-[collapsible=icon]:rounded-md'
+                      pathname === page.url
+                        ? 'rounded-sm border-primary bg-primary/80 text-white shadow-highlight group-data-[collapsible=icon]:rounded-md dark:border-border-sidebar dark:bg-white dark:text-sidebar-accent'
                         : ''
                     )}
                   >
-                    {item.icon && <HugeiconsIcon icon={item.icon} />}
+                    {page.icon && (
+                      <HugeiconsIcon icon={page.icon} strokeWidth={2} />
+                    )}
                   </div>
-                  <span>{item.title}</span>
+                  <span>{page.title}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

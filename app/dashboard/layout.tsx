@@ -8,9 +8,9 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="flex h-screen w-full flex-col">
+      <main className="flex flex-1 flex-col">
         <AppHeader />
-        <div className="h-full w-full border-y">{children}</div>
+        <div className="flex w-full flex-1 border-t border-b">{children}</div>
         <AppFooter />
       </main>
     </SidebarProvider>

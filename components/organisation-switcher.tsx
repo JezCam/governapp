@@ -1,18 +1,10 @@
 'use client';
 
-import {
-  BadgeCheck,
-  Bell,
-  CreditCard,
-  GalleryVerticalEnd,
-  LogOut,
-  Sparkles,
-} from 'lucide-react';
+import { AudioWaveform, Command, GalleryVerticalEnd, Plus } from 'lucide-react';
 
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -25,6 +17,24 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import UnfoldClose from './unfold-close';
+
+const teams = [
+  {
+    name: 'Acme Inc',
+    logo: GalleryVerticalEnd,
+    plan: 'Enterprise',
+  },
+  {
+    name: 'Acme Corp.',
+    logo: AudioWaveform,
+    plan: 'Startup',
+  },
+  {
+    name: 'Evil Corp.',
+    logo: Command,
+    plan: 'Free',
+  },
+];
 
 export default function OrganisationSwitcher() {
   const { isMobile } = useSidebar();
@@ -53,44 +63,25 @@ export default function OrganisationSwitcher() {
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                  <GalleryVerticalEnd className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">
-                    Acme Incorporated
-                  </span>
-                </div>
-              </div>
+            <DropdownMenuLabel className="text-muted-foreground text-xs">
+              Organisations
             </DropdownMenuLabel>
+            {teams.map((team) => (
+              <DropdownMenuItem className="gap-2 p-2" key={team.name}>
+                <div className="flex size-6 items-center justify-center rounded-md border">
+                  <team.logo className="size-3.5 shrink-0" />
+                </div>
+                {team.name}
+              </DropdownMenuItem>
+            ))}
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
+            <DropdownMenuItem className="gap-2 p-2">
+              <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
+                <Plus className="size-4" />
+              </div>
+              <div className="font-medium text-muted-foreground">
+                Add Organisation
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
