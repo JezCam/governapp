@@ -31,7 +31,9 @@ export default function AppSidebar() {
             GovernApp
           </span>
         </div>
-        <Badge className="font-bold text-white tracking-widest">PILOT</Badge>
+        <Badge className="bg-sidebar-primary font-bold text-sidebar-accent tracking-widest">
+          PILOT
+        </Badge>
       </SidebarHeader>
       <SidebarContent className="gap-0 overflow-clip border-sidebar-border border-y">
         <div className="px-4.25 py-4">

@@ -38,7 +38,7 @@ export default function SearchButton() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton asChild>
+        <SidebarMenuButton asChild tooltip="Search">
           <Button
             className="group/search after:-inset-4 w-full max-w-sm justify-between border border-primary/15 bg-sidebar-accent px-1.5 text-ga-purple-500 shadow-none after:absolute after:content-[''] hover:bg-sidebar-accent hover:text-ga-purple-700 dark:text-ga-purple-300 dark:hover:text-ga-purple-100"
             onClick={() => setOpen(true)}

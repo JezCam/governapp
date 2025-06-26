@@ -1,8 +1,8 @@
 'use client';
 
 import { HugeiconsIcon } from '@hugeicons/react';
+import { Hexagon01Icon } from '@hugeicons-pro/core-solid-rounded';
 import {
-  Hexagon01Icon,
   Home09Icon,
   Settings01Icon,
   TaskDone02Icon,
@@ -55,9 +55,9 @@ export function NavMain() {
                 <Link href={page.url}>
                   <div
                     className={cn(
-                      '!size-8 flex shrink-0 items-center justify-center rounded-sm border border-transparent transition-all [&>svg]:size-4.5',
+                      '!size-8 flex shrink-0 items-center justify-center rounded-sm border border-transparent transition-all [&>svg]:size-4.5 [&>svg]:text-sidebar-primary',
                       pathname === page.url
-                        ? 'rounded-sm border-primary bg-primary/80 text-white shadow-highlight group-data-[collapsible=icon]:rounded-md dark:border-border-sidebar dark:bg-white dark:text-sidebar-accent'
+                        ? 'rounded-sm border-primary bg-sidebar-primary/80 text-white shadow-highlight group-data-[collapsible=icon]:rounded-md dark:border-border-sidebar dark:bg-white dark:text-sidebar-accent [&>svg]:text-white dark:[&>svg]:text-sidebar-accent'
                         : ''
                     )}
                   >

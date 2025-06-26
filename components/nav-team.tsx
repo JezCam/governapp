@@ -54,7 +54,7 @@ const teamMembers = [
 ];
 
 export default function NavTeam() {
-  const [_open, setOpen] = useState(false);
+  const [_open, setOpen] = useState(true);
   const { open } = useSidebar();
 
   return (
@@ -62,7 +62,6 @@ export default function NavTeam() {
       <SidebarMenu>
         <Collapsible
           className="group/collapsible"
-          defaultOpen
           onOpenChange={setOpen}
           open={open ? _open : true}
         >
@@ -71,7 +70,11 @@ export default function NavTeam() {
               <SidebarMenuButton className="h-12.5 min-w-fit gap-9.75 overflow-clip whitespace-nowrap rounded-xl border border-transparent font-medium transition-all transition-discrete group-data-[collapsible=icon]:h-0 group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:opacity-0">
                 <div className="flex items-center gap-2">
                   <div className="flex size-8 items-center justify-center [&>svg]:size-4.5">
-                    <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} />
+                    <HugeiconsIcon
+                      className="text-sidebar-primary"
+                      icon={UserGroupIcon}
+                      strokeWidth={2}
+                    />
                   </div>
                   Team Members
                   <Badge className="rounded-sm px-1.5" variant="blue">
