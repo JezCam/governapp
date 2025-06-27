@@ -1,17 +1,34 @@
 'use client';
 
 import { HugeiconsIcon } from '@hugeicons/react';
-import { UserGroupIcon } from '@hugeicons-pro/core-stroke-rounded';
+import {
+  Edit04Icon,
+  MoreHorizontalIcon,
+  PlusSignCircleIcon,
+  UserGroupIcon,
+  UserMinus02Icon,
+  ZapIcon,
+} from '@hugeicons-pro/core-stroke-rounded';
 import { AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import AddTeamMemberDialogContent from './dialog-contents/add-team-member-dialog-content';
 import { Avatar } from './ui/avatar';
 import { Badge } from './ui/badge';
+import { Button } from './ui/button';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from './ui/collapsible';
+import { Dialog, DialogTrigger } from './ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import {
   SidebarGroup,
   SidebarMenu,
@@ -20,36 +37,55 @@ import {
   useSidebar,
 } from './ui/sidebar';
 
-const teamMembers = [
+type TeamMember = {
+  userId: number;
+  name: string;
+  email: string;
+  role: string;
+  permission: 'admin' | 'member';
+  imageUrl: string;
+};
+
+const teamMembers: TeamMember[] = [
+  {
+    userId: 0,
+    name: 'Jeremy Cameron',
+    email: 'jeremy@cameron.org.au',
+    role: 'Chief Executive Officer',
+    permission: 'admin',
+    imageUrl: 'https://avatars.githubusercontent.com/u/77473646?v=4',
+  },
   {
     userId: 1,
     name: 'Alice Johnson',
-    role: '',
+    email: 'alice.j@acme.inc',
+    role: 'Chief Executive Officer',
+    permission: 'admin',
     imageUrl: 'https://i.pravatar.cc/150?img=2',
   },
   {
     userId: 2,
     name: 'Bob Smith',
-    role: '',
+    email: 'bobrocks@gmail.com',
+    role: 'Chair',
+    permission: 'member',
     imageUrl: 'https://i.pravatar.cc/150?img=3',
   },
   {
     userId: 3,
     name: 'Charlie Brown',
-    role: '',
+    email: 'charliethekid@email.com',
+    role: 'Treasurer',
+    permission: 'member',
     imageUrl: 'https://i.pravatar.cc/150?img=4',
   },
   {
     userId: 4,
     name: 'Diana Prince',
-    role: '',
+    email: 'dianatheprince@gmail.com',
+    role: 'Vice Chair',
+    permission: 'member',
     imageUrl: 'https://i.pravatar.cc/150?img=5',
-  },
-  {
-    userId: 5,
-    name: 'Ethan Hunt',
-    role: '',
-    imageUrl: 'https://i.pravatar.cc/150?img=6',
   },
 ];
 
@@ -84,26 +120,119 @@ export default function NavTeam() {
                 <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
               </SidebarMenuButton>
             </CollapsibleTrigger>
-            <CollapsibleContent className=" [&>ul]:m-0 [&>ul]:border-none [&>ul]:p-2">
-              <SidebarMenu className="gap-2">
+            <CollapsibleContent className="[&>ul]:m-0 [&>ul]:border-none [&>ul]:p-1">
+              <SidebarMenu className="gap-0">
                 {teamMembers.map((member) => (
                   <SidebarMenuItem key={member.userId}>
-                    <SidebarMenuButton
-                      className="h-fit gap-2.5 p-0.75"
-                      tooltip={member.name}
-                    >
-                      <Avatar className="size-7 border border-sidebar-border shadow-sm">
-                        <AvatarImage src={member.imageUrl} />
-                        <AvatarFallback className="flex size-full items-center justify-center bg-background text-foreground">
-                          {member.name.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="truncate font-medium">
-                        {member.name}
-                      </span>
-                    </SidebarMenuButton>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <SidebarMenuButton
+                          className="h-fit gap-2.5 p-1.75 group-data-[collapsible=icon]:rounded-full"
+                          tooltip={member.name}
+                        >
+                          <Avatar className="size-7 border border-sidebar-border">
+                            <AvatarImage src={member.imageUrl} />
+                            <AvatarFallback className="flex size-full items-center justify-center bg-background text-foreground">
+                              {member.name.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="truncate font-medium">
+                            {member.name}
+                          </span>
+                        </SidebarMenuButton>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        align="start"
+                        className="flex w-80 flex-col gap-2 rounded-xl p-2 pb-4"
+                        side="right"
+                      >
+                        <div className="relative mb-6 h-20 rounded-sm bg-primary">
+                          <Avatar className="-bottom-6 absolute left-3 size-16 ring-4 ring-popover">
+                            <AvatarImage src={member.imageUrl} />
+                            <AvatarFallback className="flex size-full items-center justify-center bg-foreground font-bold text-4xl text-background">
+                              {member.name.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                className="!bg-black/30 !border-white/30 absolute top-2 right-2 size-8 rounded-full !hover:bg-black/15 text-white hover:text-white"
+                                size="icon"
+                                variant="outline"
+                              >
+                                <HugeiconsIcon icon={MoreHorizontalIcon} />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="start"
+                              className="w-60 font-medium"
+                              side="right"
+                            >
+                              <DropdownMenuItem className="gap-2 p-2">
+                                <HugeiconsIcon icon={ZapIcon} strokeWidth={2} />
+                                View assigned actions
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="gap-2 p-2">
+                                <HugeiconsIcon
+                                  icon={Edit04Icon}
+                                  strokeWidth={2}
+                                />
+                                Edit member details
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="hover:!text-destructive hover:!bg-destructive/10 gap-2 p-2 text-destructive">
+                                <HugeiconsIcon
+                                  className="text-destructive"
+                                  icon={UserMinus02Icon}
+                                  strokeWidth={2}
+                                />
+                                Remove from Team
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                        <div className="flex flex-col gap-4 px-3">
+                          <div className="flex h-fit flex-col">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">{member.name}</span>
+                              <Badge
+                                className="h-fit"
+                                variant={member.permission}
+                              />
+                            </div>
+                            <span className="text-xs">{member.email}</span>
+                          </div>
+                          <Badge variant="outline">{member.role}</Badge>
+                          {member.userId === 0 && (
+                            <Button variant="secondary">
+                              <HugeiconsIcon
+                                icon={Edit04Icon}
+                                strokeWidth={2}
+                              />
+                              Edit Profile
+                            </Button>
+                          )}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </SidebarMenuItem>
                 ))}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <SidebarMenuButton
+                      className="mt-2 h-fit gap-2.5 whitespace-nowrap p-1.75 font-medium group-data-[collapsible=icon]:rounded-full"
+                      tooltip="Add Team Member"
+                    >
+                      <div className="flex size-7 shrink-0 items-center justify-center [&>svg]:size-4.5 [&>svg]:text-sidebar-primary">
+                        <HugeiconsIcon
+                          icon={PlusSignCircleIcon}
+                          strokeWidth={2}
+                        />
+                      </div>
+                      Add Team Member
+                    </SidebarMenuButton>
+                  </DialogTrigger>
+                  <AddTeamMemberDialogContent />
+                </Dialog>
               </SidebarMenu>
             </CollapsibleContent>
           </SidebarMenuItem>

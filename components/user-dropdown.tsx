@@ -28,7 +28,9 @@ export default function UserDropdown() {
           </Avatar>
           <div className="grid h-8 flex-1 text-left text-sm leading-tight">
             <span className="truncate font-medium">Jeremy Cameron</span>
-            <span className="truncate text-xs">jeremy@cameron.org.au</span>
+            <span className="truncate font-normal text-xs">
+              jeremy@cameron.org.au
+            </span>
           </div>
           <ChevronDown className="ml-auto" />
         </Button>

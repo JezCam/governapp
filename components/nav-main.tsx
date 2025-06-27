@@ -47,7 +47,7 @@ export function NavMain() {
                 className={cn(
                   'h-fit rounded-xl border border-transparent font-medium transition-all',
                   pathname === page.url
-                    ? 'group-data-[collapsible=icon]:!bg-transparent group-data-[collapsible=icon]:!border-transparent border-sidebar-border bg-white group-data-[collapsible=icon]:rounded-2xl dark:border-border dark:bg-ga-purple-800'
+                    ? 'group-data-[collapsible=icon]:!bg-transparent group-data-[collapsible=icon]:!border-transparent !bg-white dark:!bg-ga-purple-800 border-sidebar-border group-data-[collapsible=icon]:rounded-2xl dark:border-border'
                     : ''
                 )}
                 tooltip={page.title}
@@ -55,7 +55,7 @@ export function NavMain() {
                 <Link href={page.url}>
                   <div
                     className={cn(
-                      '!size-8 flex shrink-0 items-center justify-center rounded-sm border border-transparent transition-all [&>svg]:size-4.5 [&>svg]:text-sidebar-primary',
+                      'flex size-8 shrink-0 items-center justify-center rounded-sm border border-transparent transition-all [&>svg]:size-4.5 [&>svg]:text-sidebar-primary',
                       pathname === page.url
                         ? 'rounded-sm border-ga-purple-800 bg-sidebar-primary text-white shadow-highlight group-data-[collapsible=icon]:rounded-md dark:border-border-sidebar dark:bg-white dark:text-sidebar-accent [&>svg]:text-white dark:[&>svg]:text-primary'
                         : ''

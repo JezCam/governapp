@@ -59,7 +59,7 @@ export default function OrganisationSwitcher() {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
