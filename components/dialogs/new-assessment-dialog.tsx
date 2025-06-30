@@ -1,9 +1,9 @@
 import { DialogContent, DialogTitle } from '../ui/dialog';
 
-export default function AddTeamMemberDialogContent() {
+export default function NewAssessmentDialogContent() {
   return (
     <DialogContent>
-      <DialogTitle>Add a new team member</DialogTitle>
+      <DialogTitle> Create a new assessment</DialogTitle>
     </DialogContent>
   );
 }

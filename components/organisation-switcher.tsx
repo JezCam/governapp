@@ -1,7 +1,6 @@
 'use client';
 
 import { AudioWaveform, Command, GalleryVerticalEnd, Plus } from 'lucide-react';
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,25 +15,31 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
 import UnfoldClose from './unfold-close';
 
-const teams = [
+const organisations = [
   {
+    id: 0,
     name: 'Acme Inc',
     logo: GalleryVerticalEnd,
     plan: 'Enterprise',
   },
   {
+    id: 1,
     name: 'Acme Corp.',
     logo: AudioWaveform,
     plan: 'Startup',
   },
   {
+    id: 2,
     name: 'Evil Corp.',
     logo: Command,
     plan: 'Free',
   },
 ];
+
+const activeOrganisationId = 0; // This should be dynamically set based on the user's current organisation
 
 export default function OrganisationSwitcher() {
   const { isMobile } = useSidebar();
@@ -66,12 +71,18 @@ export default function OrganisationSwitcher() {
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Organisations
             </DropdownMenuLabel>
-            {teams.map((team) => (
-              <DropdownMenuItem className="gap-2 p-2" key={team.name}>
+            {organisations.map((organisation) => (
+              <DropdownMenuItem
+                className={cn(
+                  'gap-2 p-2',
+                  organisation.id === activeOrganisationId ? 'bg-accent' : ''
+                )}
+                key={organisation.name}
+              >
                 <div className="flex size-6 items-center justify-center rounded-md border">
-                  <team.logo className="size-3.5 shrink-0" />
+                  <organisation.logo className="size-3.5 shrink-0" />
                 </div>
-                {team.name}
+                {organisation.name}
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />

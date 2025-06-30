@@ -6,7 +6,7 @@ import {
   Home09Icon,
   Settings01Icon,
   TaskDone02Icon,
-  UserGroupIcon,
+  UserGroup03Icon,
   ZapIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
 import Link from 'next/link';
@@ -25,7 +25,7 @@ export const pages = [
   {
     title: 'Organisation',
     url: '/dashboard/organisation',
-    icon: UserGroupIcon,
+    icon: UserGroup03Icon,
   },
   { title: 'Frameworks', url: '/dashboard/frameworks', icon: Hexagon01Icon },
   { title: 'Assessments', url: '/dashboard/assessments', icon: TaskDone02Icon },

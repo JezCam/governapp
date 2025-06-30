@@ -12,7 +12,7 @@ import {
 import { AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
-import AddTeamMemberDialogContent from './dialog-contents/add-team-member-dialog-content';
+import AddTeamMemberDialogContent from './dialogs/add-team-member-dialog';
 import { Avatar } from './ui/avatar';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
