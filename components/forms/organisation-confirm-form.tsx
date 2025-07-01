@@ -4,8 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { LoadingButton } from '../loading-button';
-import { Button } from '../ui/button';
 import {
   Form,
   FormControl,
@@ -22,20 +20,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import FormButtons from './form-buttons';
 import { organisationTypeSchema, organisationTypes } from './schema';
+import type { FormProps } from './types';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Please enter your organisation name'),
   organisationType: organisationTypeSchema,
 });
 
-export default function OrganisationConfirmForm({
-  onPrevious,
-  onSuccess,
-}: {
-  onPrevious: () => void;
-  onSuccess: () => void;
-}) {
+export default function OrganisationConfirmForm(props: FormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -53,12 +47,15 @@ export default function OrganisationConfirmForm({
     // sleep for 1 second to simulate a network request
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsLoading(false);
-    onSuccess();
+    props.onSuccess();
   }
 
   return (
     <Form {...form}>
-      <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        className="flex flex-1 flex-col gap-4"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         <FormField
           control={form.control}
           name="name"
@@ -96,14 +93,7 @@ export default function OrganisationConfirmForm({
             </FormItem>
           )}
         />
-        <div className="flex items-center justify-between">
-          <Button onClick={onPrevious} type="button" variant="secondary">
-            Previous
-          </Button>
-          <LoadingButton isLoading={isLoading} type="submit" variant="outline">
-            Submit
-          </LoadingButton>
-        </div>
+        <FormButtons isLoading={isLoading} onPrevious={props.onPrevious} />
       </form>
     </Form>
   );

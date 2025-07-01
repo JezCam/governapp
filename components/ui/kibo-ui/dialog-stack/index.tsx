@@ -296,7 +296,7 @@ export const DialogStackContent = ({
     // biome-ignore lint/a11y/useKeyWithClickEvents: "This is a clickable dialog"
     <div
       className={cn(
-        'h-auto w-full rounded-lg border bg-background p-6 shadow-lg transition-all duration-300',
+        'flex h-auto w-full flex-col gap-8 rounded-lg border bg-background p-6 shadow-lg transition-all duration-300',
         className
       )}
       onClick={handleClick}
@@ -314,15 +314,7 @@ export const DialogStackContent = ({
       }}
       {...props}
     >
-      <div
-        className={cn(
-          'grid h-full w-full gap-8 transition-all duration-300',
-          context.activeIndex !== index &&
-            'pointer-events-none select-none opacity-0'
-        )}
-      >
-        {children}
-      </div>
+      {children}
     </div>
   );
 };

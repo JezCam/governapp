@@ -2,12 +2,46 @@
 
 import { MoonIcon, SunIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useId } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { Switch } from '@/components/ui/switch';
 
 export default function ThemeSwitcher() {
+  const [mounted, setMounted] = useState(false);
   const id = useId();
   const { resolvedTheme, setTheme } = useTheme();
+
+  // Only render after mounting to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Return a placeholder with same structure during SSR
+  if (!mounted) {
+    return (
+      <div className="group inline-flex items-center gap-2">
+        <span className="hidden">Loading theme...</span>
+        <button
+          className="flex-1 cursor-pointer text-right font-medium text-sm"
+          disabled
+          type="button"
+        >
+          <MoonIcon aria-hidden="true" size={16} />
+        </button>
+        <Switch
+          aria-label="Toggle between dark and light mode"
+          checked={false}
+          disabled
+        />
+        <button
+          className="flex-1 cursor-pointer text-left font-medium text-sm"
+          disabled
+          type="button"
+        >
+          <SunIcon aria-hidden="true" size={16} />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div

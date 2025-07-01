@@ -7,6 +7,30 @@ export const organisationTypes = [
   'Other',
 ] as const;
 
+export const organisationTurnoverRanges = [
+  '$0 - $50,000',
+  '$50,001 - $250,000',
+  '$250,001 - $1m',
+  '$1m - $10m',
+  '$10m - $100m',
+  '$100m+',
+] as const;
+
+export const roles = [
+  'Audit Committee Member',
+  'Board Member',
+  'Chair',
+  'Chief Executive Officer',
+  'Compensation Committee Member',
+  'Director',
+  'Governance Committee Member',
+  'Nomination Committee Member',
+  'President',
+  'Secretary',
+  'Treasurer',
+  'Vice Chair',
+];
+
 const acnSchema = z
   .string()
   .transform((val) => val.replace(/\s+/g, ''))
@@ -24,6 +48,12 @@ const abnSchema = z
 
 const abnOrAcnSchema = z.union([acnSchema, abnSchema]);
 
+const organisationTurnoverRangeSchema = z.enum(organisationTurnoverRanges);
+
 const organisationTypeSchema = z.enum(organisationTypes);
 
-export { abnOrAcnSchema, organisationTypeSchema };
+export {
+  abnOrAcnSchema,
+  organisationTurnoverRangeSchema,
+  organisationTypeSchema,
+};

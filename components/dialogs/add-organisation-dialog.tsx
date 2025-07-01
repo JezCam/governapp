@@ -24,12 +24,24 @@ export default function AddOrganisationDialog({
   const [index, setIndex] = useState<number>(0);
 
   return (
-    <DialogStack clickable index={index} onIndexChange={setIndex} {...props}>
+    <DialogStack
+      clickable
+      index={index}
+      onIndexChange={setIndex}
+      {...props}
+      onOpenChange={(open) => {
+        if (open) {
+          return;
+        }
+        setIndex(0);
+        onClose();
+      }}
+    >
       {overlay && <DialogStackOverlay />}
 
       <DialogStackBody>
         {/* Organisation Details */}
-        <DialogStackContent className="h-100">
+        <DialogStackContent>
           <DialogStackHeader>
             <DialogStackTitle>Organisation Details</DialogStackTitle>
           </DialogStackHeader>
@@ -37,13 +49,16 @@ export default function AddOrganisationDialog({
         </DialogStackContent>
 
         {/* Organisation Confirm */}
-        <DialogStackContent className="h-100">
+        <DialogStackContent className="min-h-[374px]">
           <DialogStackHeader>
             <DialogStackTitle>Confirm Organisation</DialogStackTitle>
           </DialogStackHeader>
           <OrganisationConfirmForm
             onPrevious={() => setIndex(0)}
-            onSuccess={onClose}
+            onSuccess={() => {
+              setIndex(0);
+              onClose();
+            }}
           />
         </DialogStackContent>
       </DialogStackBody>
