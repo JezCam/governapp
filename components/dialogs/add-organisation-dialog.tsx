@@ -15,10 +15,8 @@ import {
 
 export default function AddOrganisationDialog({
   overlay = true,
-  onClose,
   ...props
 }: DialogStackProps & {
-  onClose: () => void;
   overlay?: boolean;
 }) {
   const [index, setIndex] = useState<number>(0);
@@ -34,16 +32,18 @@ export default function AddOrganisationDialog({
           return;
         }
         setIndex(0);
-        onClose();
+        props.onOpenChange?.(open);
       }}
     >
       {overlay && <DialogStackOverlay />}
 
       <DialogStackBody>
         {/* Organisation Details */}
-        <DialogStackContent>
+        <DialogStackContent offset={20}>
           <DialogStackHeader>
-            <DialogStackTitle>Organisation Details</DialogStackTitle>
+            <DialogStackTitle>
+              Enter Your Organisation&apos;s Details
+            </DialogStackTitle>
           </DialogStackHeader>
           <OrganisationDetailsForm onSuccess={() => setIndex(1)} />
         </DialogStackContent>
@@ -51,13 +51,15 @@ export default function AddOrganisationDialog({
         {/* Organisation Confirm */}
         <DialogStackContent className="min-h-[374px]">
           <DialogStackHeader>
-            <DialogStackTitle>Confirm Organisation</DialogStackTitle>
+            <DialogStackTitle>
+              Confirm Your Organisation&apos;s Details
+            </DialogStackTitle>
           </DialogStackHeader>
           <OrganisationConfirmForm
             onPrevious={() => setIndex(0)}
             onSuccess={() => {
               setIndex(0);
-              onClose();
+              props.onOpenChange?.(false);
             }}
           />
         </DialogStackContent>

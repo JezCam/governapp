@@ -54,7 +54,7 @@ export default function AppBreadcrumb() {
             </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
-        {breadcrumbs.length > 0 && (
+        {!!breadcrumbs.length && (
           <>
             <BreadcrumbSeparator />
             {breadcrumbs.map((breadcrumb) => (

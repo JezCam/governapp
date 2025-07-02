@@ -19,7 +19,6 @@ export default function FormButtons(props: FormButtonProps) {
         className="ml-auto"
         isLoading={props.isLoading}
         type="submit"
-        variant="outline"
       >
         Submit
       </LoadingButton>

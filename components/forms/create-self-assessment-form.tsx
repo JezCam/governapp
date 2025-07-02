@@ -1,10 +1,8 @@
-'use client';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
+import z from 'zod';
 import {
   Form,
   FormControl,
@@ -24,25 +22,29 @@ import {
 import FormButtons from './form-buttons';
 import type { FormProps } from './types';
 
-export const types = [
-  'Australian Public Company Limited by guarantee',
-  'Incorporated Association',
-  'Australian Private Company',
-  'Other',
-] as const;
+const frameworks = [
+  { _id: '1', name: 'Framework 1' },
+  { _id: '2', name: 'Framework 2' },
+  { _id: '3', name: 'Framework 3' },
+  { _id: '4', name: 'Framework 4' },
+];
 
 const formSchema = z.object({
-  name: z.string().min(1, 'Please enter your organisation name'),
-  type: z.enum(types),
+  name: z
+    .string()
+    .min(2, 'Assessment name must contain at least 2 characters')
+    .max(50, 'Assessment name cannot exceed 50 characters'),
+  frameworkId: z.string().min(1, 'Please select a framework'),
 });
 
-export default function OrganisationConfirmForm(props: FormProps) {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+export default function CreateSelfAssessmentForm(props: FormProps) {
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
+      frameworkId: '',
     },
   });
 
@@ -71,30 +73,43 @@ export default function OrganisationConfirmForm(props: FormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Organisation Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your organisation name" {...field} />
-              </FormControl>
+              <FormLabel>Assessment Name</FormLabel>
+              <div className="relative">
+                <FormControl>
+                  <Input
+                    className="pe-14"
+                    maxLength={50}
+                    placeholder="Create a name for your new self assessment"
+                    {...field}
+                  />
+                </FormControl>
+                <output
+                  aria-live="polite"
+                  className="pointer-events-none absolute inset-y-0 end-0 flex items-center justify-center pe-3 text-muted-foreground text-xs tabular-nums peer-disabled:opacity-50"
+                >
+                  {field.value.length}/50
+                </output>
+              </div>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="type"
+          name="frameworkId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Organisation Type</FormLabel>
+              <FormLabel>Self-Assessment Framework</FormLabel>
               <Select defaultValue={field.value} onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select your organisation type" />
+                    <SelectValue placeholder="Please select a framework" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {types.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
+                  {frameworks.map((framework) => (
+                    <SelectItem key={framework._id} value={framework._id}>
+                      {framework.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -1,6 +1,7 @@
 'use client';
 
 import { AudioWaveform, Command, GalleryVerticalEnd, Plus } from 'lucide-react';
+import { useState } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +17,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
+import AddOrganisationDialog from './dialogs/add-organisation-dialog';
 import UnfoldClose from './unfold-close';
 
 const organisations = [
@@ -43,10 +45,15 @@ const activeOrganisationId = 0; // This should be dynamically set based on the u
 
 export default function OrganisationSwitcher() {
   const { isMobile } = useSidebar();
+  const [addOrganisationOpen, setAddOrganisationOpen] = useState(false);
 
   return (
     <SidebarMenu className="h-full">
       <SidebarMenuItem className="flex h-full items-center justify-between">
+        <AddOrganisationDialog
+          onOpenChange={setAddOrganisationOpen}
+          open={addOrganisationOpen}
+        />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
@@ -86,7 +93,10 @@ export default function OrganisationSwitcher() {
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem
+              className="gap-2 p-2"
+              onClick={() => setAddOrganisationOpen(true)}
+            >
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                 <Plus className="size-4" />
               </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { M_PLUS_Rounded_1c } from 'next/font/google';
 import './globals.css';
+import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/components/theme-provider';
 
 const mPlusRounded1c = M_PLUS_Rounded_1c({
@@ -39,6 +40,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );

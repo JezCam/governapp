@@ -21,24 +21,55 @@ import {
   SelectValue,
 } from '../ui/select';
 import FormButtons from './form-buttons';
-import {
-  abnOrAcnSchema,
-  organisationTurnoverRangeSchema,
-  organisationTurnoverRanges,
-  roles,
-} from './schema';
 import type { FormProps } from './types';
 
+const turnoverRanges = [
+  '$0 - $50,000',
+  '$50,001 - $250,000',
+  '$250,001 - $1m',
+  '$1m - $10m',
+  '$10m - $100m',
+  '$100m+',
+] as const;
+
+export const roles = [
+  'Audit Committee Member',
+  'Board Member',
+  'Chair',
+  'Chief Executive Officer',
+  'Compensation Committee Member',
+  'Director',
+  'Governance Committee Member',
+  'Nomination Committee Member',
+  'President',
+  'Secretary',
+  'Treasurer',
+  'Vice Chair',
+];
+
+const acnSchema = z
+  .string()
+  .transform((val) => val.replace(/\s+/g, ''))
+  .pipe(
+    z
+      .string()
+      .min(1, 'Please enter your ABN or ACN')
+      .regex(/^\d{9}$/, 'ABN or ACN must be 9 or 11 digits')
+  );
+
+const abnSchema = z
+  .string()
+  .transform((val) => val.replace(/\s+/g, ''))
+  .pipe(z.string().regex(/^\d{11}$/, 'ABN or ACN must be 9 or 11 digits'));
+
 const formSchema = z.object({
-  abnOrAcn: abnOrAcnSchema,
-  turnoverRange: organisationTurnoverRangeSchema,
+  abnOrAcn: z.union([acnSchema, abnSchema]),
+  turnoverRange: z.enum(turnoverRanges),
   role: z.string({ message: 'Please select a role' }),
   otherRole: z.string().optional(),
 });
 
-export default function OrganisationDetailsForm(
-  props: Pick<FormProps, 'onSuccess'>
-) {
+export default function OrganisationDetailsForm(props: FormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasOtherRole, setHasOtherRole] = useState(false);
 
@@ -50,6 +81,14 @@ export default function OrganisationDetailsForm(
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (values.role === 'other' && !values.otherRole) {
+      form.setError('otherRole', {
+        type: 'manual',
+        message: 'Please specify your role',
+      });
+      return;
+    }
+
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     setIsLoading(true);
@@ -92,7 +131,7 @@ export default function OrganisationDetailsForm(
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {organisationTurnoverRanges.map((range) => (
+                  {turnoverRanges.map((range) => (
                     <SelectItem key={range} value={range}>
                       {range}
                     </SelectItem>
@@ -103,7 +142,7 @@ export default function OrganisationDetailsForm(
             </FormItem>
           )}
         />
-        <div className="flex items-center gap-2">
+        <div className="flex items-start gap-2">
           <FormField
             control={form.control}
             name="role"

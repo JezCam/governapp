@@ -11,6 +11,7 @@ import { DialogClose, DialogContent } from '@radix-ui/react-dialog';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import AddOrganisationDialog from './dialogs/add-organisation-dialog';
+import NewAssessmentDialog from './dialogs/new-assessment-dialog';
 import { Button } from './ui/button';
 import {
   Dialog,
@@ -23,15 +24,18 @@ import {
 export default function AddButton() {
   const [open, setOpen] = useState(false);
   const [addOrganisationOpen, setAddOrganisationOpen] = useState(false);
-  //   const [createNewAssessmentOpen, setCreateNewAssessmentOpen] = useState(false);
+  const [newAssessmentOpen, setNewAssessmentOpen] = useState(false);
   //   const [addNewTeamMemberOpen, setAddNewTeamMemberOpen] = useState(false);
 
   return (
     <div className="z-50">
       <AddOrganisationDialog
-        onClose={() => setAddOrganisationOpen(false)}
         onOpenChange={setAddOrganisationOpen}
         open={addOrganisationOpen}
+      />
+      <NewAssessmentDialog
+        onOpenChange={setNewAssessmentOpen}
+        open={newAssessmentOpen}
       />
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogTrigger asChild>
@@ -73,6 +77,10 @@ export default function AddButton() {
                   'peer peer/2 -top-[calc(100%-2rem)] -translate-x-1/2 hover:!bg-white absolute left-[50%] bg-black/40 text-lg text-white hover:text-black dark:bg-white/15',
                   'hover:before:-inset-15 before:absolute before:content-[""]'
                 )}
+                onClick={() => {
+                  setNewAssessmentOpen(true);
+                  setOpen(false);
+                }}
                 variant="ghost"
               >
                 <HugeiconsIcon

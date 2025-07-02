@@ -1,6 +1,7 @@
 'use client';
 
 import { useControllableState } from '@radix-ui/react-use-controllable-state';
+import { XIcon } from 'lucide-react';
 import { Portal } from 'radix-ui';
 import type {
   ButtonHTMLAttributes,
@@ -260,10 +261,12 @@ export const DialogStackBody = ({
 export type DialogStackContentProps = HTMLAttributes<HTMLDivElement> & {
   index?: number;
   offset?: number;
+  showCloseButton?: boolean;
 };
 
 export const DialogStackContent = ({
   children,
+  showCloseButton = true,
   className,
   index = 0,
   offset = 10,
@@ -315,6 +318,16 @@ export const DialogStackContent = ({
       {...props}
     >
       {children}
+      {showCloseButton && (
+        <button
+          className="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0"
+          onClick={() => context.setIsOpen(false)}
+          type="button"
+        >
+          <XIcon />
+          <span className="sr-only">Close</span>
+        </button>
+      )}
     </div>
   );
 };
