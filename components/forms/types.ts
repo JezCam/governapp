@@ -5,5 +5,7 @@ export type FormProps = {
 
 export type FormButtonProps = {
   onPrevious?: () => void;
+  previousText?: string;
+  submitText?: string;
   isLoading?: boolean;
 };

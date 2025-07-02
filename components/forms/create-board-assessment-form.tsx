@@ -373,7 +373,11 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
             )}
           />
         </div>
-        <FormButtons isLoading={isLoading} onPrevious={props.onPrevious} />
+        <FormButtons
+          isLoading={isLoading}
+          onPrevious={props.onPrevious}
+          submitText="Create"
+        />
       </form>
     </Form>
   );

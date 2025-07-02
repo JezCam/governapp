@@ -12,7 +12,7 @@ export default function FormButtons(props: FormButtonProps) {
           type="button"
           variant="secondary"
         >
-          Previous
+          {props.previousText || 'Back'}
         </Button>
       )}
       <LoadingButton
@@ -20,7 +20,7 @@ export default function FormButtons(props: FormButtonProps) {
         isLoading={props.isLoading}
         type="submit"
       >
-        Submit
+        {props.submitText || 'Submit'}
       </LoadingButton>
     </div>
   );
