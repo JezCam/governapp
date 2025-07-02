@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
+import { DatePicker } from '../date-picker';
 import { Checkbox } from '../ui/checkbox';
 import {
   Form,
@@ -97,12 +98,13 @@ const userOptionSchema = z.object({
 const formSchema = z.object({
   name: z
     .string()
+    .min(1, 'Assessment name is required')
     .min(2, 'Assessment name must contain at least 2 characters')
     .max(50, 'Assessment name cannot exceed 50 characters'),
   frameworkId: z.string().min(1, 'Please select a framework'),
-  selectedDomainIds: z
-    .array(z.string())
-    .nonempty('Please select at least one domain'),
+  selectedDomainIds: z.array(z.string()).min(1, {
+    message: 'Please select at least one domain',
+  }),
   selectedParticipants: z.array(userOptionSchema).min(1, {
     message: 'You must select at least one participant',
   }),
@@ -159,7 +161,7 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
                   <Input
                     className="pe-14"
                     maxLength={50}
-                    placeholder="Create a name for your new self assessment"
+                    placeholder="Create a name for your board assessment"
                     {...field}
                   />
                 </FormControl>
@@ -179,12 +181,13 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
           name="frameworkId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Select Framework</FormLabel>
+              <FormLabel>Framework</FormLabel>
               <Select
                 defaultValue={field.value}
                 onValueChange={(value) => {
                   const framework = frameworks?.find((f) => f._id === value);
                   setSelectedFramework(framework);
+                  form.setValue('selectedDomainIds', []);
                   field.onChange(value);
                 }}
               >
@@ -212,7 +215,7 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
             render={() => (
               <FormItem>
                 <div className="mb-2">
-                  <FormLabel>Select Domains</FormLabel>
+                  <FormLabel>Domains</FormLabel>
                 </div>
                 {selectedFramework.domains.map((domain) => (
                   <FormField
@@ -253,25 +256,60 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
         <FormField
           control={form.control}
           name="selectedParticipants"
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>Select Participants</FormLabel>
-              <UserMultiSelect
-                {...field}
-                defaultOptions={users.map((user) => ({
-                  id: user._id,
-                  name: user.name,
-                  imageUrl: user.imageUrl,
-                }))}
-                emptyIndicator={
-                  <p className="text-center text-sm">No users found</p>
-                }
-                placeholder="Select users"
-              />
+              <FormLabel>Participants</FormLabel>
+              <FormControl>
+                <UserMultiSelect
+                  defaultOptions={users.map((user) => ({
+                    id: user._id,
+                    name: user.name,
+                    imageUrl: user.imageUrl,
+                  }))}
+                  emptyIndicator={
+                    <p className="text-center text-sm">No users found</p>
+                  }
+                  inputProps={{
+                    'aria-invalid': fieldState.invalid,
+                  }}
+                  placeholder="Select users"
+                  {...field}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+        <div className="grid grid-cols-2 gap-2.5">
+          <FormField
+            control={form.control}
+            name="startDate"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel className="w-fit">Start date</FormLabel>
+                <DatePicker
+                  date={field.value}
+                  onSelect={(date) => field.onChange(date)}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="dueDate"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel className="w-fit">Due date</FormLabel>
+                <DatePicker
+                  date={field.value}
+                  onSelect={(date) => field.onChange(date)}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormButtons isLoading={isLoading} onPrevious={props.onPrevious} />
       </form>
     </Form>

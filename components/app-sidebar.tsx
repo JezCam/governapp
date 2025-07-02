@@ -38,7 +38,7 @@ export default function AppSidebar() {
       </SidebarHeader>
       <SidebarContent className="gap-0 border-sidebar-border border-y">
         <ScrollArea className="h-full [&_[data-slot=scroll-area-thumb]]:bg-sidebar-border">
-          <div className="w-64 pr-1 transition-all duration-300 group-data-[collapsible=icon]:w-[70px]">
+          <div className="w-63.75 transition-all duration-300 group-data-[collapsible=icon]:w-16.5">
             <NavMain />
             <SidebarSeparator className="mx-auto my-0 w-full" />
             <NavTeam />

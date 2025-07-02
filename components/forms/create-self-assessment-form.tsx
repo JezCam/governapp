@@ -79,7 +79,7 @@ export default function CreateSelfAssessmentForm(props: FormProps) {
                   <Input
                     className="pe-14"
                     maxLength={50}
-                    placeholder="Create a name for your new self assessment"
+                    placeholder="Create a name for your self assessment"
                     {...field}
                   />
                 </FormControl>

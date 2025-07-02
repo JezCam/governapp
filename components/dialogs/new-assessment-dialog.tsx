@@ -1,5 +1,10 @@
 'use client';
 
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  User02Icon,
+  UserGroup03Icon,
+} from '@hugeicons-pro/core-stroke-rounded';
 import { useState } from 'react';
 import CreateBoardAssessmentForm from '../forms/create-board-assessment-form';
 import CreateSelfAssessmentForm from '../forms/create-self-assessment-form';
@@ -8,6 +13,7 @@ import {
   DialogStack,
   DialogStackBody,
   DialogStackContent,
+  DialogStackDescription,
   DialogStackHeader,
   DialogStackOverlay,
   type DialogStackProps,
@@ -43,27 +49,40 @@ export default function NewAssessmentDialog({
         {/* Select Assessment Type */}
         <DialogStackContent offset={20}>
           <DialogStackHeader>
-            <DialogStackTitle>Select the Assessment Type</DialogStackTitle>
+            <DialogStackTitle>Create New Assessment</DialogStackTitle>
+            <DialogStackDescription>
+              Select the type of the assessment that you would like to create
+            </DialogStackDescription>
           </DialogStackHeader>
           <div className="grid h-40 w-full grid-cols-2 gap-2">
             <Button
-              className="h-full"
+              className="h-full text-base"
               onClick={() => {
                 setType('self');
                 setIndex(1);
               }}
               variant="outline"
             >
+              <HugeiconsIcon
+                className="size-5"
+                icon={User02Icon}
+                strokeWidth={2}
+              />
               Self Assessment
             </Button>
             <Button
-              className="h-full"
+              className="h-full text-base"
               onClick={() => {
                 setType('board');
                 setIndex(1);
               }}
               variant="outline"
             >
+              <HugeiconsIcon
+                className="size-5"
+                icon={UserGroup03Icon}
+                strokeWidth={2}
+              />
               Board Assessment
             </Button>
           </div>
