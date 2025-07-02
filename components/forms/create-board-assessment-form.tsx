@@ -1,9 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { parseDate, today } from '@internationalized/date';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
-import { DatePicker } from '../date-picker';
+import DatePicker from '../date-picker';
 import { Checkbox } from '../ui/checkbox';
 import {
   Form,
@@ -108,12 +109,8 @@ const formSchema = z.object({
   selectedParticipants: z.array(userOptionSchema).min(1, {
     message: 'You must select at least one participant',
   }),
-  startDate: z.date({
-    required_error: 'Please select a start date',
-  }),
-  dueDate: z.date({
-    required_error: 'Please select a due date',
-  }),
+  startDate: z.string().min(1, 'Please select a start date'),
+  dueDate: z.string().min(1, 'Please select a due date'),
 });
 
 export default function CreateBoardAssessmentForm(props: FormProps) {
@@ -284,12 +281,45 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
           <FormField
             control={form.control}
             name="startDate"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem className="flex flex-col">
-                <FormLabel className="w-fit">Start date</FormLabel>
+                <FormLabel className="w-fit">Start Date</FormLabel>
                 <DatePicker
-                  date={field.value}
-                  onSelect={(date) => field.onChange(date)}
+                  error={fieldState.invalid}
+                  // Disable dates before today and after the due date
+                  isDateUnavailable={(date) =>
+                    date.compare(today('UTC')) < 0 ||
+                    (!!form.getValues('dueDate') &&
+                      date.compare(parseDate(form.getValues('dueDate'))) > 0)
+                  }
+                  onChange={(date) => {
+                    field.onChange(date?.toString());
+                    if (date) {
+                      // Due date before today
+                      if (date.compare(today('UTC')) < 0) {
+                        form.setError('startDate', {
+                          type: 'manual',
+                          message: 'Start date must be in the future',
+                        });
+                        return;
+                      }
+                      // Date after due date
+                      const dueDate = form.getValues('dueDate');
+                      if (!dueDate) {
+                        form.clearErrors('startDate');
+                        return;
+                      }
+                      if (date.compare(parseDate(dueDate)) > 0) {
+                        form.setError('startDate', {
+                          type: 'manual',
+                          message: 'Start date cannot be after the due date',
+                        });
+                        return;
+                      }
+                      form.clearErrors('startDate');
+                    }
+                  }}
+                  value={field.value ? parseDate(field.value) : undefined}
                 />
                 <FormMessage />
               </FormItem>
@@ -298,12 +328,45 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
           <FormField
             control={form.control}
             name="dueDate"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem className="flex flex-col">
-                <FormLabel className="w-fit">Due date</FormLabel>
+                <FormLabel className="w-fit">Due Date</FormLabel>
                 <DatePicker
-                  date={field.value}
-                  onSelect={(date) => field.onChange(date)}
+                  error={fieldState.invalid}
+                  // Disable dates before today or before the start date
+                  isDateUnavailable={(date) =>
+                    date.compare(today('UTC')) < 0 ||
+                    (!!form.getValues('startDate') &&
+                      date.compare(parseDate(form.getValues('startDate'))) < 0)
+                  }
+                  onChange={(date) => {
+                    field.onChange(date?.toString());
+                    if (date) {
+                      // Due date before today
+                      if (date.compare(today('UTC')) < 0) {
+                        form.setError('dueDate', {
+                          type: 'manual',
+                          message: 'Due date must be in the future',
+                        });
+                        return;
+                      }
+                      // Date before start date
+                      const startDate = form.getValues('startDate');
+                      if (!startDate) {
+                        form.clearErrors('dueDate');
+                        return;
+                      }
+                      if (date.compare(parseDate(startDate)) < 0) {
+                        form.setError('dueDate', {
+                          type: 'manual',
+                          message: 'Due date must be after the start date',
+                        });
+                        return;
+                      }
+                      form.clearErrors('dueDate');
+                    }
+                  }}
+                  value={field.value ? parseDate(field.value) : undefined}
                 />
                 <FormMessage />
               </FormItem>

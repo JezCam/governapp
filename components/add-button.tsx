@@ -40,7 +40,7 @@ export default function AddButton() {
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogTrigger asChild>
           <Button
-            className="data-[state=open]:-translate-y-7.25 size-12 rounded-full [anchor-name:--anchor] data-[state=open]:rotate-45 data-[state=open]:scale-150"
+            className="data-[state=open]:-translate-y-7.25 size-12 rounded-full [anchor-name:--anchor] data-[state=open]:scale-150 [&>svg]:transition-all data-[state=open]:[&>svg]:rotate-45"
             size="icon"
           >
             <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} />

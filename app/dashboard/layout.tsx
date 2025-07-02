@@ -1,10 +1,15 @@
-import type { ReactNode } from 'react';
+'use client';
+
+import { type ReactNode, useState } from 'react';
 import AppFooter from '@/components/app-footer';
 import AppHeader from '@/components/app-header';
 import AppSidebar from '@/components/app-sidebar';
+import OnboardingDialog from '@/components/dialogs/onboarding-dialog';
 import { SidebarProvider } from '@/components/ui/sidebar';
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const [open, setOpen] = useState(true);
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -13,6 +18,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <div className="flex w-full flex-1 border-t border-b">{children}</div>
         <AppFooter />
       </main>
+      <OnboardingDialog onOpenChange={setOpen} open={open} />
     </SidebarProvider>
   );
 }

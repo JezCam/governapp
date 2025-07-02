@@ -31,6 +31,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${mPlusRounded1c.variable} ${mPlusRounded1c.className} antialiased`}
+        suppressHydrationWarning
       >
         <ThemeProvider
           attribute="class"

@@ -92,7 +92,7 @@ export default function NewAssessmentDialog({
         {type === 'self' ? (
           <DialogStackContent>
             <DialogStackHeader>
-              <DialogStackTitle>Create a New Self Assessment</DialogStackTitle>
+              <DialogStackTitle>Create New Self Assessment</DialogStackTitle>
             </DialogStackHeader>
             <CreateSelfAssessmentForm
               onPrevious={() => setIndex(0)}
@@ -106,7 +106,7 @@ export default function NewAssessmentDialog({
           // Board Assessment
           <DialogStackContent>
             <DialogStackHeader>
-              <DialogStackTitle>Create a New Board Assessment</DialogStackTitle>
+              <DialogStackTitle>Create New Board Assessment</DialogStackTitle>
             </DialogStackHeader>
             <CreateBoardAssessmentForm
               onPrevious={() => setIndex(0)}

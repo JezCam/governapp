@@ -310,6 +310,7 @@ export const DialogStackContent = ({
         zIndex: 50 - Math.abs(context.activeIndex - (index ?? 0)),
         position: distanceFromActive ? 'absolute' : 'relative',
         opacity: distanceFromActive > 0 ? 0 : 1,
+        pointerEvents: distanceFromActive > 0 ? 'none' : 'auto',
         cursor:
           context.clickable && context.activeIndex > index
             ? 'pointer'
