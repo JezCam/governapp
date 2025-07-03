@@ -24,7 +24,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import UserAvatar from './user-avatar';
 
 export interface UserOption {
   id: string;
@@ -574,12 +574,7 @@ const UserMultiSelect = ({
                               }}
                               value={option.name}
                             >
-                              <Avatar className="size-6 border">
-                                <AvatarImage src={option.imageUrl} />
-                                <AvatarFallback>
-                                  {option.name.charAt(0).toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
+                              <UserAvatar className="size-6" user={option} />
                               {option.name}
                             </CommandItem>
                           );

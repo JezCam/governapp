@@ -3,10 +3,10 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Hexagon01Icon } from '@hugeicons-pro/core-solid-rounded';
 import {
+  Building03Icon,
   Home09Icon,
   Settings01Icon,
   TaskDone02Icon,
-  UserGroup03Icon,
   ZapIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
 import Link from 'next/link';
@@ -25,7 +25,7 @@ export const pages = [
   {
     title: 'Organisation',
     url: '/dashboard/organisation',
-    icon: UserGroup03Icon,
+    icon: Building03Icon,
   },
   { title: 'Frameworks', url: '/dashboard/frameworks', icon: Hexagon01Icon },
   { title: 'Assessments', url: '/dashboard/assessments', icon: TaskDone02Icon },

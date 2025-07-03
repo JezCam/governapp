@@ -2,15 +2,16 @@
 
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
+  Building03Icon,
   PlusSignIcon,
   TaskDone02Icon,
   UserAdd01Icon,
-  UserGroup03Icon,
 } from '@hugeicons-pro/core-stroke-rounded';
 import { DialogClose, DialogContent } from '@radix-ui/react-dialog';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import AddOrganisationDialog from './dialogs/add-organisation-dialog';
+import AddTeamMemberDialog from './dialogs/add-team-member-dialog';
 import NewAssessmentDialog from './dialogs/new-assessment-dialog';
 import { Button } from './ui/button';
 import {
@@ -25,7 +26,7 @@ export default function AddButton() {
   const [open, setOpen] = useState(false);
   const [addOrganisationOpen, setAddOrganisationOpen] = useState(false);
   const [newAssessmentOpen, setNewAssessmentOpen] = useState(false);
-  //   const [addNewTeamMemberOpen, setAddNewTeamMemberOpen] = useState(false);
+  const [addTeamMemberOpen, setAddTeamMemberOpen] = useState(false);
 
   return (
     <div className="z-50">
@@ -36,6 +37,10 @@ export default function AddButton() {
       <NewAssessmentDialog
         onOpenChange={setNewAssessmentOpen}
         open={newAssessmentOpen}
+      />
+      <AddTeamMemberDialog
+        onOpenChange={setAddTeamMemberOpen}
+        open={addTeamMemberOpen}
       />
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogTrigger asChild>
@@ -67,7 +72,7 @@ export default function AddButton() {
               >
                 <HugeiconsIcon
                   className="size-5"
-                  icon={UserGroup03Icon}
+                  icon={Building03Icon}
                   strokeWidth={2}
                 />
                 Add New Organisation
@@ -95,6 +100,10 @@ export default function AddButton() {
                   'peer peer/3 -translate-y-1/2 hover:!bg-white absolute top-[50%] left-[calc(100%+2rem)] bg-black/40 text-lg text-white hover:text-black dark:bg-white/15',
                   'hover:before:-inset-15 before:absolute before:content-[""]'
                 )}
+                onClick={() => {
+                  setAddTeamMemberOpen(true);
+                  setOpen(false);
+                }}
                 variant="ghost"
               >
                 <HugeiconsIcon

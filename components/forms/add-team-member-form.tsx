@@ -1,9 +1,9 @@
-'use client';
-
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Mail01Icon } from '@hugeicons-pro/core-stroke-rounded';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { toast } from 'sonner';
+import z from 'zod';
 import {
   Form,
   FormControl,
@@ -23,15 +23,6 @@ import {
 import FormButtons from './form-buttons';
 import type { FormProps } from './types';
 
-const turnoverRanges = [
-  '$0 - $50,000',
-  '$50,001 - $250,000',
-  '$250,001 - $1m',
-  '$1m - $10m',
-  '$10m - $100m',
-  '$100m+',
-] as const;
-
 const roles = [
   'Audit Committee Member',
   'Board Member',
@@ -47,36 +38,25 @@ const roles = [
   'Vice Chair',
 ];
 
-const acnSchema = z
-  .string()
-  .transform((val) => val.replace(/\s+/g, ''))
-  .pipe(
-    z
-      .string()
-      .min(1, 'Please enter your ABN or ACN')
-      .regex(/^\d{9}$/, 'ABN or ACN must be 9 or 11 digits')
-  );
-
-const abnSchema = z
-  .string()
-  .transform((val) => val.replace(/\s+/g, ''))
-  .pipe(z.string().regex(/^\d{11}$/, 'ABN or ACN must be 9 or 11 digits'));
-
 const formSchema = z.object({
-  abnOrAcn: z.union([acnSchema, abnSchema]),
-  turnoverRange: z.enum(turnoverRanges),
+  inviteeEmail: z
+    .string()
+    .min(1, 'Please enter an email address')
+    .email('Please enter a valid email address'),
   role: z.string({ message: 'Please select a role' }),
   otherRole: z.string().optional(),
+  permission: z.enum(['admin', 'member']),
 });
 
-export default function OrganisationDetailsForm(props: FormProps) {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+export default function AddTeamMemberForm(props: FormProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const [hasOtherRole, setHasOtherRole] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      abnOrAcn: '',
+      inviteeEmail: '',
+      permission: 'member',
     },
   });
 
@@ -96,6 +76,9 @@ export default function OrganisationDetailsForm(props: FormProps) {
     // sleep for 1 second to simulate a network request
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsLoading(false);
+    toast.error('Not yet implemented', {
+      description: 'This feature is not yet implemented.',
+    });
     props.onSuccess();
   }
 
@@ -105,50 +88,56 @@ export default function OrganisationDetailsForm(props: FormProps) {
         className="flex flex-1 flex-col gap-4"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <FormField
-          control={form.control}
-          name="abnOrAcn"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Organisation Identifier (ABN or ACN)</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your ABN or ACN" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="turnoverRange"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Previous FY Revenue</FormLabel>
-              <Select defaultValue={field.value} onValueChange={field.onChange}>
+        <div className="grid grid-cols-2 items-start gap-2">
+          <FormField
+            control={form.control}
+            name="inviteeEmail"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Member Email</FormLabel>
                 <FormControl>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select your previous FY revenue" />
-                  </SelectTrigger>
+                  <Input placeholder="jane@example.com" {...field} />
                 </FormControl>
-                <SelectContent>
-                  {turnoverRanges.map((range) => (
-                    <SelectItem key={range} value={range}>
-                      {range}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="permission"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Permission</FormLabel>
+                <Select
+                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select your role" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem key={'member'} value={'member'}>
+                      Member
                     </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                    <SelectItem key={'admin'} value={'admin'}>
+                      Admin
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="flex items-start gap-2">
           <FormField
             control={form.control}
             name="role"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Your Role</FormLabel>
+                <FormLabel>Member Role</FormLabel>
                 <Select
                   defaultValue={field.value}
                   onValueChange={(role) => {
@@ -196,7 +185,11 @@ export default function OrganisationDetailsForm(props: FormProps) {
             />
           )}
         </div>
-        <FormButtons isLoading={isLoading} submitText="Next" />
+        <FormButtons
+          isLoading={isLoading}
+          submitIcon={Mail01Icon}
+          submitText="Invite"
+        />
       </form>
     </Form>
   );

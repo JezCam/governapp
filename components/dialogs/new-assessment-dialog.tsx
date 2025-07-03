@@ -1,10 +1,7 @@
 'use client';
 
 import { HugeiconsIcon } from '@hugeicons/react';
-import {
-  User02Icon,
-  UserGroup03Icon,
-} from '@hugeicons-pro/core-stroke-rounded';
+import { UserGroupIcon, UserIcon } from '@hugeicons-pro/core-stroke-rounded';
 import { useState } from 'react';
 import CreateBoardAssessmentForm from '../forms/create-board-assessment-form';
 import CreateSelfAssessmentForm from '../forms/create-self-assessment-form';
@@ -65,7 +62,7 @@ export default function NewAssessmentDialog({
             >
               <HugeiconsIcon
                 className="size-5"
-                icon={User02Icon}
+                icon={UserIcon}
                 strokeWidth={2}
               />
               Self Assessment
@@ -80,7 +77,7 @@ export default function NewAssessmentDialog({
             >
               <HugeiconsIcon
                 className="size-5"
-                icon={UserGroup03Icon}
+                icon={UserGroupIcon}
                 strokeWidth={2}
               />
               Board Assessment

@@ -24,23 +24,21 @@ export function LoadingButton({
       variant={variant}
       {...props}
     >
-      <div className="flex items-center justify-center">
-        <AnimatePresence>
-          {isLoading && (
-            <motion.div
-              animate={{ opacity: 1, width: '1rem', marginRight: '0.5rem' }}
-              className="flex items-center justify-center"
-              exit={{ opacity: 0, width: 0, marginRight: 0 }}
-              initial={{ opacity: 0, width: 0, marginRight: 0 }}
-              key="loader"
-              transition={{ duration: 0.2, ease: 'easeInOut' }}
-            >
-              <Loader2 className="size-4 animate-spin" />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {children}
-      </div>
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            animate={{ opacity: 1, width: '1rem', marginRight: 0 }}
+            className="flex items-center justify-center"
+            exit={{ opacity: 0, width: 0, marginRight: '-0.5rem' }}
+            initial={{ opacity: 0, width: 0, marginRight: '-0.5rem' }}
+            key="loader"
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+          >
+            <Loader2 className="size-4 animate-spin" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {children}
     </Button>
   );
 }

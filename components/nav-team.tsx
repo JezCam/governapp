@@ -9,11 +9,9 @@ import {
   UserMinus02Icon,
   ZapIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
-import { AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import AddTeamMemberDialogContent from './dialogs/add-team-member-dialog';
-import { Avatar } from './ui/avatar';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import {
@@ -21,7 +19,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from './ui/collapsible';
-import { Dialog, DialogTrigger } from './ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,6 +33,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from './ui/sidebar';
+import UserAvatar from './user-avatar';
 
 type TeamMember = {
   userId: number;
@@ -92,6 +90,7 @@ const teamMembers: TeamMember[] = [
 export default function NavTeam() {
   const [_open, setOpen] = useState(true);
   const { open } = useSidebar();
+  const [addTeamMemberOpen, setAddTeamMemberOpen] = useState(false);
 
   return (
     <SidebarGroup>
@@ -130,12 +129,10 @@ export default function NavTeam() {
                           className="h-fit gap-2.5 p-1.75 group-data-[collapsible=icon]:rounded-full"
                           tooltip={member.name}
                         >
-                          <Avatar className="size-7 border border-sidebar-border">
-                            <AvatarImage src={member.imageUrl} />
-                            <AvatarFallback className="flex size-full items-center justify-center bg-background text-foreground">
-                              {member.name.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
+                          <UserAvatar
+                            className="size-7 border-sidebar-border"
+                            user={member}
+                          />
                           <span className="truncate font-medium">
                             {member.name}
                           </span>
@@ -147,12 +144,10 @@ export default function NavTeam() {
                         side="right"
                       >
                         <div className="relative mb-6 h-20 rounded-sm bg-primary">
-                          <Avatar className="-bottom-6 absolute left-3 size-16 ring-4 ring-popover">
-                            <AvatarImage src={member.imageUrl} />
-                            <AvatarFallback className="flex size-full items-center justify-center bg-foreground font-bold text-4xl text-background">
-                              {member.name.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
+                          <UserAvatar
+                            className="-bottom-6 absolute left-3 size-16 border-none ring-4 ring-popover"
+                            user={member}
+                          />
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button
@@ -216,23 +211,20 @@ export default function NavTeam() {
                     </Popover>
                   </SidebarMenuItem>
                 ))}
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <SidebarMenuButton
-                      className="mt-2 h-fit gap-2.5 whitespace-nowrap p-1.75 font-medium group-data-[collapsible=icon]:rounded-full"
-                      tooltip="Add Team Member"
-                    >
-                      <div className="flex size-7 shrink-0 items-center justify-center [&>svg]:size-4.5 [&>svg]:text-sidebar-primary">
-                        <HugeiconsIcon
-                          icon={PlusSignCircleIcon}
-                          strokeWidth={2}
-                        />
-                      </div>
-                      Add Team Member
-                    </SidebarMenuButton>
-                  </DialogTrigger>
-                  <AddTeamMemberDialogContent />
-                </Dialog>
+                <AddTeamMemberDialogContent
+                  onOpenChange={setAddTeamMemberOpen}
+                  open={addTeamMemberOpen}
+                />
+                <SidebarMenuButton
+                  className="mt-2 h-fit gap-2.5 whitespace-nowrap p-1.75 font-medium group-data-[collapsible=icon]:rounded-full"
+                  onClick={() => setAddTeamMemberOpen(true)}
+                  tooltip="Add Team Member"
+                >
+                  <div className="flex size-7 shrink-0 items-center justify-center [&>svg]:size-4.5 [&>svg]:text-sidebar-primary">
+                    <HugeiconsIcon icon={PlusSignCircleIcon} strokeWidth={2} />
+                  </div>
+                  Add Team Member
+                </SidebarMenuButton>
               </SidebarMenu>
             </CollapsibleContent>
           </SidebarMenuItem>

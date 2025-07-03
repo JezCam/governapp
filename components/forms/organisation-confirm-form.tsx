@@ -1,10 +1,14 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { InformationCircleIcon } from '@hugeicons-pro/core-stroke-rounded';
+import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { Alert, AlertTitle } from '../ui/alert';
 import {
   Form,
   FormControl,
@@ -33,7 +37,9 @@ export const types = [
 
 const formSchema = z.object({
   name: z.string().min(1, 'Please enter your organisation name'),
-  type: z.enum(types),
+  type: z.enum(types, {
+    required_error: 'Please select your organisation type',
+  }),
 });
 
 export default function OrganisationConfirmForm(props: FormProps) {
@@ -103,7 +109,24 @@ export default function OrganisationConfirmForm(props: FormProps) {
             </FormItem>
           )}
         />
-        <FormButtons isLoading={isLoading} onPrevious={props.onPrevious} />
+        <Alert>
+          <HugeiconsIcon icon={InformationCircleIcon} />
+          <AlertTitle>
+            Information from{' '}
+            <Link
+              className="text-primary"
+              href="https://abr.business.gov.au/abrxmlsearch/AbrXmlSearch.asmx"
+              target="_blank"
+            >
+              ABN Lookup web based search services
+            </Link>
+          </AlertTitle>
+        </Alert>
+        <FormButtons
+          isLoading={isLoading}
+          onPrevious={props.onPrevious}
+          submitText="Add"
+        />
       </form>
     </Form>
   );

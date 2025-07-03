@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import OrganisationConfirmForm from '../forms/organisation-confirm-form';
 import OrganisationDetailsForm from '../forms/organisation-details-form';
+import UserDetailsForm from '../forms/user-details-form';
 import WelcomeForm from '../forms/welcome-form';
 import {
   DialogStack,
@@ -55,8 +56,9 @@ export default function OnboardingDialog({
         {/* Profile Settings */}
         <DialogStackContent offset={20} showCloseButton={false}>
           <DialogStackHeader>
-            <DialogStackTitle>Profile Settings</DialogStackTitle>
+            <DialogStackTitle>Your Details</DialogStackTitle>
           </DialogStackHeader>
+          <UserDetailsForm onSuccess={() => setIndex(2)} />
         </DialogStackContent>
 
         {/* Organisation Details */}

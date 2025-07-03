@@ -6,7 +6,6 @@ import {
   LogOut,
   Sparkles,
 } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -16,16 +15,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import UserAvatar from './user-avatar';
 
 export default function UserDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="!p-2 h-12 w-[239px] items-center" variant="outline">
-          <Avatar className="border">
-            <AvatarImage src="https://avatars.githubusercontent.com/u/77473646?v=4" />
-            <AvatarFallback>JC</AvatarFallback>
-          </Avatar>
+          <UserAvatar
+            user={{
+              name: 'Jeremy Cameron',
+              imageUrl: 'https://avatars.githubusercontent.com/u/77473646?v=4',
+            }}
+          />
           <div className="grid h-8 flex-1 text-left text-sm leading-tight">
             <span className="truncate font-medium">Jeremy Cameron</span>
             <span className="truncate font-normal text-xs">
