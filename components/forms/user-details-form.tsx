@@ -1,11 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { UserCircle02Icon } from '@hugeicons-pro/core-stroke-rounded';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { Button } from '../ui/button';
+import AvatarUploader from '../avatar-uploader';
 import {
   Form,
   FormControl,
@@ -15,7 +13,6 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
-import { Label } from '../ui/label';
 import FormButtons from './form-buttons';
 import type { FormProps } from './types';
 
@@ -52,22 +49,7 @@ export default function UserDetailsForm(props: FormProps) {
   return (
     <div className="flex flex-1 flex-col gap-4">
       {/* Avatar Uploader */}
-      <div className="flex items-center gap-4">
-        <div className="flex size-20 items-center justify-center rounded-full border text-muted-foreground">
-          <HugeiconsIcon icon={UserCircle02Icon} strokeWidth={2} />
-        </div>
-        <div className="flex flex-col gap-3">
-          <Label>Profile Picture</Label>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline">
-              Upload Avatar
-            </Button>
-            <Button size="sm" variant="destructive">
-              Remove
-            </Button>
-          </div>
-        </div>
-      </div>
+      <AvatarUploader />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"
