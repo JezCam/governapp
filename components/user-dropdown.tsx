@@ -1,11 +1,9 @@
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  BadgeCheck,
-  Bell,
-  ChevronDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from 'lucide-react';
+  Logout02Icon,
+  Settings01Icon,
+} from '@hugeicons-pro/core-stroke-rounded';
+import { ChevronDown } from 'lucide-react';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -45,28 +43,13 @@ export default function UserDropdown() {
       >
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <Sparkles />
-            Upgrade to Pro
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <BadgeCheck />
-            Account
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <CreditCard />
-            Billing
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Bell />
-            Notifications
+            <HugeiconsIcon icon={Settings01Icon} strokeWidth={2} />
+            Settings
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <LogOut />
+          <HugeiconsIcon icon={Logout02Icon} strokeWidth={2} />
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>

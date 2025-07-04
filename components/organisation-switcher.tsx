@@ -100,9 +100,7 @@ export default function OrganisationSwitcher() {
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">
-                Add Organisation
-              </div>
+              <div className="text-muted-foreground">Add Organisation</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
