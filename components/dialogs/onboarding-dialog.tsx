@@ -58,7 +58,10 @@ export default function OnboardingDialog({
           <DialogStackHeader>
             <DialogStackTitle>Your Details</DialogStackTitle>
           </DialogStackHeader>
-          <UserDetailsForm onSuccess={() => setIndex(2)} />
+          <UserDetailsForm
+            formButtonProps={{ submitText: 'Next' }}
+            onSuccess={() => setIndex(2)}
+          />
         </DialogStackContent>
 
         {/* Organisation Details */}
@@ -79,7 +82,7 @@ export default function OnboardingDialog({
             </DialogStackTitle>
           </DialogStackHeader>
           <OrganisationConfirmForm
-            onPrevious={() => setIndex(2)}
+            formButtonProps={{ onPrevious: () => setIndex(2) }}
             onSuccess={() => {
               props.onOpenChange?.(false);
             }}

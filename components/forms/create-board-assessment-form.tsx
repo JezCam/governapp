@@ -138,7 +138,7 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
     toast.error('Not yet implemented', {
       description: 'This feature is not yet implemented.',
     });
-    props.onSuccess();
+    props.onSuccess?.();
   }
 
   return (
@@ -375,7 +375,7 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
         </div>
         <FormButtons
           isLoading={isLoading}
-          onPrevious={props.onPrevious}
+          onPrevious={props.formButtonProps?.onPrevious}
           submitText="Create"
         />
       </form>

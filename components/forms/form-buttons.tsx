@@ -1,11 +1,12 @@
 import { HugeiconsIcon } from '@hugeicons/react';
+import { cn } from '@/lib/utils';
 import { LoadingButton } from '../loading-button';
 import { Button } from '../ui/button';
 import type { FormButtonProps } from './types';
 
 export default function FormButtons(props: FormButtonProps) {
   return (
-    <div className="mt-4 flex h-full flex-1 items-end">
+    <div className={cn('mt-4 flex h-full w-full items-end', props.className)}>
       {props.onPrevious && (
         <Button
           disabled={props.isLoading}
@@ -20,6 +21,7 @@ export default function FormButtons(props: FormButtonProps) {
         className="ml-auto"
         isLoading={props.isLoading}
         type="submit"
+        variant={props.submitDestructive ? 'destructive' : 'default'}
       >
         {props.submitText || 'Submit'}
         {props.submitIcon && (

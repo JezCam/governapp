@@ -13,9 +13,11 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="flex flex-1 flex-col">
+      <main className="flex flex-1 flex-col overflow-auto">
         <AppHeader />
-        <div className="flex w-full flex-1 border-t border-b">{children}</div>
+        <div className="flex w-full flex-1 items-center justify-center border-t border-b">
+          {children}
+        </div>
         <AppFooter />
       </main>
       <OnboardingDialog onOpenChange={setOpen} open={open} />

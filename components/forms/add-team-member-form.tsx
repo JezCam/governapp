@@ -79,7 +79,7 @@ export default function AddTeamMemberForm(props: FormProps) {
     toast.error('Not yet implemented', {
       description: 'This feature is not yet implemented.',
     });
-    props.onSuccess();
+    props.onSuccess?.();
   }
 
   return (

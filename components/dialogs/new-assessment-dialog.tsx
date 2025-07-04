@@ -92,7 +92,7 @@ export default function NewAssessmentDialog({
               <DialogStackTitle>Create New Self Assessment</DialogStackTitle>
             </DialogStackHeader>
             <CreateSelfAssessmentForm
-              onPrevious={() => setIndex(0)}
+              formButtonProps={{ onPrevious: () => setIndex(0) }}
               onSuccess={() => {
                 setIndex(0);
                 props.onOpenChange?.(false);
@@ -106,7 +106,7 @@ export default function NewAssessmentDialog({
               <DialogStackTitle>Create New Board Assessment</DialogStackTitle>
             </DialogStackHeader>
             <CreateBoardAssessmentForm
-              onPrevious={() => setIndex(0)}
+              formButtonProps={{ onPrevious: () => setIndex(0) }}
               onSuccess={() => {
                 setIndex(0);
                 props.onOpenChange?.(false);

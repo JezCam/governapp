@@ -96,7 +96,7 @@ export default function OrganisationDetailsForm(props: FormProps) {
     // sleep for 1 second to simulate a network request
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsLoading(false);
-    props.onSuccess();
+    props.onSuccess?.();
   }
 
   return (

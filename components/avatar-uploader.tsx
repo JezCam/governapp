@@ -184,7 +184,7 @@ export default function AvatarUploader() {
   return (
     <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
       <div className="flex items-center gap-4">
-        <div className="flex size-20 items-center justify-center overflow-hidden rounded-full border text-muted-foreground">
+        <div className="flex size-20 items-center justify-center overflow-hidden rounded-full border bg-accent text-muted-foreground">
           {finalImageUrl ? (
             // biome-ignore lint/performance/noImgElement: <explanation>
             <img
@@ -197,7 +197,11 @@ export default function AvatarUploader() {
             />
           ) : (
             <div aria-hidden="true">
-              <HugeiconsIcon icon={UserCircle02Icon} strokeWidth={2} />
+              <HugeiconsIcon
+                className="size-5"
+                icon={UserCircle02Icon}
+                strokeWidth={2}
+              />
             </div>
           )}
         </div>

@@ -10,7 +10,7 @@ export default function WelcomeForm(props: Pick<FormProps, 'onSuccess'>) {
     // Simulate a network request
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsLoading(false);
-    props.onSuccess();
+    props.onSuccess?.();
   };
 
   return (

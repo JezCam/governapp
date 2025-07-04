@@ -56,7 +56,7 @@ export default function AddOrganisationDialog({
             </DialogStackTitle>
           </DialogStackHeader>
           <OrganisationConfirmForm
-            onPrevious={() => setIndex(0)}
+            formButtonProps={{ onPrevious: () => setIndex(0) }}
             onSuccess={() => {
               setIndex(0);
               props.onOpenChange?.(false);

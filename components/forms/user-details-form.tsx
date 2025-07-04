@@ -1,3 +1,5 @@
+'use client';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -43,23 +45,23 @@ export default function UserDetailsForm(props: FormProps) {
     toast.error('Not yet implemented', {
       description: 'This feature is not yet implemented.',
     });
-    props.onSuccess();
+    props.onSuccess?.();
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-4">
+    <div className="@container flex flex-col gap-6">
       {/* Avatar Uploader */}
       <AvatarUploader />
       <Form {...form}>
         <form
-          className="flex flex-col gap-4"
+          className="flex @xl:flex-row flex-col items-start @xl:gap-2 gap-4"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
             control={form.control}
             name="firstName"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>First Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter your first name" {...field} />
@@ -72,7 +74,7 @@ export default function UserDetailsForm(props: FormProps) {
             control={form.control}
             name="lastName"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Last Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter your last name" {...field} />
@@ -81,7 +83,11 @@ export default function UserDetailsForm(props: FormProps) {
               </FormItem>
             )}
           />
-          <FormButtons isLoading={isLoading} />
+          <FormButtons
+            className="@xl:mt-5.5 h-fit @xl:max-w-fit"
+            {...props.formButtonProps}
+            isLoading={isLoading}
+          />
         </form>
       </Form>
     </div>

@@ -63,7 +63,7 @@ export default function OrganisationConfirmForm(props: FormProps) {
     toast.error('Not yet implemented', {
       description: 'This feature is not yet implemented.',
     });
-    props.onSuccess();
+    props.onSuccess?.();
   }
 
   return (
@@ -124,7 +124,7 @@ export default function OrganisationConfirmForm(props: FormProps) {
         </Alert>
         <FormButtons
           isLoading={isLoading}
-          onPrevious={props.onPrevious}
+          onPrevious={props.formButtonProps?.onPrevious}
           submitText="Add"
         />
       </form>
