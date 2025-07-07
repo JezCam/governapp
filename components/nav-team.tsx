@@ -6,12 +6,11 @@ import {
   MoreHorizontalIcon,
   PlusSignCircleIcon,
   UserGroupIcon,
-  UserMinus02Icon,
-  ZapIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
 import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import AddTeamMemberDialogContent from './dialogs/add-team-member-dialog';
+import TeamMemberDropdownContent from './team-member-dropdown-content';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import {
@@ -19,12 +18,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from './ui/collapsible';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from './ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import {
   SidebarGroup,
@@ -158,31 +152,7 @@ export default function NavTeam() {
                                 <HugeiconsIcon icon={MoreHorizontalIcon} />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                              align="start"
-                              className="w-60 font-medium"
-                              side="right"
-                            >
-                              <DropdownMenuItem className="gap-2 p-2">
-                                <HugeiconsIcon icon={ZapIcon} strokeWidth={2} />
-                                View assigned actions
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="gap-2 p-2">
-                                <HugeiconsIcon
-                                  icon={Edit04Icon}
-                                  strokeWidth={2}
-                                />
-                                Edit member details
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="hover:!text-destructive hover:!bg-destructive/10 gap-2 p-2 text-destructive">
-                                <HugeiconsIcon
-                                  className="text-destructive"
-                                  icon={UserMinus02Icon}
-                                  strokeWidth={2}
-                                />
-                                Remove from Team
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
+                            <TeamMemberDropdownContent user={member} />
                           </DropdownMenu>
                         </div>
                         <div className="flex flex-col gap-4 px-3">

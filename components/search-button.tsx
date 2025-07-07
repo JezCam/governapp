@@ -2,8 +2,9 @@
 
 import { HugeiconsIcon } from '@hugeicons/react';
 import { SearchIcon } from '@hugeicons-pro/core-stroke-rounded';
-import { CornerDownLeft, CreditCard, Settings, User } from 'lucide-react';
+import { CornerDownLeft, MoonIcon, SunIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import { pages } from './nav-main';
 import { Button } from './ui/button';
@@ -15,7 +16,6 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from './ui/command';
 import Kbd from './ui/kbd';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar';
@@ -23,6 +23,7 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar';
 export default function SearchButton() {
   const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
+  const { resolvedTheme, setTheme } = useTheme();
 
   // Toggle the menu when ⌘K is pressed
   useEffect(() => {
@@ -90,20 +91,19 @@ export default function SearchButton() {
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Settings">
-            <CommandItem>
-              <User />
-              <span>Profile</span>
-              <CommandShortcut>⌘P</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <CreditCard />
-              <span>Billing</span>
-              <CommandShortcut>⌘B</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <Settings />
-              <span>Settings</span>
-              <CommandShortcut>⌘S</CommandShortcut>
+            <CommandItem
+              key={'theme'}
+              onSelect={() =>
+                setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+              }
+            >
+              <MoonIcon aria-hidden="true" className="dark:hidden" size={16} />
+              <SunIcon
+                aria-hidden="true"
+                className="hidden dark:block"
+                size={16}
+              />
+              <span>Change Theme</span>
             </CommandItem>
           </CommandGroup>
         </CommandList>

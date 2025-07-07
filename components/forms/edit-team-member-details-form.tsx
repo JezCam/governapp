@@ -1,5 +1,6 @@
+'use client';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Mail01Icon } from '@hugeicons-pro/core-stroke-rounded';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -39,24 +40,18 @@ const roles = [
 ];
 
 const formSchema = z.object({
-  inviteeEmail: z
-    .string()
-    .min(1, 'Please enter an email address')
-    .email('Please enter a valid email address'),
   role: z.string({ message: 'Please select a role' }),
   otherRole: z.string(),
   permission: z.enum(['admin', 'member']),
 });
 
-export default function AddTeamMemberForm(props: FormProps) {
+export default function EditTeamMemberDetailsForm(props: FormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [hasOtherRole, setHasOtherRole] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      inviteeEmail: '',
-      permission: 'member',
       otherRole: '',
     },
   });
@@ -89,49 +84,31 @@ export default function AddTeamMemberForm(props: FormProps) {
         className="flex flex-1 flex-col gap-4"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <div className="grid grid-cols-2 items-start gap-2">
-          <FormField
-            control={form.control}
-            name="inviteeEmail"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Member Email</FormLabel>
+        <FormField
+          control={form.control}
+          name="permission"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Permission</FormLabel>
+              <Select defaultValue={field.value} onValueChange={field.onChange}>
                 <FormControl>
-                  <Input placeholder="jane@example.com" {...field} />
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select your role" />
+                  </SelectTrigger>
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="permission"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Permission</FormLabel>
-                <Select
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select your role" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem key={'member'} value={'member'}>
-                      Member
-                    </SelectItem>
-                    <SelectItem key={'admin'} value={'admin'}>
-                      Admin
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+                <SelectContent>
+                  <SelectItem key={'member'} value={'member'}>
+                    Member
+                  </SelectItem>
+                  <SelectItem key={'admin'} value={'admin'}>
+                    Admin
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="flex items-start gap-2">
           <FormField
             control={form.control}
@@ -186,11 +163,7 @@ export default function AddTeamMemberForm(props: FormProps) {
             />
           )}
         </div>
-        <FormButtons
-          isLoading={isLoading}
-          submitIcon={Mail01Icon}
-          submitText="Invite"
-        />
+        <FormButtons isLoading={isLoading} submitText="Save" />
       </form>
     </Form>
   );

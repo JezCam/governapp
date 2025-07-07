@@ -1,14 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import DeleteAccountDialog from '@/components/dialogs/delete-account-dialog';
+import ConfirmDeleteAccountDialog from '@/components/dialogs/confirm-delete-account-dialog';
 import UserDetailsForm from '@/components/forms/user-details-form';
 import RadioThemeSwitcher from '@/components/radio-theme-switcher';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
 export default function Settings() {
-  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
+  const [confirmDeleteAccountOpen, setConfirmDeleteAccountOpen] =
+    useState(false);
 
   return (
     <div className="flex h-full w-full max-w-3xl flex-col gap-8 p-12">
@@ -23,13 +24,13 @@ export default function Settings() {
           Delete your account and all your data
         </p>
       </div>
-      <DeleteAccountDialog
-        onOpenChange={setDeleteAccountOpen}
-        open={deleteAccountOpen}
+      <ConfirmDeleteAccountDialog
+        onOpenChange={setConfirmDeleteAccountOpen}
+        open={confirmDeleteAccountOpen}
       />
       <Button
         className="w-fit"
-        onClick={() => setDeleteAccountOpen(true)}
+        onClick={() => setConfirmDeleteAccountOpen(true)}
         variant="destructive"
       >
         Delete account

@@ -4,6 +4,7 @@ import {
   Settings01Icon,
 } from '@hugeicons-pro/core-stroke-rounded';
 import { ChevronDown } from 'lucide-react';
+import Link from 'next/link';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -42,9 +43,14 @@ export default function UserDropdown() {
         sideOffset={4}
       >
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <HugeiconsIcon icon={Settings01Icon} strokeWidth={2} />
-            Settings
+          <DropdownMenuItem asChild>
+            <Link
+              className="flex items-center gap-2"
+              href={'/dashboard/settings'}
+            >
+              <HugeiconsIcon icon={Settings01Icon} strokeWidth={2} />
+              Settings
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

@@ -1,5 +1,5 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
-import DeleteAccountForm from '../forms/delete-account-form';
+import EditTeamMemberDetailsForm from '../forms/edit-team-member-details-form';
 import {
   Dialog,
   DialogContent,
@@ -8,17 +8,15 @@ import {
   DialogTitle,
 } from '../ui/dialog';
 
-export default function DeleteAccountDialog(props: DialogProps) {
+export default function EditTeamMemberDetailsDialog(props: DialogProps) {
   return (
     <Dialog onOpenChange={props.onOpenChange} open={props.open}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Account</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to delete your account?
-          </DialogDescription>
+          <DialogTitle>Edit Team Member</DialogTitle>
+          <DialogDescription>Editing the user details of:</DialogDescription>
         </DialogHeader>
-        <DeleteAccountForm
+        <EditTeamMemberDetailsForm
           formButtonProps={{ onPrevious: () => props.onOpenChange?.(false) }}
           onSuccess={() => props.onOpenChange?.(false)}
         />
