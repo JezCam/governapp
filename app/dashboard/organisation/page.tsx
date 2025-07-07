@@ -7,13 +7,14 @@ import {
   TableHead,
   TableRow,
 } from '@/components/ui/table';
+import PendingInvitesTable from './pending-invites-table';
 import TeamMembersTable from './team-members-table';
 
 export default function Organisation() {
   return (
     <div className="flex h-full w-full flex-col gap-4 p-4">
       {/* Organisation Header */}
-      <Card className="relative flex h-fit w-full items-end justify-end overflow-hidden rounded-2xl p-2 pb-4 shadow-none">
+      <Card className="relative flex h-fit w-full items-end justify-end overflow-hidden rounded-md p-2 pb-4 shadow-none">
         <div
           className="absolute inset-0 bg-[url('/pattern-light.svg')] bg-primary stroke-current text-foreground dark:bg-[url('/pattern-dark.svg')]"
           style={{
@@ -26,7 +27,7 @@ export default function Organisation() {
             maskSize: '100% 100%',
           }}
         />
-        <Table className="float-right w-fit rounded-md bg-background/60 dark:bg-background/40">
+        <Table className="float-right w-fit border bg-background/60 dark:bg-background/40">
           <TableCaption className="whitespace-nowrap">
             Please contact us if you need to update any of the above
             information.
@@ -55,6 +56,7 @@ export default function Organisation() {
         </h1>
       </Card>
       <TeamMembersTable />
+      <PendingInvitesTable />
     </div>
   );
 }

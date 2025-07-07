@@ -1,5 +1,9 @@
+'use client';
+
 import { HugeiconsIcon } from '@hugeicons/react';
 import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
+import { useState } from 'react';
+import AddTeamMemberDialog from '@/components/dialogs/add-team-member-dialog';
 import TeamMemberDropdownContent from '@/components/team-member-dropdown-content';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -70,13 +74,24 @@ const teamMembers: TeamMember[] = [
 ];
 
 export default function TeamMembersTable() {
+  const [addTeamMemberOpen, setAddTeamMemberOpen] = useState(false);
+
   return (
     <div className="overflow-hidden rounded-md border">
-      <div className="flex items-center gap-2 px-3 py-4">
-        <h2 className="font-medium text-base">Team Members</h2>
-        <Badge className="rounded-sm px-1.5" variant="blue">
-          {teamMembers.length}
-        </Badge>
+      <div className="flex items-center justify-between px-3 py-3">
+        <div className="flex items-center gap-2">
+          <h2 className="font-medium text-base">Team Members</h2>
+          <Badge className="rounded-sm px-1.5" variant="blue">
+            {teamMembers.length}
+          </Badge>
+        </div>
+        <AddTeamMemberDialog
+          onOpenChange={setAddTeamMemberOpen}
+          open={addTeamMemberOpen}
+        />
+        <Button onClick={() => setAddTeamMemberOpen(true)} size="sm">
+          Add Team Member
+        </Button>
       </div>
       <Table className="border-t [&_td]:px-3 [&_th]:px-3 [&_tr]:even:bg-accent/50 [&_tr]:hover:bg-accent">
         <TableHeader>
@@ -93,7 +108,7 @@ export default function TeamMembersTable() {
             <TableRow key={member.userId}>
               <TableCell className="flex items-center gap-2.5">
                 <UserAvatar user={member} />
-                {member.name}
+                <span className="font-medium">{member.name}</span>
               </TableCell>
               <TableCell>{member.email}</TableCell>
               <TableCell>
