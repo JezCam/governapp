@@ -14,7 +14,7 @@ export default function Organisation() {
   return (
     <div className="flex h-full w-full flex-col gap-4 p-4">
       {/* Organisation Header */}
-      <Card className="relative flex h-fit w-full items-end justify-end overflow-hidden rounded-md p-2 pb-4 shadow-none">
+      <Card className="relative flex h-fit w-full items-end justify-end overflow-hidden rounded-xl p-2 pb-4 shadow-none">
         <div
           className="absolute inset-0 bg-[url('/pattern-light.svg')] bg-primary stroke-current text-foreground dark:bg-[url('/pattern-dark.svg')]"
           style={{
@@ -27,27 +27,43 @@ export default function Organisation() {
             maskSize: '100% 100%',
           }}
         />
-        <Table className="float-right w-fit border bg-background/60 dark:bg-background/40">
+        <Table className="float-right w-fit border-separate border-spacing-0 ">
           <TableCaption className="whitespace-nowrap">
             Please contact us if you need to update any of the above
             information.
           </TableCaption>
           <TableBody className="[&_td]:pr-8 [&_th]:pr-8">
-            <TableRow>
-              <TableHead>Entity Name</TableHead>
-              <TableCell>Acme Incorporated</TableCell>
+            <TableRow className="border-b">
+              <TableHead className="rounded-tl-md border border-r-0 bg-accent/70">
+                Entity Name
+              </TableHead>
+              <TableCell className="rounded-tr-md border bg-background/60 dark:bg-background/40">
+                Acme Incorporated
+              </TableCell>
             </TableRow>
             <TableRow>
-              <TableHead>Entity Type </TableHead>
-              <TableCell>Australian Private Company</TableCell>
+              <TableHead className="border-b border-l bg-accent/70">
+                Entity Type
+              </TableHead>
+              <TableCell className="border border-t-0 bg-background/60 dark:bg-background/40">
+                Australian Private Company
+              </TableCell>
             </TableRow>
             <TableRow>
-              <TableHead>Organisation Identifier (ABN or ACN) </TableHead>
-              <TableCell>32 617 116 677</TableCell>
+              <TableHead className="border-b border-l bg-accent/70">
+                Organisation Identifier (ABN or ACN)
+              </TableHead>
+              <TableCell className="border border-t-0 bg-background/60 dark:bg-background/40">
+                32 617 116 677
+              </TableCell>
             </TableRow>
             <TableRow>
-              <TableHead>Turnover Range </TableHead>
-              <TableCell>$0 - $50,000</TableCell>
+              <TableHead className="rounded-bl-md border-b border-l bg-accent/70">
+                Turnover Range
+              </TableHead>
+              <TableCell className="rounded-br-md border border-t-0 bg-background/60 dark:bg-background/40">
+                $0 - $50,000
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>
