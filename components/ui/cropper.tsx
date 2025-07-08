@@ -39,10 +39,7 @@ function CropperImage({
 }: React.ComponentProps<typeof CropperPrimitive.Image>) {
   return (
     <CropperPrimitive.Image
-      className={cn(
-        'pointer-events-none h-full w-full object-cover',
-        className
-      )}
+      className={cn('pointer-events-none size-full object-cover', className)}
       data-slot="cropper-image"
       {...props}
     />

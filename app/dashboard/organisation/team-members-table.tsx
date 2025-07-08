@@ -78,8 +78,8 @@ export default function TeamMembersTable() {
   const [addTeamMemberOpen, setAddTeamMemberOpen] = useState(false);
 
   return (
-    <div className="overflow-hidden rounded-xl border">
-      <div className="flex items-center justify-between px-3 py-3">
+    <div className="overflow-hidden rounded-xl border bg-accent">
+      <div className="flex items-center justify-between border-b bg-background px-3 py-3">
         <div className="flex items-center gap-2">
           <h2 className="font-medium text-base">Team Members</h2>
           <Badge className="rounded-sm px-1.5" variant="blue">
@@ -94,10 +94,10 @@ export default function TeamMembersTable() {
           Add Team Member
         </Button>
       </div>
-      <div className="border-t bg-accent px-2 pb-2">
+      <div className="px-2 pb-2">
         <Table className="border-separate border-spacing-0">
           <TableHeader>
-            <TableRow className="border-none bg-accent [&>th]:border-l [&>th]:px-3 [&>th]:first:border-l-0 [&>th]:last:border-l-0">
+            <TableRow className="border-none [&>th]:border-l [&>th]:px-3 [&>th]:first:border-l-0 [&>th]:last:border-l-0">
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>

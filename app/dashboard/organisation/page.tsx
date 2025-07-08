@@ -12,7 +12,7 @@ import TeamMembersTable from './team-members-table';
 
 export default function Organisation() {
   return (
-    <div className="flex h-full w-full flex-col gap-4 p-4">
+    <div className="flex size-full flex-col gap-4 p-4">
       {/* Organisation Header */}
       <Card className="relative flex h-fit w-full items-end justify-end overflow-hidden rounded-xl p-2 pb-4 shadow-none">
         <div

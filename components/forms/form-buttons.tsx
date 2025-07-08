@@ -6,7 +6,7 @@ import type { FormButtonProps } from './types';
 
 export default function FormButtons(props: FormButtonProps) {
   return (
-    <div className={cn('mt-4 flex h-full w-full items-end', props.className)}>
+    <div className={cn('mt-4 flex size-full items-end', props.className)}>
       {props.onPrevious && (
         <Button
           disabled={props.isLoading}

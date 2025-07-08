@@ -38,17 +38,17 @@ const pendingInvitations: Invitation[] = [
 
 export default function PendingInvitationsTable() {
   return (
-    <div className="overflow-hidden rounded-md border">
-      <div className="flex items-center gap-2 px-3 py-4">
+    <div className="overflow-hidden rounded-xl border bg-accent">
+      <div className="flex items-center gap-2 border-b bg-background px-3 py-4">
         <h2 className="font-medium text-base">Pending invites</h2>
         <Badge className="rounded-sm px-1.5" variant="blue">
           {pendingInvitations.length}
         </Badge>
       </div>
-      <div className="border-t bg-accent px-2 pb-2">
+      <div className="px-2 pb-2">
         <Table className="border-separate border-spacing-0">
           <TableHeader>
-            <TableRow className="border-none bg-accent [&>th]:border-l [&>th]:px-3 [&>th]:first:border-l-0 [&>th]:last:border-l-0">
+            <TableRow className="border-none [&>th]:border-l [&>th]:px-3 [&>th]:first:border-l-0 [&>th]:last:border-l-0">
               <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>
               <TableHead>Permission</TableHead>

@@ -4,7 +4,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Building03Icon,
   PlusSignIcon,
-  TaskDone02Icon,
+  TaskAdd02Icon,
   UserAdd01Icon,
 } from '@hugeicons-pro/core-stroke-rounded';
 import { DialogClose, DialogContent } from '@radix-ui/react-dialog';
@@ -90,7 +90,7 @@ export default function AddButton() {
               >
                 <HugeiconsIcon
                   className="size-5"
-                  icon={TaskDone02Icon}
+                  icon={TaskAdd02Icon}
                   strokeWidth={2}
                 />
                 Create New Assessment

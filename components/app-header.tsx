@@ -9,7 +9,7 @@ export default function AppHeader() {
       <div className="w-full">
         <AppBreadcrumb />
       </div>
-      <div className="flex h-full w-full items-center justify-end gap-3">
+      <div className="flex size-full items-center justify-end gap-3">
         <NotificationsDropdown />
         <Separator className="!h-6" orientation="vertical" />
         <UserDropdown />

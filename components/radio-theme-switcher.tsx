@@ -8,7 +8,7 @@ export default function RadioThemeSwitcher() {
   const { theme, setTheme } = useTheme();
 
   const light = (
-    <div className="flex h-full w-full items-center justify-center bg-gray-100">
+    <div className="flex size-full items-center justify-center bg-gray-100">
       <div className="flex h-full w-20 flex-col gap-2 bg-white p-2">
         <div className="h-2 w-8 rounded-xs bg-gray-200" />
         <div className="h-1 w-12 rounded-xs bg-gray-200" />
@@ -19,7 +19,7 @@ export default function RadioThemeSwitcher() {
   );
 
   const dark = (
-    <div className="flex h-full w-full items-center justify-center bg-gray-900">
+    <div className="flex size-full items-center justify-center bg-gray-900">
       <div className="flex h-full w-20 flex-col gap-2 bg-gray-800 p-2">
         <div className="h-2 w-8 rounded-xs bg-gray-700" />
         <div className="h-1 w-12 rounded-xs bg-gray-700" />
@@ -39,7 +39,7 @@ export default function RadioThemeSwitcher() {
         <Button
           className={cn(
             'h-20 w-30 overflow-hidden p-0',
-            theme === 'light' && 'ring-[3px] ring-primary'
+            theme === 'light' && '!border-primary ring-[3px] ring-primary/30'
           )}
           onClick={() => setTheme('light')}
           variant="outline"
@@ -52,7 +52,7 @@ export default function RadioThemeSwitcher() {
         <Button
           className={cn(
             'h-20 w-30 overflow-hidden p-0',
-            theme === 'dark' && 'ring-[3px] ring-primary'
+            theme === 'dark' && '!border-primary ring-[3px] ring-primary/30'
           )}
           onClick={() => setTheme('dark')}
           variant="outline"
@@ -65,7 +65,7 @@ export default function RadioThemeSwitcher() {
         <Button
           className={cn(
             'relative h-20 w-30 overflow-hidden p-0',
-            theme === 'system' && 'ring-[3px] ring-primary'
+            theme === 'system' && '!border-primary ring-[3px] ring-primary/30'
           )}
           onClick={() => setTheme('system')}
           variant="outline"
