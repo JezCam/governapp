@@ -3,35 +3,40 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Edit04Icon,
-  UserMinus02Icon,
-  ZapIcon,
+  MailRemove01Icon,
+  MailSend01Icon,
 } from '@hugeicons-pro/core-stroke-rounded';
 import { useState } from 'react';
-import ConfirmRemoveTeamMemberDialog from './dialogs/confirm-remove-team-member-dialog';
-import EditTeamMemberDialog from './dialogs/edit-team-member-dialog';
+import ConfirmRemoveInvitationDialog from './dialogs/confirm-remove-invitation-dialog';
+import EditInvitationDialog from './dialogs/edit-invitation-dialog';
 import { DropdownMenuContent, DropdownMenuItem } from './ui/dropdown-menu';
 
-type User = {
-  name: string;
-  imageUrl?: string;
+type Invitation = {
+  email: string;
+  role: string;
+  permission: 'admin' | 'member';
 };
 
-export default function TeamMemberDropdownContent({ user }: { user: User }) {
-  const [editTeamMemberOpen, setEditTeamMemberOpen] = useState(false);
-  const [confirmRemoveTeamMemberOpen, setConfirmRemoveTeamMemberOpen] =
+export default function InvitationDropdownContent({
+  invitation,
+}: {
+  invitation: Invitation;
+}) {
+  const [editInvitationOpen, setEditInvitationOpen] = useState(false);
+  const [confirmRemoveInvitationOpen, setConfirmRemoveTeamMemberOpen] =
     useState(false);
 
   return (
     <>
-      <EditTeamMemberDialog
-        onOpenChange={setEditTeamMemberOpen}
-        open={editTeamMemberOpen}
-        user={user}
+      <EditInvitationDialog
+        invitation={invitation}
+        onOpenChange={setEditInvitationOpen}
+        open={editInvitationOpen}
       />
-      <ConfirmRemoveTeamMemberDialog
+      <ConfirmRemoveInvitationDialog
+        invitation={invitation}
         onOpenChange={setConfirmRemoveTeamMemberOpen}
-        open={confirmRemoveTeamMemberOpen}
-        user={user}
+        open={confirmRemoveInvitationOpen}
       />
       <DropdownMenuContent
         align="start"
@@ -39,15 +44,15 @@ export default function TeamMemberDropdownContent({ user }: { user: User }) {
         side="right"
       >
         <DropdownMenuItem className="gap-2 p-2">
-          <HugeiconsIcon icon={ZapIcon} strokeWidth={2} />
-          View assigned actions
+          <HugeiconsIcon icon={MailSend01Icon} strokeWidth={2} />
+          Resend invitation
         </DropdownMenuItem>
         <DropdownMenuItem
           className="gap-2 p-2"
-          onSelect={() => setEditTeamMemberOpen(true)}
+          onSelect={() => setEditInvitationOpen(true)}
         >
           <HugeiconsIcon icon={Edit04Icon} strokeWidth={2} />
-          Edit member details
+          Edit invitation
         </DropdownMenuItem>
         <DropdownMenuItem
           className="hover:!text-destructive hover:!bg-destructive/10 gap-2 p-2 text-destructive"
@@ -55,10 +60,10 @@ export default function TeamMemberDropdownContent({ user }: { user: User }) {
         >
           <HugeiconsIcon
             className="text-destructive"
-            icon={UserMinus02Icon}
+            icon={MailRemove01Icon}
             strokeWidth={2}
           />
-          Remove from team
+          Remove invitation
         </DropdownMenuItem>
       </DropdownMenuContent>
     </>

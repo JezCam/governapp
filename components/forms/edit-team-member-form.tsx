@@ -45,7 +45,7 @@ const formSchema = z.object({
   permission: z.enum(['admin', 'member']),
 });
 
-export default function EditTeamMemberDetailsForm(props: FormProps) {
+export default function EditTeamMemberForm(props: FormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [hasOtherRole, setHasOtherRole] = useState(false);
 

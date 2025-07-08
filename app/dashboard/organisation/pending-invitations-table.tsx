@@ -1,5 +1,6 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
+import InvitationDropdownContent from '@/components/invitation-dropdown-content';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,13 +16,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-type Invite = {
+type Invitation = {
   email: string;
   role: string;
   permission: 'admin' | 'member';
 };
 
-const pendingInvites: Invite[] = [
+const pendingInvitations: Invitation[] = [
   {
     email: 'john@example.com',
     role: 'Board Member',
@@ -34,13 +35,13 @@ const pendingInvites: Invite[] = [
   },
 ];
 
-export default function PendingInvitesTable() {
+export default function PendingInvitationsTable() {
   return (
     <div className="overflow-hidden rounded-md border">
       <div className="flex items-center gap-2 px-3 py-2">
         <h2 className="font-medium text-base">Pending invites</h2>
         <Badge className="rounded-sm px-1.5" variant="blue">
-          {pendingInvites.length}
+          {pendingInvitations.length}
         </Badge>
       </div>
       <Table className="border-t [&_td]:px-3 [&_th]:px-3 [&_tr]:even:bg-accent/50 [&_tr]:hover:bg-accent">
@@ -53,14 +54,14 @@ export default function PendingInvitesTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {pendingInvites.map((invite) => (
-            <TableRow key={invite.email}>
-              <TableCell>{invite.email}</TableCell>
+          {pendingInvitations.map((invitation) => (
+            <TableRow key={invitation.email}>
+              <TableCell>{invitation.email}</TableCell>
               <TableCell>
-                <Badge variant="outline">{invite.role}</Badge>
+                <Badge variant="outline">{invitation.role}</Badge>
               </TableCell>
               <TableCell>
-                <Badge variant={invite.permission} />
+                <Badge variant={invitation.permission} />
               </TableCell>
               <TableCell>
                 <DropdownMenu>
@@ -73,6 +74,7 @@ export default function PendingInvitesTable() {
                       <HugeiconsIcon icon={MoreHorizontalIcon} />
                     </Button>
                   </DropdownMenuTrigger>
+                  <InvitationDropdownContent invitation={invitation} />
                 </DropdownMenu>
               </TableCell>
             </TableRow>

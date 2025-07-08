@@ -7,7 +7,7 @@ import {
   TableHead,
   TableRow,
 } from '@/components/ui/table';
-import PendingInvitesTable from './pending-invites-table';
+import PendingInvitationsTable from './pending-invitations-table';
 import TeamMembersTable from './team-members-table';
 
 export default function Organisation() {
@@ -56,7 +56,7 @@ export default function Organisation() {
         </h1>
       </Card>
       <TeamMembersTable />
-      <PendingInvitesTable />
+      <PendingInvitationsTable />
     </div>
   );
 }

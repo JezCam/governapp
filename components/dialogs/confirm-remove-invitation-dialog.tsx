@@ -12,15 +12,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
-import UserAvatar from '../user-avatar';
 
-type User = {
-  name: string;
-  imageUrl?: string;
+type Invitation = {
+  email: string;
+  role: string;
+  permission: 'admin' | 'member';
 };
 
-export default function ConfirmRemoveTeamMemberDialog(
-  props: DialogProps & { user: User }
+export default function ConfirmRemoveInvitationDialog(
+  props: DialogProps & { invitation: Invitation }
 ) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,12 +41,11 @@ export default function ConfirmRemoveTeamMemberDialog(
         <DialogHeader>
           <DialogTitle>Confirm Remove Team Member</DialogTitle>
           <DialogDescription className="flex flex-wrap items-center gap-1">
-            Are you sure you want to remove{' '}
-            <span className="!h-0 flex items-center gap-1 font-medium text-foreground">
-              <UserAvatar className="inline-block size-6" user={props.user} />
-              {props.user.name}
+            Are you sure you want to remove the invitation to
+            <span className="font-medium text-foreground">
+              {props.invitation.email}
             </span>
-            from your team?
+            ?
           </DialogDescription>
         </DialogHeader>
         <div className="flex w-full justify-between">
@@ -62,7 +61,7 @@ export default function ConfirmRemoveTeamMemberDialog(
             onClick={handleRemove}
             variant="destructive"
           >
-            Remove
+            Remove Invitation
           </LoadingButton>
         </div>
       </DialogContent>
