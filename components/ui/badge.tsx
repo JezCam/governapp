@@ -1,5 +1,12 @@
 import { HugeiconsIcon } from '@hugeicons/react';
-import { MicrosoftAdminIcon } from '@hugeicons-pro/core-stroke-rounded';
+import {
+  CheckmarkCircle03Icon,
+  DashedLineCircleIcon,
+  MicrosoftAdminIcon,
+  Progress03Icon,
+  UserGroupIcon,
+  UserIcon,
+} from '@hugeicons-pro/core-stroke-rounded';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import type * as React from 'react';
@@ -23,6 +30,16 @@ const badgeVariants = cva(
           'border-ga-purple-200 bg-ga-purple-100 text-ga-purple-700 dark:border-ga-purple-900 dark:bg-ga-purple-950 dark:text-white',
         member:
           'border-border bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
+        'not-started':
+          'border-border bg-secondary pl-1.5 text-secondary-foreground ',
+        'in-progress':
+          'border-amber-200 bg-amber-100 text-amber-800 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200',
+        completed:
+          'border-ga-green-200 bg-ga-green-100 text-ga-green-800 dark:border-ga-green-900 dark:bg-ga-green-950 dark:text-ga-green-200',
+        closed:
+          'border-ga-green-200 bg-ga-green-100 text-ga-green-800 dark:border-ga-green-900 dark:bg-ga-green-950 dark:text-ga-green-200',
+        self: 'bg-background text-foreground',
+        board: 'bg-background text-foreground',
       },
     },
     defaultVariants: {
@@ -53,6 +70,46 @@ function Badge({
         </>
       )}
       {variant === 'member' && 'Member'}
+      {variant === 'not-started' && (
+        <>
+          <HugeiconsIcon icon={DashedLineCircleIcon} strokeWidth={2} />
+          Not started
+        </>
+      )}
+      {variant === 'in-progress' && (
+        <>
+          <HugeiconsIcon icon={Progress03Icon} />
+          In progress
+        </>
+      )}
+      {variant === 'closed' && (
+        <>
+          <HugeiconsIcon icon={CheckmarkCircle03Icon} strokeWidth={2} />
+          Closed
+        </>
+      )}
+      {variant === 'completed' && (
+        <>
+          <HugeiconsIcon icon={CheckmarkCircle03Icon} strokeWidth={2} />
+          Completed
+        </>
+      )}
+      {variant === 'self' && (
+        <>
+          <HugeiconsIcon icon={UserIcon} strokeWidth={2} />
+          Self
+        </>
+      )}
+      {variant === 'board' && (
+        <>
+          <HugeiconsIcon
+            className="!size-3.5"
+            icon={UserGroupIcon}
+            strokeWidth={1.8}
+          />
+          Board
+        </>
+      )}
       {props.children}
     </Comp>
   );

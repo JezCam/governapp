@@ -4,9 +4,11 @@ import {
   type ColumnDef,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
+  type SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -35,17 +37,24 @@ export function DataTable<TData, TValue>({
   actionText?: string;
   actionOnClick?: () => void;
 }) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
   });
 
   return (
     <div className="overflow-hidden rounded-xl border bg-accent">
       <div className="flex items-center justify-between border-b bg-background px-3 py-3">
         <div className="flex items-center gap-2">
-          <h2 className="font-medium text-base">{title ?? 'Data'}</h2>
+          <h2 className="font-semibold text-base">{title ?? 'Data'}</h2>
           <Badge className="rounded-sm px-1.5" variant="blue">
             {data.length}
           </Badge>
@@ -67,7 +76,10 @@ export function DataTable<TData, TValue>({
               >
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      className="text-muted-foreground"
+                      key={header.id}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(

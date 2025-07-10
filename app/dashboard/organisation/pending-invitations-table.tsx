@@ -5,45 +5,28 @@ import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '@/components/data-table';
 import InvitationDropdownMenu from '@/components/invitation-dropdown-menu';
+import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-
-type Invitation = {
-  email: string;
-  role: string;
-  permission: 'admin' | 'member';
-};
-
-const pendingInvitations: Invitation[] = [
-  {
-    email: 'john@example.com',
-    role: 'Board Member',
-    permission: 'member',
-  },
-  {
-    email: 'jill@example.com',
-    role: 'Board Member',
-    permission: 'member',
-  },
-];
+import { type Invitation, pendingInvitations } from '@/dummy-data/invitations';
 
 export const columns: ColumnDef<Invitation>[] = [
   {
     accessorKey: 'email',
-    header: 'Email',
+    header: ({ column }) => <SortButton column={column}>Email</SortButton>,
   },
   {
-    header: 'Role',
+    accessorKey: 'role',
+    header: ({ column }) => <SortButton column={column}>Role</SortButton>,
     cell: ({ row }) => <Badge variant="outline">{row.original.role}</Badge>,
   },
   {
     accessorKey: 'permission',
-    header: 'Permission',
+    header: ({ column }) => <SortButton column={column}>Permission</SortButton>,
     cell: ({ row }) => <Badge variant={row.getValue('permission')} />,
   },
   {
-    id: 'actions',
-    header: '',
+    id: 'menu',
     cell: ({ row }) => (
       <InvitationDropdownMenu invitation={row.original}>
         <Button className="float-right size-7" size="icon" variant="outline">
