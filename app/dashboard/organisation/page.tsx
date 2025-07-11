@@ -12,9 +12,9 @@ import TeamMembersTable from './team-members-table';
 
 export default function Organisation() {
   return (
-    <div className="flex size-full flex-col gap-4 p-4">
+    <div className="flex size-full flex-col gap-4 overflow-auto p-4">
       {/* Organisation Header */}
-      <Card className="relative flex h-fit w-full items-end justify-end overflow-hidden rounded-xl p-2 pb-4 shadow-none">
+      <Card className="relative flex h-fit w-full shrink-0 items-end justify-end overflow-hidden rounded-xl p-2 pb-4 shadow-none">
         <div
           className="absolute inset-0 bg-[url('/pattern-light.svg')] bg-primary stroke-current text-foreground dark:bg-[url('/pattern-dark.svg')]"
           style={{

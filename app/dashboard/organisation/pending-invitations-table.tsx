@@ -9,6 +9,7 @@ import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { type Invitation, pendingInvitations } from '@/dummy-data/invitations';
+import { invitationDataTableContext } from './context';
 
 export const columns: ColumnDef<Invitation>[] = [
   {
@@ -41,6 +42,7 @@ export default function PendingInvitationsTable() {
   return (
     <DataTable
       columns={columns}
+      context={invitationDataTableContext}
       data={pendingInvitations}
       title="Pending Invitations"
     />

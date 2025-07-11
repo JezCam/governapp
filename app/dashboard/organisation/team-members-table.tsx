@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import UserAvatar from '@/components/user-avatar';
 import { type TeamMember, teamMembers } from '@/dummy-data/team';
+import { teamMemberDataTableContext } from './context';
 
 export const columns: ColumnDef<TeamMember>[] = [
   {
@@ -70,8 +71,11 @@ export default function TeamMembersTable() {
         actionOnClick={() => setAddTeamMemberOpen(true)}
         actionText="Add team member"
         columns={columns}
+        context={teamMemberDataTableContext}
         data={teamMembers}
-        title="Team Members"
+        searchable
+        searchPlaceholder="Search for a team member"
+        title={'Team Members'}
       />
     </>
   );

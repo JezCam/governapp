@@ -13,9 +13,9 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="flex flex-1 flex-col overflow-auto">
+      <main className="flex max-h-screen flex-1 flex-col overflow-auto">
         <AppHeader />
-        <div className="flex w-full flex-1 items-center justify-center border-t border-b">
+        <div className="flex w-full flex-1 items-center justify-center overflow-auto border-t border-b">
           {children}
         </div>
         <AppFooter />

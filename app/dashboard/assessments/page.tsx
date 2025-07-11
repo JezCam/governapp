@@ -11,6 +11,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { type Assessment, assessments } from '@/dummy-data/assessments';
 import { formatDateTime } from '@/lib/utils';
+import { assessmentDataTableContext } from './context';
+import StatusFilter from './status-filter';
 
 const columns: ColumnDef<Assessment>[] = [
   {
@@ -64,18 +66,26 @@ export default function Assessments() {
   const [newAssessmentOpen, setNewAssessmentOpen] = useState(false);
 
   return (
-    <div className="flex size-full flex-col gap-4 p-4">
+    <>
       <NewAssessmentDialog
         onOpenChange={setNewAssessmentOpen}
         open={newAssessmentOpen}
       />
-      <DataTable
-        actionOnClick={() => setNewAssessmentOpen(true)}
-        actionText="Create new assessment"
-        columns={columns}
-        data={assessments}
-        title="Assessments"
-      />
-    </div>
+      <div className="flex size-full flex-col gap-4 p-4">
+        <DataTable
+          actionOnClick={() => setNewAssessmentOpen(true)}
+          actionText="Create new assessment"
+          columns={columns}
+          context={assessmentDataTableContext}
+          data={assessments}
+          searchable
+          searchPlaceholder="Search for an assessment"
+          title="Assessments"
+        >
+          {/* Filters can be added here */}
+          <StatusFilter />
+        </DataTable>
+      </div>
+    </>
   );
 }

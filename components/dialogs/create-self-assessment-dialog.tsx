@@ -1,9 +1,19 @@
-import { DialogContent, DialogTitle } from '../ui/dialog';
+import type { DialogProps } from '@radix-ui/react-dialog';
+import CreateSelfAssessmentForm from '../forms/create-self-assessment-form';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 
-export default function CreateSelfAssessmentDialogContent() {
+export default function CreateSelfAssessmentDialogContent(props: DialogProps) {
   return (
-    <DialogContent>
-      <DialogTitle> Create a new self assessment</DialogTitle>
-    </DialogContent>
+    <Dialog onOpenChange={props.onOpenChange} open={props.open}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create New Self Assessment</DialogTitle>
+        </DialogHeader>
+        <CreateSelfAssessmentForm
+          formButtonProps={{ onPrevious: () => props.onOpenChange?.(false) }}
+          onSuccess={() => props.onOpenChange?.(false)}
+        />
+      </DialogContent>
+    </Dialog>
   );
 }
