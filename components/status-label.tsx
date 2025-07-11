@@ -48,7 +48,7 @@ export default function StatusLabel({
     return (
       <>
         <HugeiconsIcon
-          className="text-gray-600"
+          className="text-ga-green-600"
           icon={CheckmarkCircle03Icon}
           strokeWidth={2}
         />

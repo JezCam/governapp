@@ -49,7 +49,11 @@ const columns: ColumnDef<Assessment>[] = [
   {
     id: 'actions',
     header: 'Actions',
-    cell: () => <Button variant="outline">Start assessment</Button>,
+    cell: () => (
+      <Button size="sm" variant="outline">
+        Start assessment
+      </Button>
+    ),
   },
   {
     id: 'menu',
