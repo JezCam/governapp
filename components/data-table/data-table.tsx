@@ -83,10 +83,14 @@ export function DataTable<TData, TValue>({
     if (!column) {
       return null;
     }
-    return filter.component({
-      onChange: (value) => column.setFilterValue(value),
-      value: column.getFilterValue() as string,
-    });
+    return (
+      <div key={filter.columnKey}>
+        {filter.component({
+          onChange: (value) => column.setFilterValue(value),
+          value: column.getFilterValue() as string,
+        })}
+      </div>
+    );
   });
 
   return (

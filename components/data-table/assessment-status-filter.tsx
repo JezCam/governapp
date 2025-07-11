@@ -1,11 +1,5 @@
 'use client';
 
-import { HugeiconsIcon } from '@hugeicons/react';
-import {
-  CheckmarkCircle03Icon,
-  DashedLineCircleIcon,
-  Progress03Icon,
-} from '@hugeicons-pro/core-stroke-rounded';
 import { useEffect, useState } from 'react';
 import {
   Select,
@@ -16,6 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { assessmentStatuses } from '@/dummy-data/assessments';
+import StatusLabel from '../status-label';
 import type { DataTableFilterProps } from './types';
 
 export default function AssessmentStatusFilter(props: DataTableFilterProps) {
@@ -33,34 +29,11 @@ export default function AssessmentStatusFilter(props: DataTableFilterProps) {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Status</SelectLabel>
-          <SelectItem value="not-started">
-            <HugeiconsIcon
-              className="text-gray-600"
-              icon={DashedLineCircleIcon}
-              strokeWidth={2}
-            />
-            Not started
-          </SelectItem>
-          <SelectItem value="in-progress">
-            <HugeiconsIcon className="text-amber-600" icon={Progress03Icon} />
-            In progress
-          </SelectItem>
-          <SelectItem value="closed">
-            <HugeiconsIcon
-              className="text-ga-green-600"
-              icon={CheckmarkCircle03Icon}
-              strokeWidth={2}
-            />
-            Closed
-          </SelectItem>
-          <SelectItem value="completed">
-            <HugeiconsIcon
-              className="text-ga-green-600"
-              icon={CheckmarkCircle03Icon}
-              strokeWidth={2}
-            />
-            Completed
-          </SelectItem>
+          {assessmentStatuses.map((status) => (
+            <SelectItem key={status} value={status}>
+              <StatusLabel status={status} />
+            </SelectItem>
+          ))}
         </SelectGroup>
       </SelectContent>
     </Select>

@@ -1,16 +1,15 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  CheckmarkCircle03Icon,
-  DashedLineCircleIcon,
   MicrosoftAdminIcon,
-  Progress03Icon,
   UserGroupIcon,
   UserIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import type * as React from 'react';
+import { assessmentStatuses } from '@/dummy-data/assessments';
 import { cn } from '@/lib/utils';
+import StatusLabel from '../status-label';
 
 const badgeVariants = cva(
   'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-md border px-2 py-0.5 font-medium text-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3',
@@ -31,15 +30,15 @@ const badgeVariants = cva(
         member:
           'border-border bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
         'not-started':
-          'border-border bg-secondary pl-1.5 text-secondary-foreground ',
+          'border-border bg-secondary pl-1.5 text-secondary-foreground',
         'in-progress':
-          'border-amber-200 bg-amber-100 text-amber-800 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200',
+          'border-amber-200 bg-amber-100 pl-1.5 text-amber-800 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200',
         completed:
-          'border-ga-green-200 bg-ga-green-100 text-ga-green-800 dark:border-ga-green-900 dark:bg-ga-green-950 dark:text-ga-green-200',
+          'border-ga-green-200 bg-ga-green-100 pl-1.5 text-ga-green-800 dark:border-ga-green-900 dark:bg-ga-green-950 dark:text-ga-green-200',
         closed:
-          'border-ga-green-200 bg-ga-green-100 text-ga-green-800 dark:border-ga-green-900 dark:bg-ga-green-950 dark:text-ga-green-200',
-        self: 'bg-background text-foreground',
-        board: 'bg-background text-foreground',
+          'border-red-200 bg-red-100 pl-1.5 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200',
+        self: 'bg-background pl-1.5 text-foreground',
+        board: 'bg-background pl-1.5 text-foreground',
       },
     },
     defaultVariants: {
@@ -70,29 +69,8 @@ function Badge({
         </>
       )}
       {variant === 'member' && 'Member'}
-      {variant === 'not-started' && (
-        <>
-          <HugeiconsIcon icon={DashedLineCircleIcon} strokeWidth={2} />
-          Not started
-        </>
-      )}
-      {variant === 'in-progress' && (
-        <>
-          <HugeiconsIcon icon={Progress03Icon} />
-          In progress
-        </>
-      )}
-      {variant === 'closed' && (
-        <>
-          <HugeiconsIcon icon={CheckmarkCircle03Icon} strokeWidth={2} />
-          Closed
-        </>
-      )}
-      {variant === 'completed' && (
-        <>
-          <HugeiconsIcon icon={CheckmarkCircle03Icon} strokeWidth={2} />
-          Completed
-        </>
+      {assessmentStatuses.some((status) => status === variant) && (
+        <StatusLabel status={variant as (typeof assessmentStatuses)[number]} />
       )}
       {variant === 'self' && (
         <>

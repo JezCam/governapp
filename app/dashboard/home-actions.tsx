@@ -36,7 +36,7 @@ export default function HomeActions() {
           variant="outline"
         >
           <div className="relative flex w-full items-center justify-center overflow-hidden rounded-md border bg-accent py-8">
-            <div className="relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-purple-300 bg-ga-purple-200 shadow-highlight dark:border-ga-purple-900 dark:bg-ga-purple-950 dark:shadow-sm">
+            <div className="group-hover:-translate-y-1 relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-purple-300 bg-ga-purple-200 shadow-highlight transition-transform group-hover:scale-105 dark:border-ga-purple-900 dark:bg-ga-purple-950 dark:shadow-sm">
               <HugeiconsIcon
                 className="size-12 text-ga-purple-600 dark:text-ga-purple-500"
                 icon={TaskIcon}
@@ -60,7 +60,7 @@ export default function HomeActions() {
           variant="outline"
         >
           <div className="relative flex w-full items-center justify-center overflow-hidden rounded-md border bg-accent py-8">
-            <div className="relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-blue-300 bg-ga-blue-200 shadow-highlight dark:border-ga-blue-900 dark:bg-ga-blue-950 dark:shadow-sm">
+            <div className="group-hover:-translate-y-1 relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-blue-300 bg-ga-blue-200 shadow-highlight transition-transform group-hover:scale-105 dark:border-ga-blue-900 dark:bg-ga-blue-950 dark:shadow-sm">
               <HugeiconsIcon
                 className="size-12 text-ga-blue-600 dark:text-ga-blue-500"
                 icon={UserIcon}
@@ -85,7 +85,7 @@ export default function HomeActions() {
         >
           <Link href="/dashboard/assessments">
             <div className="relative flex w-full items-center justify-center overflow-hidden rounded-md border bg-accent py-8">
-              <div className="relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-green-300 bg-ga-green-200 shadow-highlight dark:border-ga-green-900 dark:bg-ga-green-950 dark:shadow-sm">
+              <div className="group-hover:-translate-y-1 relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-green-300 bg-ga-green-200 shadow-highlight transition-transform group-hover:scale-105 dark:border-ga-green-900 dark:bg-ga-green-950 dark:shadow-sm">
                 <HugeiconsIcon
                   className="size-12 text-ga-green-600 dark:text-ga-green-500"
                   icon={TaskDoneIcon}
@@ -113,7 +113,7 @@ export default function HomeActions() {
         >
           <Link href="/dashboard/actions">
             <div className="relative flex w-full items-center justify-center overflow-hidden rounded-md border bg-accent py-8">
-              <div className="relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-purple-300 bg-ga-purple-200 shadow-highlight dark:border-ga-purple-900 dark:bg-ga-purple-950 dark:shadow-sm">
+              <div className="group-hover:-translate-y-1 relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-purple-300 bg-ga-purple-200 shadow-highlight transition-transform group-hover:scale-105 dark:border-ga-purple-900 dark:bg-ga-purple-950 dark:shadow-sm">
                 <HugeiconsIcon
                   className="size-12 text-ga-purple-600 dark:text-ga-purple-500"
                   icon={ZapIcon}
