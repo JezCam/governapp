@@ -6,6 +6,7 @@ import {
   DashedLineCircleIcon,
   Progress03Icon,
 } from '@hugeicons-pro/core-stroke-rounded';
+import { useEffect, useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -15,19 +16,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { assessmentDataTableContext } from './context';
+import type { DataTableFilterProps } from './types';
 
-export default function StatusFilter() {
-  const { useDataTable } = assessmentDataTableContext;
-  const table = useDataTable();
+export default function AssessmentStatusFilter(props: DataTableFilterProps) {
+  const [value, setValue] = useState<string>(props.value || '');
+
+  useEffect(() => {
+    setValue(props.value || '');
+  }, [props.value]);
 
   return (
-    <Select
-      onValueChange={(value) =>
-        table.getColumn('status')?.setFilterValue(value)
-      }
-      value={table.getColumn('status')?.getFilterValue() as string}
-    >
+    <Select onValueChange={props.onChange} value={value}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Select status" />
       </SelectTrigger>

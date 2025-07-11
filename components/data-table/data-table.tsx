@@ -7,19 +7,11 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
-  type RowData,
   type SortingState,
-  type Table as TanstackTable,
   useReactTable,
 } from '@tanstack/react-table';
-import { SearchIcon } from 'lucide-react';
-import {
-  createContext,
-  type Provider,
-  type ReactNode,
-  useContext,
-  useState,
-} from 'react';
+import { SearchIcon, XIcon } from 'lucide-react';
+import { type ReactNode, useRef, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -29,30 +21,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import { Badge } from './ui/badge';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-
-export const createDataTableContext = <TData extends RowData>() => {
-  const Context = createContext<TanstackTable<TData> | undefined>(undefined);
-
-  const useDataTable = () => {
-    const ctx = useContext(Context);
-    if (!ctx) {
-      throw new Error('useDataTable must be used within DataTableProvider');
-    }
-    return ctx;
-  };
-
-  return {
-    DataTableProvider: Context.Provider,
-    useDataTable,
-  };
-};
-
-type TableContext<TData extends RowData> = {
-  DataTableProvider: Provider<TanstackTable<TData>>;
-};
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import type { DataTableFilters } from './types';
 
 interface DataTableProps<TData, TValue> {
   title?: string;
@@ -60,8 +32,8 @@ interface DataTableProps<TData, TValue> {
   actionOnClick?: () => void;
   searchable?: boolean; // If true, shows the search input
   searchPlaceholder?: string; // Placeholder for the search input
-  children?: ReactNode; // Filters
-  context: TableContext<TData>;
+  filters?: DataTableFilters; // Filters to be applied to the table
+  children?: ReactNode;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
@@ -72,8 +44,7 @@ export function DataTable<TData, TValue>({
   actionOnClick,
   searchable,
   searchPlaceholder = 'Search...',
-  context,
-  children,
+  filters,
   columns,
   data,
 }: DataTableProps<TData, TValue> & {}) {
@@ -81,7 +52,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // can set initial column filter state here
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const { DataTableProvider } = context;
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const table = useReactTable({
     data,
@@ -100,6 +71,24 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const handleClearInput = () => {
+    table.setGlobalFilter('');
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  const renderedFilters = filters?.map((filter) => {
+    const column = table.getColumn(filter.columnKey);
+    if (!column) {
+      return null;
+    }
+    return filter.component({
+      onChange: (value) => column.setFilterValue(value),
+      value: column.getFilterValue() as string,
+    });
+  });
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
@@ -109,14 +98,32 @@ export function DataTable<TData, TValue>({
               className="peer ps-9"
               onChange={(e) => table.setGlobalFilter(e.target.value)}
               placeholder={searchPlaceholder}
-              type="search"
+              ref={inputRef}
+              type="text"
+              value={globalFilter ?? ''}
             />
+            {globalFilter && (
+              <Button
+                aria-label="Clear input"
+                className="absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md text-muted-foreground/80 outline-none transition-[color,box-shadow] hover:bg-transparent hover:text-foreground focus:z-10 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={handleClearInput}
+                size="icon"
+                variant="ghost"
+              >
+                <XIcon aria-hidden="true" size={16} />
+              </Button>
+            )}
             <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
               <SearchIcon size={16} />
             </div>
           </div>
         )}
-        <DataTableProvider value={table}>{children}</DataTableProvider>
+        {renderedFilters}
+        {filters && (
+          <Button onClick={() => setColumnFilters([])} variant="outline">
+            Clear filters
+          </Button>
+        )}
       </div>
       <div className="overflow-hidden rounded-xl border bg-accent">
         <div className="flex items-center justify-between border-b bg-background px-3 py-3">

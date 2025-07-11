@@ -4,15 +4,14 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
 import { useState } from 'react';
-import { DataTable } from '@/components/data-table';
+import AssessmentStatusFilter from '@/components/data-table/assessment-status-filter';
+import { DataTable } from '@/components/data-table/data-table';
 import NewAssessmentDialog from '@/components/dialogs/new-assessment-dialog';
 import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { type Assessment, assessments } from '@/dummy-data/assessments';
 import { formatDateTime } from '@/lib/utils';
-import { assessmentDataTableContext } from './context';
-import StatusFilter from './status-filter';
 
 const columns: ColumnDef<Assessment>[] = [
   {
@@ -76,15 +75,19 @@ export default function Assessments() {
           actionOnClick={() => setNewAssessmentOpen(true)}
           actionText="Create new assessment"
           columns={columns}
-          context={assessmentDataTableContext}
           data={assessments}
+          filters={[
+            {
+              columnKey: 'status',
+              component: ({ value, onChange }) => (
+                <AssessmentStatusFilter onChange={onChange} value={value} />
+              ),
+            },
+          ]}
           searchable
           searchPlaceholder="Search for an assessment"
           title="Assessments"
-        >
-          {/* Filters can be added here */}
-          <StatusFilter />
-        </DataTable>
+        />
       </div>
     </>
   );

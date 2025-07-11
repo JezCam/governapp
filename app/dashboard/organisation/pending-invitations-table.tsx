@@ -3,13 +3,12 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
-import { DataTable } from '@/components/data-table';
+import { DataTable } from '@/components/data-table/data-table';
 import InvitationDropdownMenu from '@/components/invitation-dropdown-menu';
 import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { type Invitation, pendingInvitations } from '@/dummy-data/invitations';
-import { invitationDataTableContext } from './context';
 
 export const columns: ColumnDef<Invitation>[] = [
   {
@@ -42,7 +41,6 @@ export default function PendingInvitationsTable() {
   return (
     <DataTable
       columns={columns}
-      context={invitationDataTableContext}
       data={pendingInvitations}
       title="Pending Invitations"
     />

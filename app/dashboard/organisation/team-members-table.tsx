@@ -4,7 +4,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
 import { useState } from 'react';
-import { DataTable } from '@/components/data-table';
+import { DataTable } from '@/components/data-table/data-table';
 import AddTeamMemberDialog from '@/components/dialogs/add-team-member-dialog';
 import SortButton from '@/components/sort-button';
 import TeamMemberDropdownContent from '@/components/team-member-dropdown-content';
@@ -16,7 +16,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import UserAvatar from '@/components/user-avatar';
 import { type TeamMember, teamMembers } from '@/dummy-data/team';
-import { teamMemberDataTableContext } from './context';
 
 export const columns: ColumnDef<TeamMember>[] = [
   {
@@ -71,7 +70,6 @@ export default function TeamMembersTable() {
         actionOnClick={() => setAddTeamMemberOpen(true)}
         actionText="Add team member"
         columns={columns}
-        context={teamMemberDataTableContext}
         data={teamMembers}
         searchable
         searchPlaceholder="Search for a team member"
