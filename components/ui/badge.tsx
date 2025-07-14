@@ -5,11 +5,12 @@ import {
   MicrosoftAdminIcon,
   UserGroupIcon,
   UserIcon,
+  ZapIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import type * as React from 'react';
-import { assessmentStatuses } from '@/dummy-data/assessments';
+import { type Status, statuses } from '@/dummy-data/status';
 import { cn } from '@/lib/utils';
 import StatusLabel from '../status-label';
 
@@ -26,7 +27,10 @@ const badgeVariants = cva(
           'border-transparent bg-destructive text-white focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40 [a&]:hover:bg-destructive/90',
         outline:
           'bg-background text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
-        blue: 'border-ga-blue-200 bg-ga-blue-100 text-ga-blue-700 dark:border-ga-blue-900 dark:bg-ga-blue-950 dark:text-ga-blue-100 [a&]:hover:bg-primary/90',
+        blue: `bg-gradient-to-b from-ga-blue-100 dark:from-ga-blue-950 to-white dark:to-ga-blue-900
+              border-1 border-ga-blue-300 dark:border-black
+              text-ga-blue-700 dark:text-ga-blue-100
+              shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-ga-blue-300)] dark:shadow-[inset_0_0_0_1px_var(--color-ga-blue-900),_0_1px_0_var(--color-black)]`,
         admin: `bg-gradient-to-b from-ga-purple-100 dark:from-ga-purple-950 to-white dark:to-ga-purple-900
                   border-1 border-ga-purple-300 dark:border-black
                   text-ga-purple-700 dark:text-ga-purple-100
@@ -39,25 +43,31 @@ const badgeVariants = cva(
                   shadow-[inset_0_0_0_1px_var(--color-gray-100),_0_1px_0_var(--color-gray-300)] dark:shadow-[inset_0_0_0_1px_var(--color-gray-700),_0_1px_0_var(--color-black)]`,
         'not-started': `bg-gradient-to-b from-gray-100 dark:from-gray-900 to-white dark:to-gray-700
                   border-1 border-gray-300 dark:border-black
-                  text-gray-700 dark:text-gray-100
+                  text-gray-800 dark:text-gray-100
                   shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-gray-300)] dark:shadow-[inset_0_0_0_1px_var(--color-gray-700),_0_1px_0_var(--color-black)]
                   
                   pl-1.5 rounded-full`,
         'in-progress': `bg-gradient-to-b from-amber-100 dark:from-amber-950 to-white dark:to-amber-900
                   border-1 border-amber-300 dark:border-black
-                  text-amber-700 dark:text-amber-100
+                  text-amber-800 dark:text-amber-100
                   shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-amber-300)] dark:shadow-[inset_0_0_0_1px_var(--color-amber-900),_0_1px_0_var(--color-black)]
                   
                   pl-1.5 rounded-full`,
         completed: `bg-gradient-to-b from-ga-green-100 dark:from-ga-green-950 to-white dark:to-ga-green-900
                   border-1 border-ga-green-300 dark:border-black
-                  text-ga-green-700 dark:text-ga-green-100
+                  text-ga-green-800 dark:text-ga-green-100
                   shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-ga-green-300)] dark:shadow-[inset_0_0_0_1px_var(--color-ga-green-900),_0_1px_0_var(--color-black)]
                   
                   pl-1.5 rounded-full`,
         closed: `bg-gradient-to-b from-red-100 dark:from-red-950 to-white dark:to-red-900
                   border-1 border-red-300 dark:border-black
-                  text-red-700 dark:text-red-100
+                  text-red-800 dark:text-red-100
+                  shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-red-300)] dark:shadow-[inset_0_0_0_1px_var(--color-red-900),_0_1px_0_var(--color-black)]
+                  
+                  pl-1.5 rounded-full`,
+        blocked: `bg-gradient-to-b from-red-100 dark:from-red-950 to-white dark:to-red-900
+                  border-1 border-red-300 dark:border-black
+                  text-red-800 dark:text-red-100
                   shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-red-300)] dark:shadow-[inset_0_0_0_1px_var(--color-red-900),_0_1px_0_var(--color-black)]
                   
                   pl-1.5 rounded-full`,
@@ -87,6 +97,12 @@ const badgeVariants = cva(
                 shadow-[inset_0_0_0_1px_var(--color-gray-500),_0_1px_0_var(--color-black)]
                 
                 rounded-sm pl-2`,
+        actions: `bg-gradient-to-b from-ga-purple-100 dark:from-ga-purple-950 to-white dark:to-ga-purple-900
+                  border-1 border-ga-purple-300 dark:border-black
+                  text-ga-purple-700 dark:text-ga-purple-100
+                  shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-ga-purple-300)] dark:shadow-[inset_0_0_0_1px_var(--color-ga-purple-900),_0_1px_0_var(--color-black)]
+                  
+                  pl-1 pr-1.5 gap-0.75`,
       },
     },
     defaultVariants: {
@@ -117,8 +133,8 @@ function Badge({
         </>
       )}
       {variant === 'member' && 'Member'}
-      {assessmentStatuses.some((status) => status === variant) && (
-        <StatusLabel status={variant as (typeof assessmentStatuses)[number]} />
+      {variant && (statuses as readonly string[]).includes(variant) && (
+        <StatusLabel status={variant as Status} />
       )}
       {variant === 'self' && (
         <>
@@ -159,6 +175,9 @@ function Badge({
           <HugeiconsIcon icon={Alert02Icon} strokeWidth={2} />
           Black
         </>
+      )}
+      {variant === 'actions' && (
+        <HugeiconsIcon icon={ZapIcon} strokeWidth={2} />
       )}
       {props.children}
     </Comp>

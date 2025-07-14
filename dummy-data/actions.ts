@@ -1,6 +1,6 @@
 import { type TeamMember, teamMembers } from './team';
 
-export const assessmentStatuses = [
+export const actionStatuses = [
   'not-started',
   'in-progress',
   'completed',
@@ -11,7 +11,7 @@ export type ActionsRowAction = {
   type: 'action';
   id: string;
   text: string;
-  status: (typeof assessmentStatuses)[number];
+  status: (typeof actionStatuses)[number];
   dueDate: Date;
   assignee: TeamMember;
   resource: string;
@@ -19,18 +19,23 @@ export type ActionsRowAction = {
 
 export const risks = ['green', 'amber', 'red', 'black'] as const;
 
-export type DueSummary = {
+export type ActionDueSummary = {
   total: number;
   overdue: number;
   soon: number;
+};
+
+export type ActionProgressSummary = {
+  total: number;
+  completed: number;
 };
 
 export type ActionsRowRisk = {
   type: 'risk';
   id: string;
   risk: (typeof risks)[number];
-  progress: number;
-  dueSummary: DueSummary;
+  progressSummary: ActionProgressSummary;
+  dueSummary: ActionDueSummary;
   assignees: TeamMember[];
   subRows: ActionsRowAction[];
 };
@@ -42,9 +47,9 @@ export type ActionsRowAssessment = {
   framework: string;
   date: Date;
   participants: TeamMember[];
-  numCompleted: number;
-  progress: number;
-  dueSummary: DueSummary;
+  numParticipantsCompleted: number;
+  progressSummary: ActionProgressSummary;
+  dueSummary: ActionDueSummary;
   assignees: TeamMember[];
   subRows: ActionsRowRisk[];
 };
@@ -62,8 +67,11 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
     framework: 'Governance Framework',
     date: new Date('2023-12-31'),
     participants: teamMembers,
-    numCompleted: 3,
-    progress: 75,
+    numParticipantsCompleted: 3,
+    progressSummary: {
+      total: 4,
+      completed: 1,
+    },
     dueSummary: {
       total: 4,
       overdue: 1,
@@ -75,7 +83,10 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
         id: '1',
         type: 'risk',
         risk: 'green',
-        progress: 50,
+        progressSummary: {
+          total: 2,
+          completed: 1,
+        },
         dueSummary: {
           total: 2,
           overdue: 1,
@@ -107,7 +118,10 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
         id: '2',
         type: 'risk',
         risk: 'amber',
-        progress: 25,
+        progressSummary: {
+          total: 2,
+          completed: 0,
+        },
         dueSummary: {
           total: 2,
           overdue: 0,
@@ -119,7 +133,7 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
             id: '3',
             type: 'action',
             text: 'Conduct board evaluation',
-            status: 'not-started',
+            status: 'completed',
             dueDate: new Date('2023-12-15'),
             assignee: teamMembers[2],
             resource: 'https://example.com/resource3',
@@ -128,7 +142,7 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
             id: '4',
             type: 'action',
             text: 'Implement new compliance measures',
-            status: 'not-started',
+            status: 'blocked',
             dueDate: new Date('2024-01-05'),
             assignee: teamMembers[2],
             resource: 'https://example.com/resource4',
@@ -144,8 +158,11 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
     framework: 'Board Effectiveness Framework',
     date: new Date('2024-01-15'),
     participants: teamMembers,
-    numCompleted: 1,
-    progress: 25,
+    numParticipantsCompleted: 2,
+    progressSummary: {
+      total: 4,
+      completed: 1,
+    },
     dueSummary: {
       total: 4,
       overdue: 0,
@@ -157,7 +174,10 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
         id: '3',
         type: 'risk',
         risk: 'red',
-        progress: 0,
+        progressSummary: {
+          total: 2,
+          completed: 0,
+        },
         dueSummary: {
           total: 2,
           overdue: 0,
@@ -189,7 +209,10 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
         id: '4',
         type: 'risk',
         risk: 'black',
-        progress: 50,
+        progressSummary: {
+          total: 2,
+          completed: 0,
+        },
         dueSummary: {
           total: 2,
           overdue: 0,

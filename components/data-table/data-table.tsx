@@ -30,6 +30,8 @@ import type { DataTableFilters } from './types';
 
 interface DataTableProps<TData, TValue> {
   title?: string;
+  total?: number; // Total number of items, used for display purposes
+  totalVariant?: 'blue' | 'actions' | 'outline';
   actionText?: string;
   actionOnClick?: () => void;
   searchable?: boolean; // If true, shows the search input
@@ -42,6 +44,8 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({
   title = 'Data',
+  total,
+  totalVariant = 'blue',
   actionText,
   actionOnClick,
   searchable,
@@ -140,8 +144,8 @@ export function DataTable<TData, TValue>({
         <div className="flex items-center justify-between border-b bg-background px-3 py-3">
           <div className="flex w-full items-center gap-3">
             <h2 className="font-semibold text-base">{title}</h2>
-            <Badge className="rounded-sm px-1.5" variant="blue">
-              {data.length}
+            <Badge className="rounded-sm px-1.5" variant={totalVariant}>
+              {total ?? data.length}
             </Badge>
           </div>
           {actionText && (
