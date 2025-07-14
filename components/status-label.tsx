@@ -20,7 +20,7 @@ export default function StatusLabel({
           icon={DashedLineCircleIcon}
           strokeWidth={2}
         />
-        Not started
+        <span className="font-medium">Not started</span>
       </>
     );
   }
@@ -28,7 +28,7 @@ export default function StatusLabel({
     return (
       <>
         <HugeiconsIcon className="text-amber-600" icon={Progress03Icon} />
-        In progress
+        <span className="font-medium">In progress</span>
       </>
     );
   }
@@ -40,7 +40,7 @@ export default function StatusLabel({
           icon={UnavailableIcon}
           strokeWidth={2}
         />
-        Closed
+        <span className="font-medium">Closed</span>
       </>
     );
   }
@@ -52,7 +52,7 @@ export default function StatusLabel({
           icon={CheckmarkCircle03Icon}
           strokeWidth={2}
         />
-        Completed
+        <span className="font-medium">Completed</span>
       </>
     );
   }

@@ -3,8 +3,10 @@
 import {
   type ColumnDef,
   type ColumnFiltersState,
+  type ExpandedState,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   getFilteredRowModel,
   getSortedRowModel,
   type SortingState,
@@ -51,6 +53,7 @@ export function DataTable<TData, TValue>({
   const [globalFilter, setGlobalFilter] = useState<string>('');
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // can set initial column filter state here
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [expanded, setExpanded] = useState<ExpandedState>({});
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -64,10 +67,14 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onExpandedChange: setExpanded,
+    getSubRows: (row) => (row as { subRows: [] })?.subRows,
+    getExpandedRowModel: getExpandedRowModel(),
     state: {
       globalFilter,
       columnFilters,
       sorting,
+      expanded,
     },
   });
 
@@ -174,7 +181,7 @@ export function DataTable<TData, TValue>({
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     className={cn(
-                      'group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:bg-background [&>td]:px-3 [&>td]:last:border-l-0 even:[&>td]:bg-slate-50 dark:even:[&>td]:bg-gray-900',
+                      'group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:bg-background [&>td]:px-3 [&>td]:last:border-l-0',
                       // Table Cell Borders
                       '[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-r',
                       // First Row
@@ -190,6 +197,7 @@ export function DataTable<TData, TValue>({
                     )}
                     data-state={row.getIsSelected() && 'selected'}
                     key={row.id}
+                    onClick={() => row.toggleExpanded()}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>

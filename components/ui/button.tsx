@@ -9,8 +9,22 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          'border border-ga-purple-800 bg-primary text-white shadow-highlight hover:bg-primary/90 dark:border-black',
+        default: `bg-gradient-to-b from-ga-purple-600 via-ga-purple-500 to-ga-purple-400 bg-size-[200%_200%] bg-position-[0%_0%]
+                  border-1 border-ga-purple-800 dark:border-black
+                  text-ga-purple-100 text-shadow-sm
+                  shadow-[inset_0_0_0_1px_var(--color-ga-purple-500),_0_1px_0_var(--color-ga-purple-800)] dark:shadow-[inset_0_0_0_1px_var(--color-ga-purple-500),_0_1px_0_var(--color-black)]
+                  
+                  hover:bg-position-[100%_100%]
+                  hover:text-white
+                  hover:shadow-[inset_0_0_0_1px_var(--color-ga-purple-400),_0_3px_0_var(--color-ga-purple-800)] dark:hover:shadow-[inset_0_0_0_1px_var(--color-ga-purple-400),_0_3px_0_var(--color-black)]
+                  hover:-translate-y-0.5 transition-all
+                  
+                  focus-visible:ring-ga-purple-400 focus-visible:border-ga-purple-200 dark:focus-visible:ring-ga-purple-700 dark:focus-visible:border-ga-purple-900
+                  active:!shadow-[inset_0_0_0_1px_var(--color-ga-purple-400),_0_1px_0_var(--color-ga-purple-800)] dark:active:!shadow-[inset_0_0_0_1px_var(--color-ga-purple-400),_0_1px_0_var(--color-black)]
+                  active:!translate-y-0
+                  
+                  data-[state=open]:shadow-[inset_0_0_0_1px_var(--color-ga-purple-400),_0_3px_0_var(--color-ga-purple-800)] dark:data-[state=open]:shadow-[inset_0_0_0_1px_var(--color-ga-purple-400),_0_3px_0_var(--color-black)]
+                  data-[state=open]:-translate-y-0.5`,
         destructive:
           'border border-red-800 bg-destructive text-white shadow-highlight hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:border-black dark:bg-destructive/60 dark:focus-visible:ring-destructive/40',
         outline:
