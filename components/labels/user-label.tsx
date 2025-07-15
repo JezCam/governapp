@@ -19,7 +19,7 @@ export default function UserLabel({
       title={user.name}
     >
       <UserAvatar className="size-6" user={user} />
-      {user.name}
+      <span className="font-medium">{user.name}</span>
     </div>
   );
 }

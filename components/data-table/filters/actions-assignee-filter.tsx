@@ -10,10 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { assessmentActionsRows } from '@/dummy-data/actions';
-import type { DataTableFilterProps } from './types';
+import { teamMembers } from '@/dummy-data/team';
+import UserLabel from '../../labels/user-label';
+import type { DataTableFilterProps } from '../types';
 
-export default function ActionsAssessmentFilter(props: DataTableFilterProps) {
+export default function ActionsAssigneeFilter(props: DataTableFilterProps) {
   const [value, setValue] = useState<string>(props.value || '');
 
   useEffect(() => {
@@ -23,14 +24,18 @@ export default function ActionsAssessmentFilter(props: DataTableFilterProps) {
   return (
     <Select onValueChange={props.onChange} value={value}>
       <SelectTrigger className="w-fit">
-        <SelectValue placeholder="Select assessment" />
+        <SelectValue placeholder="Select assginee" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Assessment</SelectLabel>
-          {assessmentActionsRows.map((row) => (
-            <SelectItem key={row.id} value={row.name}>
-              {row.name}
+          <SelectLabel>Assignee</SelectLabel>
+          {teamMembers.map((teamMember) => (
+            <SelectItem
+              className="gap-1.5"
+              key={teamMember.userId}
+              value={teamMember.userId}
+            >
+              <UserLabel user={teamMember} />
             </SelectItem>
           ))}
         </SelectGroup>

@@ -1,10 +1,11 @@
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import ActionsAssessmentFilter from '@/components/data-table/actions-assessment-filter';
-import ActionsAssigneeFilter from '@/components/data-table/actions-assignee-filter';
 import { DataTable } from '@/components/data-table/data-table';
+import ActionsAssessmentFilter from '@/components/data-table/filters/actions-assessment-filter';
+import ActionsAssigneeFilter from '@/components/data-table/filters/actions-assignee-filter';
 import ExpandChevron from '@/components/expand-chevron';
+import DueDateLabel from '@/components/labels/due-date-label';
 import UserLabel from '@/components/labels/user-label';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -101,6 +102,18 @@ const columns: ColumnDef<ActionsRow>[] = [
   },
   {
     header: 'Due Date',
+    cell: ({ row }) => {
+      if (row.original.type === 'assessment') {
+        return;
+      }
+      if (row.original.type === 'risk') {
+        return;
+      }
+      if (row.original.type === 'action') {
+        const dueDate = row.original.dueDate;
+        return <DueDateLabel dueDate={dueDate} />;
+      }
+    },
   },
   {
     id: 'assignee',
