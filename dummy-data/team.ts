@@ -1,5 +1,5 @@
 export type TeamMember = {
-  userId: number;
+  userId: string;
   name: string;
   email: string;
   role: string;
@@ -9,7 +9,7 @@ export type TeamMember = {
 
 export const teamMembers: TeamMember[] = [
   {
-    userId: 0,
+    userId: '0',
     name: 'Jeremy Cameron',
     email: 'jeremy@cameron.org.au',
     role: 'Chief Executive Officer',
@@ -17,7 +17,7 @@ export const teamMembers: TeamMember[] = [
     imageUrl: 'https://avatars.githubusercontent.com/u/77473646?v=4',
   },
   {
-    userId: 1,
+    userId: '1',
     name: 'Alice Johnson',
     email: 'alice.j@acme.inc',
     role: 'Chief Executive Officer',
@@ -25,7 +25,7 @@ export const teamMembers: TeamMember[] = [
     imageUrl: 'https://i.pravatar.cc/150?img=2',
   },
   {
-    userId: 2,
+    userId: '2',
     name: 'Bob Smith',
     email: 'bobrocks@gmail.com',
     role: 'Chair',
@@ -33,7 +33,7 @@ export const teamMembers: TeamMember[] = [
     imageUrl: 'https://i.pravatar.cc/150?img=3',
   },
   {
-    userId: 3,
+    userId: '3',
     name: 'Charlie Brown',
     email: 'charliethekid@email.com',
     role: 'Treasurer',
@@ -41,7 +41,7 @@ export const teamMembers: TeamMember[] = [
     imageUrl: 'https://i.pravatar.cc/150?img=4',
   },
   {
-    userId: 4,
+    userId: '4',
     name: 'Diana Prince',
     email: 'dianatheprince@gmail.com',
     role: 'Vice Chair',

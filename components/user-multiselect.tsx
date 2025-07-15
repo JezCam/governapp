@@ -24,7 +24,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { cn } from '@/lib/utils';
-import UserAvatar from './user-avatar';
+import UserLabel from './labels/user-label';
 
 export interface UserOption {
   id: string;
@@ -574,8 +574,7 @@ const UserMultiSelect = ({
                               }}
                               value={option.name}
                             >
-                              <UserAvatar className="size-6" user={option} />
-                              {option.name}
+                              <UserLabel user={option} />
                             </CommandItem>
                           );
                         })}

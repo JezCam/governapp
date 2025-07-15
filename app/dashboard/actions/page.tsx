@@ -1,9 +1,11 @@
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import ActionAssessmentFilter from '@/components/data-table/action-assessment-filter';
+import ActionsAssessmentFilter from '@/components/data-table/actions-assessment-filter';
+import ActionsAssigneeFilter from '@/components/data-table/actions-assignee-filter';
 import { DataTable } from '@/components/data-table/data-table';
 import ExpandChevron from '@/components/expand-chevron';
+import UserLabel from '@/components/labels/user-label';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { type ActionsRow, assessmentActionsRows } from '@/dummy-data/actions';
@@ -100,7 +102,23 @@ const columns: ColumnDef<ActionsRow>[] = [
   {
     header: 'Due Date',
   },
-  { header: 'Assignee/s' },
+  {
+    id: 'assignee',
+    header: 'Assignee/s',
+    accessorKey: 'assignee.userId',
+    cell: ({ row }) => {
+      if (row.original.type === 'assessment') {
+        return;
+      }
+      if (row.original.type === 'risk') {
+        return;
+      }
+      if (row.original.type === 'action') {
+        const assignee = row.original.assignee;
+        return <UserLabel user={assignee} />;
+      }
+    },
+  },
   {
     header: 'Resource',
   },
@@ -118,8 +136,9 @@ export default function Actions() {
         filters={[
           {
             columnKey: 'first',
-            Filter: ActionAssessmentFilter,
+            Filter: ActionsAssessmentFilter,
           },
+          { columnKey: 'assignee', Filter: ActionsAssigneeFilter },
         ]}
         searchable
         searchPlaceholder="Search for an action"

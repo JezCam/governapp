@@ -116,7 +116,7 @@ export default function NavTeam() {
                             <span className="text-xs">{member.email}</span>
                           </div>
                           <Badge variant="outline">{member.role}</Badge>
-                          {member.userId === 0 && (
+                          {member.userId === '0' && (
                             <Button variant="secondary">
                               <HugeiconsIcon
                                 icon={Edit04Icon}

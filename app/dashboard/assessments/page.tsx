@@ -4,7 +4,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
 import { useState } from 'react';
-import AssessmentStatusFilter from '@/components/data-table/assessment-status-filter';
+import AssessmentsStatusFilter from '@/components/data-table/assessments-status-filter';
 import { DataTable } from '@/components/data-table/data-table';
 import NewAssessmentDialog from '@/components/dialogs/new-assessment-dialog';
 import SortButton from '@/components/sort-button';
@@ -83,7 +83,7 @@ export default function Assessments() {
           filters={[
             {
               columnKey: 'status',
-              Filter: AssessmentStatusFilter,
+              Filter: AssessmentsStatusFilter,
             },
           ]}
           searchable
