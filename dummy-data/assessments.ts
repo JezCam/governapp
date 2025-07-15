@@ -1,3 +1,4 @@
+import type { Status } from './status';
 import type { TeamMember } from './team';
 
 export const assessmentStatuses = [
@@ -15,7 +16,7 @@ export type UserAssessment = {
 export type Assessment = {
   type: 'self' | 'board';
   name: string;
-  status: (typeof assessmentStatuses)[number];
+  status: Status;
   framework: string;
   dueDate: Date;
   userAssessments: UserAssessment[];

@@ -83,9 +83,7 @@ export default function Assessments() {
           filters={[
             {
               columnKey: 'status',
-              component: ({ value, onChange }) => (
-                <AssessmentStatusFilter onChange={onChange} value={value} />
-              ),
+              Filter: AssessmentStatusFilter,
             },
           ]}
           searchable

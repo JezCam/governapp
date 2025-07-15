@@ -1,3 +1,4 @@
+import type { Risk } from './risk';
 import { type TeamMember, teamMembers } from './team';
 
 export const actionStatuses = [
@@ -17,8 +18,6 @@ export type ActionsRowAction = {
   resource: string;
 };
 
-export const risks = ['green', 'amber', 'red', 'black'] as const;
-
 export type ActionDueSummary = {
   total: number;
   overdue: number;
@@ -33,7 +32,7 @@ export type ActionProgressSummary = {
 export type ActionsRowRisk = {
   type: 'risk';
   id: string;
-  risk: (typeof risks)[number];
+  risk: Risk;
   progressSummary: ActionProgressSummary;
   dueSummary: ActionDueSummary;
   assignees: TeamMember[];

@@ -10,11 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { assessmentStatuses } from '@/dummy-data/assessments';
-import StatusLabel from '../labels/status-label';
+import { assessmentActionsRows } from '@/dummy-data/actions';
 import type { DataTableFilterProps } from './types';
 
-export default function AssessmentStatusFilter(props: DataTableFilterProps) {
+export default function ActionAssessmentFilter(props: DataTableFilterProps) {
   const [value, setValue] = useState<string>(props.value || '');
 
   useEffect(() => {
@@ -24,14 +23,14 @@ export default function AssessmentStatusFilter(props: DataTableFilterProps) {
   return (
     <Select onValueChange={props.onChange} value={value}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select status" />
+        <SelectValue placeholder="Select assessment" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Status</SelectLabel>
-          {assessmentStatuses.map((status) => (
-            <SelectItem key={status} value={status}>
-              <StatusLabel status={status} />
+          <SelectLabel>Assessment</SelectLabel>
+          {assessmentActionsRows.map((row) => (
+            <SelectItem key={row.id} value={row.name}>
+              {row.name}
             </SelectItem>
           ))}
         </SelectGroup>

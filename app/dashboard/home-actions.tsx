@@ -42,7 +42,7 @@ export default function HomeActions() {
                 icon={TaskIcon}
                 strokeWidth={2}
               />
-              <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-purple-800 bg-ga-purple-600 shadow-highlight">
+              <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-purple-700 bg-ga-purple-600 shadow-highlight">
                 <HugeiconsIcon
                   className="size-4 text-white"
                   icon={PlusSignIcon}
@@ -66,7 +66,7 @@ export default function HomeActions() {
                 icon={UserIcon}
                 strokeWidth={2}
               />
-              <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-blue-800 bg-ga-blue-600 shadow-highlight">
+              <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-blue-700 bg-ga-blue-600 shadow-highlight">
                 <HugeiconsIcon
                   className="size-4 text-white"
                   icon={PlusSignIcon}
@@ -91,7 +91,7 @@ export default function HomeActions() {
                   icon={TaskDoneIcon}
                   strokeWidth={2}
                 />
-                <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-green-800 bg-ga-green-600 shadow-highlight">
+                <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-green-700 bg-ga-green-600 shadow-highlight">
                   <HugeiconsIcon
                     className="size-4 text-white"
                     icon={LinkSquare02Icon}
@@ -119,7 +119,7 @@ export default function HomeActions() {
                   icon={ZapIcon}
                   strokeWidth={2}
                 />
-                <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-purple-800 bg-ga-purple-600 shadow-highlight">
+                <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-purple-700 bg-ga-purple-600 shadow-highlight">
                   <HugeiconsIcon
                     className="size-4 text-white"
                     icon={LinkSquare02Icon}

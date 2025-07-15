@@ -9,6 +9,7 @@ import {
   getExpandedRowModel,
   getFilteredRowModel,
   getSortedRowModel,
+  type Row,
   type SortingState,
   useReactTable,
 } from '@tanstack/react-table';
@@ -61,12 +62,47 @@ export function DataTable<TData, TValue>({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Custom hierarchical filter function
+  const hierarchicalFilterFn = (
+    row: Row<TData>,
+    columnId: string,
+    filterValue: unknown
+  ) => {
+    const checkRowAndParents = (currentRow: Row<TData>): boolean => {
+      // Check if current row matches the filter
+      const cellValue = currentRow.getValue(columnId);
+      const rowMatches = String(cellValue)
+        .toLowerCase()
+        .includes(String(filterValue).toLowerCase());
+
+      const parentRows = currentRow.getParentRows();
+
+      // If current row matches, include it and expand its parents
+      if (rowMatches) {
+        for (const parentRow of parentRows) {
+          parentRow.toggleExpanded(true); // Expand parent rows
+        }
+        return true;
+      }
+
+      // Check parent rows recursively
+      if (parentRows.length > 0) {
+        return parentRows.some((parentRow) => checkRowAndParents(parentRow));
+      }
+
+      return false;
+    };
+
+    return checkRowAndParents(row);
+  };
+
   const table = useReactTable({
+    filterFromLeafRows: true, // Ensure that the filter function applies to leaf rows
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(), // needed for client-side global filtering
-    globalFilterFn: 'includesString', // built-in filter function
+    globalFilterFn: hierarchicalFilterFn, // Use our custom filter function
     onGlobalFilterChange: setGlobalFilter,
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
@@ -89,18 +125,21 @@ export function DataTable<TData, TValue>({
     }
   };
 
-  const renderedFilters = filters?.map((filter) => {
-    const column = table.getColumn(filter.columnKey);
+  const renderedFilters = filters?.map(({ columnKey, Filter }) => {
+    const column = table.getColumn(columnKey);
     if (!column) {
       return null;
     }
+
+    // Apply the hierarchical filter function to this column
+    column.columnDef.filterFn = hierarchicalFilterFn;
+
     return (
-      <div key={filter.columnKey}>
-        {filter.component({
-          onChange: (value) => column.setFilterValue(value),
-          value: column.getFilterValue() as string,
-        })}
-      </div>
+      <Filter
+        key={columnKey}
+        onChange={(value) => column.setFilterValue(value)}
+        value={column.getFilterValue() as string}
+      />
     );
   });
 

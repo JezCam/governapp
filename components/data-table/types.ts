@@ -1,13 +1,11 @@
-import type { ReactNode } from 'react';
+import type { ComponentType } from 'react';
 
 export type DataTableFilterProps = {
   value: string;
   onChange: (value: string) => void;
 };
 
-export type DataTableFilter = (props: DataTableFilterProps) => ReactNode;
-
 export type DataTableFilters = {
   columnKey: string;
-  component: DataTableFilter;
+  Filter: ComponentType<DataTableFilterProps>;
 }[];
