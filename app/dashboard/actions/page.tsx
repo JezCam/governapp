@@ -1,5 +1,8 @@
 'use client';
 
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Hexagon01Icon } from '@hugeicons-pro/core-solid-rounded';
+import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '@/components/data-table/data-table';
 import ActionsAssessmentFilter from '@/components/data-table/filters/actions-assessment-filter';
@@ -8,12 +11,16 @@ import ExpandChevron from '@/components/expand-chevron';
 import DueDateLabel from '@/components/labels/due-date-label';
 import UserLabel from '@/components/labels/user-label';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { type ActionsRow, assessmentActionsRows } from '@/dummy-data/actions';
+import { cn, formatDateTime } from '@/lib/utils';
 
 const columns: ColumnDef<ActionsRow>[] = [
   {
     id: 'first',
+    size: 40,
+    maxSize: 40,
     accessorFn: (row) => {
       switch (row.type) {
         case 'assessment':
@@ -30,38 +37,49 @@ const columns: ColumnDef<ActionsRow>[] = [
       switch (row.original.type) {
         case 'assessment':
           return (
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <ExpandChevron expanded={row.getIsExpanded()} />
-                <span className="font-medium">{row.original.name}</span>
+            <div className="flex gap-2">
+              <ExpandChevron
+                className="mt-0.75 shrink-0"
+                expanded={row.getIsExpanded()}
+              />
+              <div className="flex w-full flex-col">
+                <span className="line-clamp-1 truncate font-medium text-base">
+                  {row.original.name}
+                </span>
+                <div className="flex items-center gap-1">
+                  {/* Framework Icon */}
+                  <HugeiconsIcon
+                    className="size-3.5 text-primary"
+                    icon={Hexagon01Icon}
+                  />
+                  <span className="line-clamp-1 truncate font-medium text-primary">
+                    {row.original.framework}
+                  </span>
+                </div>
               </div>
-              <Badge className="rounded-sm px-1.5" variant="actions">
-                {row.original.progressSummary.total}
-              </Badge>
             </div>
           );
         case 'risk':
           return (
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <ExpandChevron
-                  className="ml-6"
-                  expanded={row.getIsExpanded()}
-                />
-                <Badge variant={row.original.risk} />
-              </div>
-              <Badge className="rounded-sm px-1.5" variant="actions">
-                {row.original.progressSummary.total}
-              </Badge>
+            <div className="flex items-center gap-2">
+              <ExpandChevron className="ml-6" expanded={row.getIsExpanded()} />
+              <Badge variant={row.original.risk} />
             </div>
           );
         case 'action':
           return (
-            <div className="flex items-center gap-2">
-              <ExpandChevron className="ml-12" expanded={row.getIsExpanded()} />
-              <span className="font-medium">
+            <div className="flex w-full gap-2">
+              <ExpandChevron
+                className="mt-0.5 ml-12 shrink-0"
+                expanded={row.getIsExpanded()}
+              />
+              <span
+                className={cn(
+                  'whitespace-pre-wrap font-medium',
+                  row.getIsExpanded() ? '' : 'line-clamp-1 truncate'
+                )}
+              >
                 {row.original.text}
-                {row.getIsExpanded() ? "I'm expanded woohoo!" : ''}
               </span>
             </div>
           );
@@ -70,6 +88,8 @@ const columns: ColumnDef<ActionsRow>[] = [
     },
   },
   {
+    size: 15,
+    maxSize: 15,
     accessorKey: 'progress',
     header: 'Progress',
     cell: ({ row }) => {
@@ -101,10 +121,17 @@ const columns: ColumnDef<ActionsRow>[] = [
     },
   },
   {
-    header: 'Due Date',
+    size: 15,
+    maxSize: 15,
+    header: 'Date',
     cell: ({ row }) => {
       if (row.original.type === 'assessment') {
-        return;
+        return (
+          <span className="font-medium text-xs">
+            {row.original.assessmentType === 'self' ? 'Completed' : 'Closed'}{' '}
+            {formatDateTime(row.original.date.getTime())}
+          </span>
+        );
       }
       if (row.original.type === 'risk') {
         return;
@@ -116,6 +143,8 @@ const columns: ColumnDef<ActionsRow>[] = [
     },
   },
   {
+    size: 15,
+    maxSize: 15,
     id: 'assignee',
     header: 'Assignee/s',
     accessorKey: 'assignee.userId',
@@ -133,10 +162,29 @@ const columns: ColumnDef<ActionsRow>[] = [
     },
   },
   {
+    size: 10,
+    maxSize: 10,
     header: 'Resource',
   },
   {
+    size: 5,
+    maxSize: 5,
     id: 'menu',
+    cell: ({ row }) => {
+      if (row.original.type === 'assessment') {
+        return;
+      }
+      if (row.original.type === 'risk') {
+        return;
+      }
+      if (row.original.type === 'action') {
+        return (
+          <Button className="float-right size-7" size="icon" variant="outline">
+            <HugeiconsIcon icon={MoreHorizontalIcon} />
+          </Button>
+        );
+      }
+    },
   },
 ];
 
@@ -156,7 +204,7 @@ export default function Actions() {
         searchable
         searchPlaceholder="Search for an action"
         title="Actions"
-        total={8}
+        totalDepth={2}
         totalVariant="actions"
       />
     </div>

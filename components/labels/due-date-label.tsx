@@ -32,7 +32,7 @@ export default function DueDateLabel({
   return (
     <div
       className={cn(
-        'flex items-center gap-1 text-gray-600 text-xs',
+        'flex items-center gap-1 text-gray-700 text-xs',
         daysRemaining <= DUE_SOON_THRESHOLD ? 'text-amber-600' : '',
         daysRemaining < 0 ? 'text-red-600' : '',
         className

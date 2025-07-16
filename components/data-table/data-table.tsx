@@ -31,7 +31,7 @@ import type { DataTableFilters } from './types';
 
 interface DataTableProps<TData, TValue> {
   title?: string;
-  total?: number; // Total number of items, used for display purposes
+  totalDepth?: number; // Depth of the hierarchy for the total count
   totalVariant?: 'blue' | 'actions' | 'outline';
   actionText?: string;
   actionOnClick?: () => void;
@@ -45,7 +45,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({
   title = 'Data',
-  total,
+  totalDepth = 0,
   totalVariant = 'blue',
   actionText,
   actionOnClick,
@@ -96,6 +96,27 @@ export function DataTable<TData, TValue>({
     return checkRowAndParents(row);
   };
 
+  const getTotal = (rows: Row<TData>[]) => {
+    if (totalDepth === 0) {
+      return rows.length;
+    }
+
+    let total = 0;
+    const countRows = (_rows: Row<TData>[]) => {
+      for (const row of _rows) {
+        if (row.depth === totalDepth) {
+          total++;
+        }
+        if (row.subRows && row.subRows.length > 0) {
+          countRows(row.subRows);
+        }
+      }
+    };
+    countRows(rows);
+
+    return total;
+  };
+
   const table = useReactTable({
     filterFromLeafRows: true, // Ensure that the filter function applies to leaf rows
     data,
@@ -144,7 +165,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex size-full flex-col gap-4">
       <div className="flex items-center gap-2">
         {searchable && (
           <div className="relative w-full max-w-xs">
@@ -179,12 +200,12 @@ export function DataTable<TData, TValue>({
           </Button>
         )}
       </div>
-      <div className="overflow-hidden rounded-xl border bg-accent">
-        <div className="flex items-center justify-between border-b bg-background px-3 py-3">
+      <div className="flex h-fit max-h-full flex-col overflow-hidden rounded-xl border bg-accent">
+        <div className="flex items-center justify-between rounded-t-xl border-b bg-background px-3 py-3">
           <div className="flex w-full items-center gap-3">
             <h2 className="font-semibold text-base">{title}</h2>
-            <Badge className="rounded-sm px-1.5" variant={totalVariant}>
-              {total ?? data.length}
+            <Badge className="px-1.5" variant={totalVariant}>
+              {getTotal(table.getFilteredRowModel().rows)}
             </Badge>
           </div>
           {actionText && (
@@ -193,78 +214,95 @@ export function DataTable<TData, TValue>({
             </Button>
           )}
         </div>
-        <div className="px-2 pb-2">
-          <Table className="border-separate border-spacing-0">
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
+        <Table className="relative h-full table-fixed border-separate border-spacing-0 overflow-auto px-2 pb-2">
+          <TableHeader className="sticky top-0 z-10 bg-accent">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow
+                className="[&>th]:border-l [&>th]:px-3 [&>th]:first:border-l-0 [&>th]:last:border-l-0"
+                key={headerGroup.id}
+              >
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      className="text-muted-foreground"
+                      key={header.id}
+                      style={{ width: `${header.getSize()}%` }}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
                 <TableRow
-                  className="border-none [&>th]:border-l [&>th]:px-3 [&>th]:first:border-l-0 [&>th]:last:border-l-0"
-                  key={headerGroup.id}
+                  className={cn(
+                    'group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:bg-background [&>td]:px-3 [&>td]:last:border-l-0',
+                    // Table Cell Borders
+                    '[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-r',
+                    // First Row
+                    'first:[&>td]:border-t',
+                    // Bottom Right
+                    'last:[&>td]:last:rounded-br-md',
+                    // Bottom Left
+                    'last:[&>td]:first:rounded-bl-md',
+                    // Top Right
+                    'first:[&>td]:last:rounded-tr-md',
+                    // Top Left
+                    'first:[&>td]:first:rounded-tl-md'
+                  )}
+                  data-state={row.getIsSelected() && 'selected'}
+                  key={row.id}
+                  onClick={() => row.toggleExpanded()}
                 >
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead
-                        className="text-muted-foreground"
-                        key={header.id}
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    className={cn(
-                      'group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:bg-background [&>td]:px-3 [&>td]:last:border-l-0',
-                      // Table Cell Borders
-                      '[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-r',
-                      // First Row
-                      'first:[&>td]:border-t',
-                      // Bottom Right
-                      'last:[&>td]:last:rounded-br-md',
-                      // Bottom Left
-                      'last:[&>td]:first:rounded-bl-md',
-                      // Top Right
-                      'first:[&>td]:last:rounded-tr-md',
-                      // Top Left
-                      'first:[&>td]:first:rounded-tl-md'
-                    )}
-                    data-state={row.getIsSelected() && 'selected'}
-                    key={row.id}
-                    onClick={() => row.toggleExpanded()}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
+                  {row.getVisibleCells().map((cell, index) => (
+                    <TableCell
+                      className={cn(
+                        'relative',
+                        row.getIsExpanded() ? 'content-start' : ''
+                      )}
+                      key={cell.id}
+                    >
+                      {!!totalDepth && index === 0 && !!row.subRows.length ? (
+                        <div className="flex items-center justify-between">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                          <Badge variant="actions">
+                            {getTotal(row.subRows)}
+                          </Badge>
+                        </div>
+                      ) : (
+                        flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    className="h-24 text-center"
-                    colSpan={columns.length}
-                  >
-                    No results.
-                  </TableCell>
+                        )
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  className="h-24 text-center"
+                  colSpan={columns.length}
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

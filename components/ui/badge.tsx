@@ -102,7 +102,7 @@ const badgeVariants = cva(
                   text-ga-purple-700 dark:text-ga-purple-100
                   shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-ga-purple-300)] dark:shadow-[inset_0_0_0_1px_var(--color-ga-purple-900),_0_1px_0_var(--color-black)]
                   
-                  pl-1 pr-1.5 gap-0.75`,
+                  pl-1 pr-1.5 gap-0.75 rounded-sm`,
       },
     },
     defaultVariants: {

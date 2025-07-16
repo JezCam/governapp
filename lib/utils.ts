@@ -8,5 +8,5 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatDateTime(time: number) {
   const date = new Date(time);
-  return format(date, 'EE, d MMM yyyy');
+  return format(date, 'd MMM yyyy');
 }
