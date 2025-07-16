@@ -4,17 +4,20 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Hexagon01Icon } from '@hugeicons-pro/core-solid-rounded';
 import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
+import ActionsAssessmentFilter from '@/app/dashboard/actions/actions-assessment-filter';
+import DueDateLabel from '@/app/dashboard/actions/due-date-cell';
 import { DataTable } from '@/components/data-table/data-table';
-import ActionsAssessmentFilter from '@/components/data-table/filters/actions-assessment-filter';
-import ActionsAssigneeFilter from '@/components/data-table/filters/actions-assignee-filter';
 import ExpandChevron from '@/components/expand-chevron';
-import DueDateLabel from '@/components/labels/due-date-label';
 import UserLabel from '@/components/labels/user-label';
+import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+// import { Progress } from '@/components/ui/progress';
 import { type ActionsRow, assessmentActionsRows } from '@/dummy-data/actions';
-import { cn, formatDateTime } from '@/lib/utils';
+import { cn } from '@/lib/utils';
+import ActionsAssigneeFilter from './actions-assignee-filter';
+
+// import DueDatesOverview from './due-dates-overview-cell';
 
 const columns: ColumnDef<ActionsRow>[] = [
   {
@@ -32,7 +35,7 @@ const columns: ColumnDef<ActionsRow>[] = [
         default:
       }
     },
-    header: () => <span className="font-medium">Name</span>,
+    header: undefined,
     cell: ({ row }) => {
       switch (row.original.type) {
         case 'assessment':
@@ -90,30 +93,36 @@ const columns: ColumnDef<ActionsRow>[] = [
   {
     size: 15,
     maxSize: 15,
-    accessorKey: 'progress',
-    header: 'Progress',
+    id: 'progress',
+    accessorFn: (row) => {
+      if (row.type === 'assessment') {
+        // return row.progressSummary.completed / row.progressSummary.total;
+      }
+      return null;
+    },
+    header: ({ column }) => <SortButton column={column}>Progress</SortButton>,
     cell: ({ row }) => {
       if (row.original.type === 'assessment') {
-        const { total, completed } = row.original.progressSummary;
-        return (
-          <div className="flex items-center gap-2">
-            <Progress value={(completed / total) * 100} />
-            <span className="font-medium text-xs">
-              {`${completed}/${total}`}
-            </span>
-          </div>
-        );
+        // const { total, completed } = row.original.progressSummary;
+        // return (
+        //   <div className="flex items-center gap-2">
+        //     <Progress value={(completed / total) * 100} />
+        //     <span className="font-medium text-xs">
+        //       {`${completed}/${total}`}
+        //     </span>
+        //   </div>
+        // );
       }
       if (row.original.type === 'risk') {
-        const { total, completed } = row.original.progressSummary;
-        return (
-          <div className="flex items-center gap-2">
-            <Progress value={(completed / total) * 100} />
-            <span className="font-medium text-xs">
-              {`${completed}/${total}`}
-            </span>
-          </div>
-        );
+        // const { total, completed } = row.original.progressSummary;
+        // return (
+        //   <div className="flex items-center gap-2">
+        //     <Progress value={(completed / total) * 100} />
+        //     <span className="font-medium text-xs">
+        //       {`${completed}/${total}`}
+        //     </span>
+        //   </div>
+        // );
       }
       if (row.original.type === 'action') {
         return <Badge variant={row.original.status} />;
@@ -123,18 +132,18 @@ const columns: ColumnDef<ActionsRow>[] = [
   {
     size: 15,
     maxSize: 15,
-    header: 'Date',
+    accessorKey: 'date',
+    header: ({ column }) => <SortButton column={column}>Date</SortButton>,
     cell: ({ row }) => {
       if (row.original.type === 'assessment') {
-        return (
-          <span className="font-medium text-xs">
-            {row.original.assessmentType === 'self' ? 'Completed' : 'Closed'}{' '}
-            {formatDateTime(row.original.date.getTime())}
-          </span>
-        );
+        // return <DueDatesOverview actionDueSummary={row.original.dueSummary} />;
+        // <span className="font-medium text-xs">
+        //   {row.original.assessmentType === 'self' ? 'Completed' : 'Closed'}{' '}
+        //   {formatDateTime(row.original.date.getTime())}
+        // </span>
       }
       if (row.original.type === 'risk') {
-        return;
+        // return <DueDatesOverview actionDueSummary={row.original.dueSummary} />;
       }
       if (row.original.type === 'action') {
         const dueDate = row.original.dueDate;

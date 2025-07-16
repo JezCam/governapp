@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { assessmentActionsRows } from '@/dummy-data/actions';
-import type { DataTableFilterProps } from '../types';
+import type { DataTableFilterProps } from '../../../components/data-table/types';
 
 export default function ActionsAssessmentFilter(props: DataTableFilterProps) {
   const [value, setValue] = useState<string>(props.value || '');

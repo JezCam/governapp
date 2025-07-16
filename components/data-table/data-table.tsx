@@ -267,7 +267,9 @@ export function DataTable<TData, TValue>({
                     <TableCell
                       className={cn(
                         'relative',
-                        row.getIsExpanded() ? 'content-start' : ''
+                        row.depth === 2 && row.getIsExpanded()
+                          ? 'content-start'
+                          : ''
                       )}
                       key={cell.id}
                     >

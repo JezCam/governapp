@@ -11,8 +11,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { assessmentStatuses } from '@/dummy-data/assessments';
-import StatusLabel from '../../labels/status-label';
-import type { DataTableFilterProps } from '../types';
+import type { DataTableFilterProps } from '../../../components/data-table/types';
+import StatusLabel from '../../../components/labels/status-label';
 
 export default function AssessmentsStatusFilter(props: DataTableFilterProps) {
   const [value, setValue] = useState<string>(props.value || '');

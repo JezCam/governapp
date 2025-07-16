@@ -24,18 +24,10 @@ export type ActionDueSummary = {
   soon: number;
 };
 
-export type ActionProgressSummary = {
-  total: number;
-  completed: number;
-};
-
 export type ActionsRowRisk = {
   type: 'risk';
   id: string;
   risk: Risk;
-  progressSummary: ActionProgressSummary;
-  dueSummary: ActionDueSummary;
-  assignees: TeamMember[];
   subRows: ActionsRowAction[];
 };
 
@@ -48,9 +40,6 @@ export type ActionsRowAssessment = {
   date: Date;
   participants: TeamMember[];
   numParticipantsCompleted: number;
-  progressSummary: ActionProgressSummary;
-  dueSummary: ActionDueSummary;
-  assignees: TeamMember[];
   subRows: ActionsRowRisk[];
 };
 
@@ -69,31 +58,11 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
     date: new Date('2023-12-31'),
     participants: teamMembers,
     numParticipantsCompleted: 3,
-    progressSummary: {
-      total: 4,
-      completed: 1,
-    },
-    dueSummary: {
-      total: 4,
-      overdue: 1,
-      soon: 2,
-    },
-    assignees: teamMembers,
     subRows: [
       {
         id: '1',
         type: 'risk',
         risk: 'green',
-        progressSummary: {
-          total: 2,
-          completed: 1,
-        },
-        dueSummary: {
-          total: 2,
-          overdue: 1,
-          soon: 0,
-        },
-        assignees: [teamMembers[0], teamMembers[1]],
         subRows: [
           {
             id: '1',
@@ -119,16 +88,6 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
         id: '2',
         type: 'risk',
         risk: 'amber',
-        progressSummary: {
-          total: 2,
-          completed: 0,
-        },
-        dueSummary: {
-          total: 2,
-          overdue: 0,
-          soon: 1,
-        },
-        assignees: [teamMembers[2]],
         subRows: [
           {
             id: '3',
@@ -154,16 +113,6 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
         id: '3',
         type: 'risk',
         risk: 'red',
-        progressSummary: {
-          total: 2,
-          completed: 0,
-        },
-        dueSummary: {
-          total: 2,
-          overdue: 0,
-          soon: 1,
-        },
-        assignees: [teamMembers[3], teamMembers[4]],
         subRows: [
           {
             id: '5',
@@ -189,16 +138,6 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
         id: '4',
         type: 'risk',
         risk: 'black',
-        progressSummary: {
-          total: 2,
-          completed: 0,
-        },
-        dueSummary: {
-          total: 2,
-          overdue: 0,
-          soon: 1,
-        },
-        assignees: [teamMembers[0]],
         subRows: [
           {
             id: '7',
@@ -231,31 +170,11 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
     date: new Date('2024-01-15'),
     participants: teamMembers,
     numParticipantsCompleted: 2,
-    progressSummary: {
-      total: 4,
-      completed: 1,
-    },
-    dueSummary: {
-      total: 4,
-      overdue: 0,
-      soon: 2,
-    },
-    assignees: [teamMembers[3], teamMembers[4]],
     subRows: [
       {
         id: '1',
         type: 'risk',
         risk: 'green',
-        progressSummary: {
-          total: 2,
-          completed: 1,
-        },
-        dueSummary: {
-          total: 2,
-          overdue: 1,
-          soon: 0,
-        },
-        assignees: [teamMembers[0], teamMembers[1]],
         subRows: [
           {
             id: '1',
@@ -281,16 +200,6 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
         id: '2',
         type: 'risk',
         risk: 'amber',
-        progressSummary: {
-          total: 2,
-          completed: 0,
-        },
-        dueSummary: {
-          total: 2,
-          overdue: 0,
-          soon: 1,
-        },
-        assignees: [teamMembers[2]],
         subRows: [
           {
             id: '3',
@@ -316,16 +225,6 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
         id: '3',
         type: 'risk',
         risk: 'red',
-        progressSummary: {
-          total: 2,
-          completed: 0,
-        },
-        dueSummary: {
-          total: 2,
-          overdue: 0,
-          soon: 1,
-        },
-        assignees: [teamMembers[3], teamMembers[4]],
         subRows: [
           {
             id: '5',
@@ -351,16 +250,6 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
         id: '4',
         type: 'risk',
         risk: 'black',
-        progressSummary: {
-          total: 2,
-          completed: 0,
-        },
-        dueSummary: {
-          total: 2,
-          overdue: 0,
-          soon: 1,
-        },
-        assignees: [teamMembers[0]],
         subRows: [
           {
             id: '7',

@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import type { DataTableFilterProps } from '@/components/data-table/types';
+import UserLabel from '@/components/labels/user-label';
 import {
   Select,
   SelectContent,
@@ -11,8 +13,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { teamMembers } from '@/dummy-data/team';
-import UserLabel from '../../labels/user-label';
-import type { DataTableFilterProps } from '../types';
 
 export default function ActionsAssigneeFilter(props: DataTableFilterProps) {
   const [value, setValue] = useState<string>(props.value || '');
