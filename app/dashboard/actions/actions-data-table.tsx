@@ -37,6 +37,7 @@ import {
   getAssigneesOverview,
   getDueDatesOverview,
   getProgressOverview,
+  getRowRiskBackground,
   getTotal,
   hierarchicalFilterFn,
 } from './row-functions';
@@ -181,7 +182,7 @@ export function ActionsDataTable({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   className={cn(
-                    'group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:bg-background [&>td]:px-3 [&>td]:last:border-l-0',
+                    'group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:px-3 [&>td]:last:border-l-0',
                     // Table Cell Borders
                     '[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-r',
                     // First Row
@@ -206,6 +207,7 @@ export function ActionsDataTable({
                       <TableCell
                         className={cn(
                           'relative',
+                          getRowRiskBackground(row),
                           row.depth === 2 && row.getIsExpanded()
                             ? 'content-start'
                             : ''

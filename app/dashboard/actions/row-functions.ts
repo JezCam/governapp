@@ -92,7 +92,9 @@ export const getAssigneesOverview = (row: Row<ActionsRow>) => {
 
 export const expandToDepth = (table: Table<ActionsRow>, depth: number) => {
   for (const row of table.getRowModel().rows) {
-    row.toggleExpanded(true);
+    if (row.depth <= depth) {
+      row.toggleExpanded(true);
+    }
     if (depth > 0) {
       for (const subRow of row.subRows) {
         subRow.toggleExpanded(true);
@@ -133,4 +135,31 @@ export const hierarchicalFilterFn = (
   };
 
   return checkRowAndParents(row);
+};
+
+export const getRowRiskBackground = (row: Row<ActionsRow>) => {
+  let risk: string | undefined;
+  if (row.depth === 0) {
+    return 'bg-background';
+  }
+  if (row.depth === 1) {
+    risk = row.getValue('first');
+  }
+  if (row.depth === 2) {
+    const parentRow = row.getParentRow();
+    risk = parentRow ? parentRow.getValue('first') : 'none';
+  }
+  if (risk === 'black') {
+    return 'bg-gray-100 dark:bg-gray-800';
+  }
+  if (risk === 'red') {
+    return 'bg-red-50 dark:bg-red-950/50';
+  }
+  if (risk === 'amber') {
+    return 'bg-amber-50 dark:bg-amber-950/50';
+  }
+  if (risk === 'green') {
+    return 'bg-green-50 dark:bg-green-950/50';
+  }
+  return 'bg-background';
 };
