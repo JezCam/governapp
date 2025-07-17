@@ -12,7 +12,7 @@ export default function ProgressOverview({
 
   return (
     <div className="flex items-center gap-2">
-      <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800">
+      <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
         <div
           className="absolute h-full w-full flex-1 bg-amber-500 transition-all"
           style={{

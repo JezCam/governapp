@@ -34,7 +34,7 @@ export default function UserAvatarStack({
       <AvatarStack size={size}>
         {users.map((user) => (
           <Tooltip key={user.userId}>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <UserAvatar user={user} />
             </TooltipTrigger>
             <TooltipContent>{user.name}</TooltipContent>

@@ -25,8 +25,22 @@ const buttonVariants = cva(
                   
                   data-[state=open]:shadow-[inset_0_0_0_1px_var(--color-ga-purple-400),_0_3px_0_var(--color-ga-purple-800)] dark:data-[state=open]:shadow-[inset_0_0_0_1px_var(--color-ga-purple-400),_0_3px_0_var(--color-black)]
                   data-[state=open]:-translate-y-0.5`,
-        destructive:
-          'border border-red-800 bg-destructive text-white shadow-highlight hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:border-black dark:bg-destructive/60 dark:focus-visible:ring-destructive/40',
+        destructive: `bg-gradient-to-b from-red-600 via-red-500 to-red-400 bg-size-[200%_200%] bg-position-[0%_0%]
+                      border-1 border-red-800 dark:border-black
+                      text-red-100 text-shadow-sm
+                      shadow-[inset_0_0_0_1px_var(--color-red-500),_0_1px_0_var(--color-red-800)] dark:shadow-[inset_0_0_0_1px_var(--color-red-500),_0_1px_0_var(--color-black)]
+        
+                      hover:bg-position-[100%_100%]
+                      hover:text-white
+                      hover:shadow-[inset_0_0_0_1px_var(--color-red-400),_0_3px_0_var(--color-red-800)] dark:hover:shadow-[inset_0_0_0_1px_var(--color-red-400),_0_3px_0_var(--color-black)]
+                      hover:-translate-y-0.5 transition-all
+        
+                      focus-visible:ring-red-400 focus-visible:border-red-200 dark:focus-visible:ring-red-700 dark:focus-visible:border-red-900
+                      active:!shadow-[inset_0_0_0_1px_var(--color-red-400),_0_1px_0_var(--color-red-800)] dark:active:!shadow-[inset_0_0_0_1px_var(--color-red-400),_0_1px_0_var(--color-black)]
+                      active:!translate-y-0
+        
+                      data-[state=open]:shadow-[inset_0_0_0_1px_var(--color-red-400),_0_3px_0_var(--color-red-800)] dark:data-[state=open]:shadow-[inset_0_0_0_1px_var(--color-red-400),_0_3px_0_var(--color-black)]
+                      data-[state=open]:-translate-y-0.5`,
         outline:
           'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50',
         secondary:

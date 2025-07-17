@@ -1,5 +1,7 @@
 'use client';
 
+import { HugeiconsIcon } from '@hugeicons/react';
+import { File01Icon } from '@hugeicons-pro/core-stroke-rounded';
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -150,6 +152,16 @@ export function ActionsDataTable({
               {getTotal(table.getFilteredRowModel().rows)}
             </Badge>
           </div>
+          {columnFilters.find((filter) => filter.id === 'first') && (
+            <Button size="sm">
+              <HugeiconsIcon icon={File01Icon} strokeWidth={2} />
+              {
+                columnFilters.find((filter) => filter.id === 'first')
+                  ?.value as string
+              }{' '}
+              Report
+            </Button>
+          )}
         </div>
         <Table className="relative h-full table-fixed border-separate border-spacing-0 overflow-auto px-2 pb-2">
           <TableHeader className="sticky top-0 z-10 bg-accent">

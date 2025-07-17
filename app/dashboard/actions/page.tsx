@@ -2,14 +2,27 @@
 
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Hexagon01Icon } from '@hugeicons-pro/core-solid-rounded';
-import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
+import { Comment01Icon, Edit04Icon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
+import { useState } from 'react';
 import DueDateLabel from '@/app/dashboard/actions/due-date';
 import ExpandChevron from '@/components/expand-chevron';
 import UserLabel from '@/components/labels/user-label';
 import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 // import { Progress } from '@/components/ui/progress';
 import { type ActionsRow, assessmentActionsRows } from '@/dummy-data/actions';
 import { cn } from '@/lib/utils';
@@ -18,7 +31,9 @@ import { hierarchicalFilterFn } from './row-functions';
 
 // import DueDatesOverview from './due-dates-overview-cell';
 
-const columns: ColumnDef<ActionsRow>[] = [
+const getActionsColumns = (
+  onOpenComments: () => void
+): ColumnDef<ActionsRow>[] => [
   {
     id: 'first',
     size: 40,
@@ -150,13 +165,13 @@ const columns: ColumnDef<ActionsRow>[] = [
     },
   },
   {
-    size: 10,
-    maxSize: 10,
+    size: 7.5,
+    maxSize: 7.5,
     header: 'Resource',
   },
   {
-    size: 5,
-    maxSize: 5,
+    size: 7.5,
+    maxSize: 7.5,
     id: 'menu',
     cell: ({ row }) => {
       if (row.original.type === 'assessment') {
@@ -167,9 +182,41 @@ const columns: ColumnDef<ActionsRow>[] = [
       }
       if (row.original.type === 'action') {
         return (
-          <Button className="float-right size-7" size="icon" variant="outline">
-            <HugeiconsIcon icon={MoreHorizontalIcon} />
-          </Button>
+          <div className="flex items-center justify-end gap-1">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="float-right size-7"
+                    size="icon"
+                    variant="outline"
+                  >
+                    <HugeiconsIcon icon={Edit04Icon} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Edit action</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="relative float-right size-7"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenComments();
+                    }}
+                    size="icon"
+                    variant="outline"
+                  >
+                    <HugeiconsIcon icon={Comment01Icon} />
+                    <div className="-top-1.5 -right-1.5 absolute flex size-3.5 items-center justify-center rounded-full bg-red-500 font-bold text-white text-xs">
+                      3
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>View comments</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         );
       }
     },
@@ -177,9 +224,22 @@ const columns: ColumnDef<ActionsRow>[] = [
 ];
 
 export default function Actions() {
+  const [commentsOpen, setCommentsOpen] = useState<boolean>(false);
+
+  const actionsColumns = getActionsColumns(() => {
+    setCommentsOpen(true);
+  });
+
   return (
     <div className="flex size-full flex-col gap-4 p-4">
-      <ActionsDataTable columns={columns} data={assessmentActionsRows} />
+      <Sheet onOpenChange={setCommentsOpen} open={commentsOpen}>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Comments</SheetTitle>
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
+      <ActionsDataTable columns={actionsColumns} data={assessmentActionsRows} />
     </div>
   );
 }
