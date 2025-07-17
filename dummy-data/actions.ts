@@ -14,14 +14,8 @@ export type ActionsRowAction = {
   text: string;
   status: (typeof actionStatuses)[number];
   dueDate: Date;
-  assignee: TeamMember;
+  assignee?: TeamMember;
   resource: string;
-};
-
-export type ActionDueSummary = {
-  total: number;
-  overdue: number;
-  soon: number;
 };
 
 export type ActionsRowRisk = {
@@ -60,52 +54,27 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
     numParticipantsCompleted: 3,
     subRows: [
       {
-        id: '1',
+        id: '4',
         type: 'risk',
-        risk: 'green',
+        risk: 'black',
         subRows: [
           {
-            id: '1',
+            id: '7',
             type: 'action',
-            text: 'Review financial policies',
+            text: 'Update board policies',
             status: 'in-progress',
-            dueDate: new Date('2025-11-15'),
+            dueDate: new Date('2024-01-05'),
             assignee: teamMembers[0],
-            resource: 'https://example.com/resource1',
+            resource: 'https://example.com/resource7',
           },
           {
-            id: '2',
+            id: '8',
             type: 'action',
-            text: 'Update risk management plan',
+            text: 'Conduct board training',
             status: 'not-started',
-            dueDate: new Date('2023-12-01'),
-            assignee: teamMembers[1],
-            resource: 'https://example.com/resource2',
-          },
-        ],
-      },
-      {
-        id: '2',
-        type: 'risk',
-        risk: 'amber',
-        subRows: [
-          {
-            id: '3',
-            type: 'action',
-            text: 'Conduct board evaluation',
-            status: 'completed',
-            dueDate: new Date(),
-            assignee: teamMembers[2],
-            resource: 'https://example.com/resource3',
-          },
-          {
-            id: '4',
-            type: 'action',
-            text: 'Implement new compliance measures',
-            status: 'blocked',
-            dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day from today
-            assignee: teamMembers[2],
-            resource: 'https://example.com/resource4',
+            dueDate: new Date('2024-01-25'),
+            assignee: teamMembers[0],
+            resource: 'https://example.com/resource8',
           },
         ],
       },
@@ -135,27 +104,51 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
         ],
       },
       {
-        id: '4',
+        id: '2',
         type: 'risk',
-        risk: 'black',
+        risk: 'amber',
         subRows: [
           {
-            id: '7',
+            id: '3',
             type: 'action',
-            text: 'Update board policies',
-            status: 'in-progress',
-            dueDate: new Date('2024-01-05'),
-            assignee: teamMembers[0],
-            resource: 'https://example.com/resource7',
+            text: 'Conduct board evaluation',
+            status: 'completed',
+            dueDate: new Date(),
+            assignee: teamMembers[2],
+            resource: 'https://example.com/resource3',
           },
           {
-            id: '8',
+            id: '4',
             type: 'action',
-            text: 'Conduct board training',
+            text: 'Implement new compliance measures',
+            status: 'blocked',
+            dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day from today
+            assignee: teamMembers[2],
+            resource: 'https://example.com/resource4',
+          },
+        ],
+      },
+      {
+        id: '1',
+        type: 'risk',
+        risk: 'green',
+        subRows: [
+          {
+            id: '1',
+            type: 'action',
+            text: 'Review financial policies',
+            status: 'in-progress',
+            dueDate: new Date('2025-11-15'),
+            // assignee: teamMembers[0],
+            resource: 'https://example.com/resource1',
+          },
+          {
+            id: '2',
+            type: 'action',
+            text: 'Update risk management plan',
             status: 'not-started',
-            dueDate: new Date('2024-01-25'),
-            assignee: teamMembers[0],
-            resource: 'https://example.com/resource8',
+            dueDate: new Date('2023-12-01'),
+            resource: 'https://example.com/resource2',
           },
         ],
       },
@@ -172,52 +165,27 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
     numParticipantsCompleted: 2,
     subRows: [
       {
-        id: '1',
+        id: '4',
         type: 'risk',
-        risk: 'green',
+        risk: 'black',
         subRows: [
           {
-            id: '1',
+            id: '7',
             type: 'action',
-            text: 'Review financial policies',
+            text: 'Update board policies',
             status: 'in-progress',
-            dueDate: new Date('2025-11-15'),
+            dueDate: new Date('2024-01-05'),
             assignee: teamMembers[0],
-            resource: 'https://example.com/resource1',
+            resource: 'https://example.com/resource7',
           },
           {
-            id: '2',
+            id: '8',
             type: 'action',
-            text: 'Update risk management plan',
+            text: 'Conduct board training',
             status: 'not-started',
-            dueDate: new Date('2023-12-01'),
-            assignee: teamMembers[1],
-            resource: 'https://example.com/resource2',
-          },
-        ],
-      },
-      {
-        id: '2',
-        type: 'risk',
-        risk: 'amber',
-        subRows: [
-          {
-            id: '3',
-            type: 'action',
-            text: 'Conduct board evaluation',
-            status: 'completed',
-            dueDate: new Date(),
-            assignee: teamMembers[2],
-            resource: 'https://example.com/resource3',
-          },
-          {
-            id: '4',
-            type: 'action',
-            text: 'Implement new compliance measures',
-            status: 'blocked',
-            dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day from today
-            assignee: teamMembers[2],
-            resource: 'https://example.com/resource4',
+            dueDate: new Date('2024-01-25'),
+            assignee: teamMembers[0],
+            resource: 'https://example.com/resource8',
           },
         ],
       },
@@ -247,27 +215,52 @@ export const assessmentActionsRows: ActionsRowAssessment[] = [
         ],
       },
       {
-        id: '4',
+        id: '2',
         type: 'risk',
-        risk: 'black',
+        risk: 'amber',
         subRows: [
           {
-            id: '7',
+            id: '3',
             type: 'action',
-            text: 'Update board policies',
-            status: 'in-progress',
-            dueDate: new Date('2024-01-05'),
-            assignee: teamMembers[0],
-            resource: 'https://example.com/resource7',
+            text: 'Conduct board evaluation',
+            status: 'completed',
+            dueDate: new Date(),
+            assignee: teamMembers[2],
+            resource: 'https://example.com/resource3',
           },
           {
-            id: '8',
+            id: '4',
             type: 'action',
-            text: 'Conduct board training',
-            status: 'not-started',
-            dueDate: new Date('2024-01-25'),
+            text: 'Implement new compliance measures',
+            status: 'blocked',
+            dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day from today
+            assignee: teamMembers[2],
+            resource: 'https://example.com/resource4',
+          },
+        ],
+      },
+      {
+        id: '1',
+        type: 'risk',
+        risk: 'green',
+        subRows: [
+          {
+            id: '1',
+            type: 'action',
+            text: 'Review financial policies',
+            status: 'in-progress',
+            dueDate: new Date('2025-11-15'),
             assignee: teamMembers[0],
-            resource: 'https://example.com/resource8',
+            resource: 'https://example.com/resource1',
+          },
+          {
+            id: '2',
+            type: 'action',
+            text: 'Update risk management plan',
+            status: 'not-started',
+            dueDate: new Date('2023-12-01'),
+            assignee: teamMembers[1],
+            resource: 'https://example.com/resource2',
           },
         ],
       },

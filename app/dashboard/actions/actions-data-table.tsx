@@ -9,7 +9,6 @@ import {
   getExpandedRowModel,
   getFilteredRowModel,
   getSortedRowModel,
-  type Row,
   type SortingState,
   useReactTable,
 } from '@tanstack/react-table';
@@ -26,15 +25,20 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import UserAvatarStack from '@/components/ui/user-avatar-stack';
 import type { ActionsRow, ActionsRowAssessment } from '@/dummy-data/actions';
 import { cn } from '@/lib/utils';
 import ActionsAssessmentFilter from './actions-assessment-filter';
 import ActionsAssigneeFilter from './actions-assignee-filter';
+import DueDatesOverview from './due-dates-overview';
 import ProgressOverview from './progress-overview';
 import {
-  expandAllParentRows,
+  expandToDepth,
+  getAssigneesOverview,
+  getDueDatesOverview,
   getProgressOverview,
   getTotal,
+  hierarchicalFilterFn,
 } from './row-functions';
 
 interface ActionsDataTableProps {
@@ -53,40 +57,6 @@ export function ActionsDataTable({
   const [expanded, setExpanded] = useState<ExpandedState>({});
 
   const inputRef = useRef<HTMLInputElement>(null);
-
-  // Custom hierarchical filter function
-  const hierarchicalFilterFn = (
-    row: Row<ActionsRow>,
-    columnId: string,
-    filterValue: unknown
-  ) => {
-    const checkRowAndParents = (currentRow: Row<ActionsRow>): boolean => {
-      // Check if current row matches the filter
-      const cellValue = currentRow.getValue(columnId);
-      const rowMatches = String(cellValue)
-        .toLowerCase()
-        .includes(String(filterValue).toLowerCase());
-
-      const parentRows = currentRow.getParentRows();
-
-      // If current row matches, include it and expand its parents
-      if (rowMatches) {
-        for (const parentRow of parentRows) {
-          parentRow.toggleExpanded(true); // Expand parent rows
-        }
-        return true;
-      }
-
-      // Check parent rows recursively
-      if (parentRows.length > 0) {
-        return parentRows.some((parentRow) => checkRowAndParents(parentRow));
-      }
-
-      return false;
-    };
-
-    return checkRowAndParents(row);
-  };
 
   const table = useReactTable({
     filterFromLeafRows: true, // Ensure that the filter function applies to leaf rows
@@ -145,13 +115,16 @@ export function ActionsDataTable({
           </div>
         </div>
         <ActionsAssessmentFilter
-          onChange={(value) => table.getColumn('first')?.setFilterValue(value)}
+          onChange={(value) => {
+            table.getColumn('first')?.setFilterValue(value);
+            expandToDepth(table, 0);
+          }}
           value={(table.getColumn('first')?.getFilterValue() as string) ?? ''}
         />
         <ActionsAssigneeFilter
           onChange={(value) => {
             table.getColumn('assignee')?.setFilterValue(value);
-            expandAllParentRows(table);
+            expandToDepth(table, 1);
           }}
           value={
             (table.getColumn('assignee')?.getFilterValue() as string) ?? ''
@@ -226,40 +199,53 @@ export function ActionsDataTable({
                   key={row.id}
                   onClick={() => row.toggleExpanded()}
                 >
-                  {row.getVisibleCells().map((cell, index) => (
-                    <TableCell
-                      className={cn(
-                        'relative',
-                        row.depth === 2 && row.getIsExpanded()
-                          ? 'content-start'
-                          : ''
-                      )}
-                      key={cell.id}
-                    >
-                      {index === 0 && !!row.subRows.length ? (
-                        <div className="flex items-center justify-between">
-                          {flexRender(
+                  {row.getVisibleCells().map((cell, index) => {
+                    const assignees = getAssigneesOverview(row);
+
+                    return (
+                      <TableCell
+                        className={cn(
+                          'relative',
+                          row.depth === 2 && row.getIsExpanded()
+                            ? 'content-start'
+                            : ''
+                        )}
+                        key={cell.id}
+                      >
+                        {index === 0 && !!row.subRows.length ? (
+                          <div className="flex items-center justify-between">
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                            <Badge variant="actions">
+                              {getTotal(row.subRows)}
+                            </Badge>
+                          </div>
+                        ) : (
+                          flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
-                          )}
-                          <Badge variant="actions">
-                            {getTotal(row.subRows)}
-                          </Badge>
-                        </div>
-                      ) : (
-                        flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )
-                      )}
-                      {/* Progress overview */}
-                      {cell.column.id === 'progress' &&
-                        !!row.subRows.length && (
-                          <ProgressOverview {...getProgressOverview(row)} />
+                          )
                         )}
-                      {/* Due Date overview */}
-                    </TableCell>
-                  ))}
+                        {/* Progress overview */}
+                        {cell.column.id === 'progress' &&
+                          row.subRows.length > 0 && (
+                            <ProgressOverview {...getProgressOverview(row)} />
+                          )}
+                        {/* Due Date overview */}
+                        {cell.column.id === 'date' &&
+                          row.subRows.length > 0 && (
+                            <DueDatesOverview {...getDueDatesOverview(row)} />
+                          )}
+                        {/* Assignee overview */}
+                        {cell.column.id === 'assignee' &&
+                          row.subRows.length > 0 && (
+                            <UserAvatarStack size={28} users={assignees} />
+                          )}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               ))
             ) : (

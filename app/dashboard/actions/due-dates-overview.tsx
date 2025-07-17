@@ -1,49 +1,47 @@
 import { HugeiconsIcon } from '@hugeicons/react';
-import {
-  Appointment01Icon,
-  Calendar04Icon,
-  CalendarRemove01Icon,
-} from '@hugeicons-pro/core-stroke-rounded';
-import type { ActionDueSummary } from '@/dummy-data/actions';
+import { dueDateCategoryIcons } from './icons';
 
 export default function DueDatesOverview({
-  actionDueSummary,
+  total,
+  overdue,
+  soon,
 }: {
-  actionDueSummary: ActionDueSummary;
+  total: number;
+  overdue: number;
+  soon: number;
 }) {
-  const remaining =
-    actionDueSummary.total - actionDueSummary.overdue - actionDueSummary.soon;
+  const remaining = total - overdue - soon;
 
   return (
     <div className="flex items-center gap-2 font-medium text-red-600">
       {/* Overdue */}
-      {!!actionDueSummary.overdue && (
+      {!!overdue && (
         <div className="flex items-center gap-1">
           <HugeiconsIcon
             className="size-4"
-            icon={CalendarRemove01Icon}
+            icon={dueDateCategoryIcons.overdue}
             strokeWidth={2}
           />
-          {actionDueSummary.overdue}
+          {overdue}
         </div>
       )}
       {/* Soon */}
-      {!!actionDueSummary.soon && (
+      {!!soon && (
         <div className="flex items-center gap-1 text-amber-600">
           <HugeiconsIcon
             className="size-4"
-            icon={Calendar04Icon}
+            icon={dueDateCategoryIcons.soon}
             strokeWidth={2}
           />
-          {actionDueSummary.soon}
+          {soon}
         </div>
       )}
       {/* Remaining */}
       {!!remaining && (
-        <div className="flex items-center gap-1 text-gray-700">
+        <div className="flex items-center gap-1 text-muted-foreground">
           <HugeiconsIcon
             className="size-4"
-            icon={Appointment01Icon}
+            icon={dueDateCategoryIcons.upcoming}
             strokeWidth={2}
           />
           {remaining}

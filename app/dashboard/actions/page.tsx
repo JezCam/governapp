@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { type ActionsRow, assessmentActionsRows } from '@/dummy-data/actions';
 import { cn } from '@/lib/utils';
 import { ActionsDataTable } from './actions-data-table';
+import { hierarchicalFilterFn } from './row-functions';
 
 // import DueDatesOverview from './due-dates-overview-cell';
 
@@ -33,6 +34,7 @@ const columns: ColumnDef<ActionsRow>[] = [
         default:
       }
     },
+    filterFn: hierarchicalFilterFn,
     header: undefined,
     cell: ({ row }) => {
       switch (row.original.type) {
@@ -106,6 +108,7 @@ const columns: ColumnDef<ActionsRow>[] = [
     },
   },
   {
+    id: 'date',
     size: 15,
     maxSize: 15,
     accessorKey: 'dueDate',

@@ -1,5 +1,7 @@
 import type { Row, Table } from '@tanstack/react-table';
 import type { ActionsRow } from '@/dummy-data/actions';
+import { type TeamMember, teamMembers } from '@/dummy-data/team';
+import { categoriseDueDate } from '@/lib/utils';
 
 export const getTotal = (rows: Row<ActionsRow>[]) => {
   let total = 0;
@@ -21,11 +23,15 @@ export const getTotal = (rows: Row<ActionsRow>[]) => {
 export const getProgressOverview = (row: Row<ActionsRow>) => {
   let total = 0;
   let completed = 0;
+  let inProgress = 0;
   const countProgress = (_row: Row<ActionsRow>) => {
     if (_row.depth === 2) {
       total++;
       if (_row.getValue('progress') === 'completed') {
         completed++;
+      }
+      if (_row.getValue('progress') === 'in-progress') {
+        inProgress++;
       }
     }
     if (_row.subRows && _row.subRows.length > 0) {
@@ -35,14 +41,96 @@ export const getProgressOverview = (row: Row<ActionsRow>) => {
     }
   };
   countProgress(row);
-  return { total, completed };
+  return { total, completed, inProgress };
 };
 
-export const expandAllParentRows = (table: Table<ActionsRow>) => {
+export const getDueDatesOverview = (row: Row<ActionsRow>) => {
+  let total = 0;
+  let overdue = 0;
+  let soon = 0;
+  const countDueDates = (_row: Row<ActionsRow>) => {
+    if (_row.depth === 2) {
+      total++;
+      const dueDate = _row.getValue('date');
+      const { category } = categoriseDueDate(dueDate as Date);
+      if (category === 'overdue') {
+        overdue++;
+      } else if (category === 'soon') {
+        soon++;
+      }
+    }
+    if (_row.subRows && _row.subRows.length > 0) {
+      for (const subRow of _row.subRows) {
+        countDueDates(subRow);
+      }
+    }
+  };
+  countDueDates(row);
+  return { total, overdue, soon };
+};
+
+export const getAssigneesOverview = (row: Row<ActionsRow>) => {
+  const assignees: TeamMember[] = [];
+  const collectAssignees = (_row: Row<ActionsRow>) => {
+    if (_row.depth === 2) {
+      const assignee = teamMembers.find(
+        (teamMember) => teamMember.userId === _row.getValue('assignee')
+      );
+      if (assignee && !assignees.some((a) => a.userId === assignee.userId)) {
+        assignees.push(assignee);
+      }
+    }
+    if (_row.subRows && _row.subRows.length > 0) {
+      for (const subRow of _row.subRows) {
+        collectAssignees(subRow);
+      }
+    }
+  };
+  collectAssignees(row);
+  return assignees;
+};
+
+export const expandToDepth = (table: Table<ActionsRow>, depth: number) => {
   for (const row of table.getRowModel().rows) {
     row.toggleExpanded(true);
-    for (const subRow of row.subRows) {
-      subRow.toggleExpanded(true);
+    if (depth > 0) {
+      for (const subRow of row.subRows) {
+        subRow.toggleExpanded(true);
+      }
     }
   }
+};
+
+// Custom hierarchical filter function
+export const hierarchicalFilterFn = (
+  row: Row<ActionsRow>,
+  columnId: string,
+  filterValue: unknown
+) => {
+  const checkRowAndParents = (currentRow: Row<ActionsRow>): boolean => {
+    // Check if current row matches the filter
+    const cellValue = currentRow.getValue(columnId);
+    const rowMatches = String(cellValue)
+      .toLowerCase()
+      .includes(String(filterValue).toLowerCase());
+
+    const parentRows = currentRow.getParentRows();
+
+    // If current row matches, include it and expand its parents
+    if (rowMatches) {
+      for (const parentRow of parentRows) {
+        parentRow.toggleExpanded(true); // Expand parent rows
+      }
+      return true;
+    }
+
+    // Check parent rows recursively
+    if (parentRows.length > 0) {
+      return parentRows.some((parentRow) => checkRowAndParents(parentRow));
+    }
+
+    return false;
+  };
+
+  return checkRowAndParents(row);
 };

@@ -1,3 +1,5 @@
+import { HugeiconsIcon } from '@hugeicons/react';
+import { DashedLineCircleIcon } from '@hugeicons-pro/core-stroke-rounded';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
@@ -10,9 +12,17 @@ export default function UserAvatar({
   user,
   className,
 }: {
-  user: User;
+  user?: User;
   className?: string;
 }) {
+  if (!user) {
+    return (
+      <HugeiconsIcon
+        className={cn('size-6 text-muted-foreground', className)}
+        icon={DashedLineCircleIcon}
+      />
+    );
+  }
   return (
     <Avatar className={cn('border', className)}>
       <AvatarImage src={user.imageUrl} />
