@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 const DUE_SOON_THRESHOLD = 7;
 
-export default function DueDateLabel({
+export default function DueDate({
   dueDate,
   className,
 }: {

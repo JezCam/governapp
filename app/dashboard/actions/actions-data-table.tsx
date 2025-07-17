@@ -15,6 +15,9 @@ import {
 } from '@tanstack/react-table';
 import { SearchIcon, XIcon } from 'lucide-react';
 import { type ReactNode, useRef, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -23,34 +26,27 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import type { ActionsRow, ActionsRowAssessment } from '@/dummy-data/actions';
 import { cn } from '@/lib/utils';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import type { DataTableFilters } from './types';
+import ActionsAssessmentFilter from './actions-assessment-filter';
+import ActionsAssigneeFilter from './actions-assignee-filter';
+import ProgressOverview from './progress-overview';
+import {
+  expandAllParentRows,
+  getProgressOverview,
+  getTotal,
+} from './row-functions';
 
-interface DataTableProps<TData, TValue> {
-  title?: string;
-  actionText?: string;
-  actionOnClick?: () => void;
-  searchable?: boolean; // If true, shows the search input
-  searchPlaceholder?: string; // Placeholder for the search input
-  filters?: DataTableFilters; // Filters to be applied to the table
+interface ActionsDataTableProps {
   children?: ReactNode;
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  columns: ColumnDef<ActionsRow>[];
+  data: ActionsRowAssessment[];
 }
 
-export function DataTable<TData, TValue>({
-  title = 'Data',
-  actionText,
-  actionOnClick,
-  searchable,
-  searchPlaceholder = 'Search...',
-  filters,
+export function ActionsDataTable({
   columns,
   data,
-}: DataTableProps<TData, TValue> & {}) {
+}: ActionsDataTableProps & {}) {
   const [globalFilter, setGlobalFilter] = useState<string>('');
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // can set initial column filter state here
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -60,11 +56,11 @@ export function DataTable<TData, TValue>({
 
   // Custom hierarchical filter function
   const hierarchicalFilterFn = (
-    row: Row<TData>,
+    row: Row<ActionsRow>,
     columnId: string,
     filterValue: unknown
   ) => {
-    const checkRowAndParents = (currentRow: Row<TData>): boolean => {
+    const checkRowAndParents = (currentRow: Row<ActionsRow>): boolean => {
       // Check if current row matches the filter
       const cellValue = currentRow.getValue(columnId);
       const rowMatches = String(cellValue)
@@ -104,7 +100,7 @@ export function DataTable<TData, TValue>({
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onExpandedChange: setExpanded,
-    getSubRows: (row) => (row as { subRows: [] })?.subRows,
+    getSubRows: (row) => (row.type === 'action' ? [] : row.subRows),
     getExpandedRowModel: getExpandedRowModel(),
     state: {
       globalFilter,
@@ -121,77 +117,65 @@ export function DataTable<TData, TValue>({
     }
   };
 
-  const renderedFilters = filters?.map(({ columnKey, Filter }) => {
-    const column = table.getColumn(columnKey);
-    if (!column) {
-      return null;
-    }
-
-    // Apply the hierarchical filter function to this column
-    column.columnDef.filterFn = hierarchicalFilterFn;
-
-    return (
-      <Filter
-        key={columnKey}
-        onChange={(value) => column.setFilterValue(value)}
-        value={column.getFilterValue() as string}
-      />
-    );
-  });
-
   return (
     <div className="flex size-full flex-col gap-4">
       <div className="flex items-center gap-2">
-        {searchable && (
-          <div className="relative w-full max-w-xs">
-            <Input
-              className="peer ps-9"
-              onChange={(e) => table.setGlobalFilter(e.target.value)}
-              placeholder={searchPlaceholder}
-              ref={inputRef}
-              type="text"
-              value={globalFilter ?? ''}
-            />
-            {globalFilter && (
-              <Button
-                aria-label="Clear input"
-                className="absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md text-muted-foreground/80 outline-none transition-[color,box-shadow] hover:bg-transparent hover:text-foreground focus:z-10 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-                onClick={handleClearInput}
-                size="icon"
-                variant="ghost"
-              >
-                <XIcon aria-hidden="true" size={16} />
-              </Button>
-            )}
-            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
-              <SearchIcon size={16} />
-            </div>
+        <div className="relative w-full max-w-xs">
+          <Input
+            className="peer ps-9"
+            onChange={(e) => table.setGlobalFilter(e.target.value)}
+            placeholder="Search actions"
+            ref={inputRef}
+            type="text"
+            value={globalFilter ?? ''}
+          />
+          {globalFilter && (
+            <Button
+              aria-label="Clear input"
+              className="absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md text-muted-foreground/80 outline-none transition-[color,box-shadow] hover:bg-transparent hover:text-foreground focus:z-10 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={handleClearInput}
+              size="icon"
+              variant="ghost"
+            >
+              <XIcon aria-hidden="true" size={16} />
+            </Button>
+          )}
+          <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
+            <SearchIcon size={16} />
           </div>
-        )}
-        {renderedFilters}
-        {filters && (
-          <Button
-            disabled={!columnFilters.length}
-            onClick={() => setColumnFilters([])}
-            variant="outline"
-          >
-            Clear filters
-          </Button>
-        )}
+        </div>
+        <ActionsAssessmentFilter
+          onChange={(value) => table.getColumn('first')?.setFilterValue(value)}
+          value={(table.getColumn('first')?.getFilterValue() as string) ?? ''}
+        />
+        <ActionsAssigneeFilter
+          onChange={(value) => {
+            table.getColumn('assignee')?.setFilterValue(value);
+            expandAllParentRows(table);
+          }}
+          value={
+            (table.getColumn('assignee')?.getFilterValue() as string) ?? ''
+          }
+        />
+        <Button
+          disabled={!columnFilters.length}
+          onClick={() => {
+            setColumnFilters([]);
+            setExpanded({});
+          }}
+          variant="outline"
+        >
+          Clear filters
+        </Button>
       </div>
       <div className="flex h-fit max-h-full flex-col overflow-hidden rounded-xl border bg-accent">
         <div className="flex items-center justify-between rounded-t-xl border-b bg-background px-3 py-3">
           <div className="flex w-full items-center gap-3">
-            <h2 className="font-semibold text-base">{title}</h2>
-            <Badge className="px-1.5" variant="blue">
-              {data.length}
+            <h2 className="font-semibold text-base">Actions</h2>
+            <Badge className="px-1.5" variant="actions">
+              {getTotal(table.getFilteredRowModel().rows)}
             </Badge>
           </div>
-          {actionText && (
-            <Button onClick={actionOnClick} size="sm">
-              {actionText}
-            </Button>
-          )}
         </div>
         <Table className="relative h-full table-fixed border-separate border-spacing-0 overflow-auto px-2 pb-2">
           <TableHeader className="sticky top-0 z-10 bg-accent">
@@ -242,7 +226,7 @@ export function DataTable<TData, TValue>({
                   key={row.id}
                   onClick={() => row.toggleExpanded()}
                 >
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map((cell, index) => (
                     <TableCell
                       className={cn(
                         'relative',
@@ -252,10 +236,28 @@ export function DataTable<TData, TValue>({
                       )}
                       key={cell.id}
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+                      {index === 0 && !!row.subRows.length ? (
+                        <div className="flex items-center justify-between">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                          <Badge variant="actions">
+                            {getTotal(row.subRows)}
+                          </Badge>
+                        </div>
+                      ) : (
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )
                       )}
+                      {/* Progress overview */}
+                      {cell.column.id === 'progress' &&
+                        !!row.subRows.length && (
+                          <ProgressOverview {...getProgressOverview(row)} />
+                        )}
+                      {/* Due Date overview */}
                     </TableCell>
                   ))}
                 </TableRow>

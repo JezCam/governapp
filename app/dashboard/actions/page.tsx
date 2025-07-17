@@ -4,9 +4,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Hexagon01Icon } from '@hugeicons-pro/core-solid-rounded';
 import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
-import ActionsAssessmentFilter from '@/app/dashboard/actions/actions-assessment-filter';
-import DueDateLabel from '@/app/dashboard/actions/due-date-cell';
-import { DataTable } from '@/components/data-table/data-table';
+import DueDateLabel from '@/app/dashboard/actions/due-date';
 import ExpandChevron from '@/components/expand-chevron';
 import UserLabel from '@/components/labels/user-label';
 import SortButton from '@/components/sort-button';
@@ -15,7 +13,7 @@ import { Button } from '@/components/ui/button';
 // import { Progress } from '@/components/ui/progress';
 import { type ActionsRow, assessmentActionsRows } from '@/dummy-data/actions';
 import { cn } from '@/lib/utils';
-import ActionsAssigneeFilter from './actions-assignee-filter';
+import { ActionsDataTable } from './actions-data-table';
 
 // import DueDatesOverview from './due-dates-overview-cell';
 
@@ -95,35 +93,13 @@ const columns: ColumnDef<ActionsRow>[] = [
     maxSize: 15,
     id: 'progress',
     accessorFn: (row) => {
-      if (row.type === 'assessment') {
-        // return row.progressSummary.completed / row.progressSummary.total;
+      if (row.type === 'action') {
+        return row.status;
       }
       return null;
     },
     header: ({ column }) => <SortButton column={column}>Progress</SortButton>,
     cell: ({ row }) => {
-      if (row.original.type === 'assessment') {
-        // const { total, completed } = row.original.progressSummary;
-        // return (
-        //   <div className="flex items-center gap-2">
-        //     <Progress value={(completed / total) * 100} />
-        //     <span className="font-medium text-xs">
-        //       {`${completed}/${total}`}
-        //     </span>
-        //   </div>
-        // );
-      }
-      if (row.original.type === 'risk') {
-        // const { total, completed } = row.original.progressSummary;
-        // return (
-        //   <div className="flex items-center gap-2">
-        //     <Progress value={(completed / total) * 100} />
-        //     <span className="font-medium text-xs">
-        //       {`${completed}/${total}`}
-        //     </span>
-        //   </div>
-        // );
-      }
       if (row.original.type === 'action') {
         return <Badge variant={row.original.status} />;
       }
@@ -132,8 +108,8 @@ const columns: ColumnDef<ActionsRow>[] = [
   {
     size: 15,
     maxSize: 15,
-    accessorKey: 'date',
-    header: ({ column }) => <SortButton column={column}>Date</SortButton>,
+    accessorKey: 'dueDate',
+    header: ({ column }) => <SortButton column={column}>Due Date</SortButton>,
     cell: ({ row }) => {
       if (row.original.type === 'assessment') {
         // return <DueDatesOverview actionDueSummary={row.original.dueSummary} />;
@@ -200,22 +176,7 @@ const columns: ColumnDef<ActionsRow>[] = [
 export default function Actions() {
   return (
     <div className="flex size-full flex-col gap-4 p-4">
-      <DataTable
-        columns={columns}
-        data={assessmentActionsRows}
-        filters={[
-          {
-            columnKey: 'first',
-            Filter: ActionsAssessmentFilter,
-          },
-          { columnKey: 'assignee', Filter: ActionsAssigneeFilter },
-        ]}
-        searchable
-        searchPlaceholder="Search for an action"
-        title="Actions"
-        totalDepth={2}
-        totalVariant="actions"
-      />
+      <ActionsDataTable columns={columns} data={assessmentActionsRows} />
     </div>
   );
 }
