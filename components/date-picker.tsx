@@ -8,6 +8,7 @@ import {
   Dialog,
   Group,
   Popover,
+  type PopoverProps,
 } from 'react-aria-components';
 
 import { Calendar } from '@/components/ui/calendar-rac';
@@ -16,11 +17,15 @@ import { cn } from '@/lib/utils';
 
 export default function DatePicker({
   value,
+  isNonModal,
+  placement,
   onChange,
   isDateUnavailable,
   error,
 }: {
   value?: DateValue;
+  isNonModal?: boolean;
+  placement?: PopoverProps['placement'];
   onChange?: (date: DateValue | null) => void;
   isDateUnavailable?: (date: DateValue) => boolean;
   error?: boolean;
@@ -49,7 +54,9 @@ export default function DatePicker({
       </div>
       <Popover
         className="data-[entering]:fade-in-0 data-[exiting]:fade-out-0 data-[entering]:zoom-in-95 data-[exiting]:zoom-out-95 data-[placement=bottom]:slide-in-from-top-2 data-[placement=left]:slide-in-from-right-2 data-[placement=right]:slide-in-from-left-2 data-[placement=top]:slide-in-from-bottom-2 z-50 rounded-lg border bg-background text-popover-foreground shadow-lg outline-hidden data-entering:animate-in data-exiting:animate-out"
+        isNonModal={isNonModal}
         offset={4}
+        placement={placement}
       >
         <Dialog className="max-h-[inherit] overflow-auto p-2">
           <Calendar />

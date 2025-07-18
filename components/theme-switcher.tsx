@@ -4,8 +4,9 @@ import { MoonIcon, SunIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useId, useState } from 'react';
 import { Switch } from '@/components/ui/switch';
+import { cn } from '@/lib/utils';
 
-export default function ThemeSwitcher() {
+export default function ThemeSwitcher({ className }: { className?: string }) {
   const [mounted, setMounted] = useState(false);
   const id = useId();
   const { resolvedTheme, setTheme } = useTheme();
@@ -18,7 +19,10 @@ export default function ThemeSwitcher() {
   // Return a placeholder with same structure during SSR
   if (!mounted) {
     return (
-      <div className="group inline-flex items-center gap-2">
+      <div
+        className={cn('group inline-flex items-center gap-2', className)}
+        data-state="loading"
+      >
         <span className="hidden">Loading theme...</span>
         <button
           className="flex-1 cursor-pointer text-right font-medium text-sm"
@@ -45,7 +49,7 @@ export default function ThemeSwitcher() {
 
   return (
     <div
-      className="group inline-flex items-center gap-2"
+      className={cn('group inline-flex items-center gap-2', className)}
       data-state={resolvedTheme === 'light' ? 'checked' : 'unchecked'}
     >
       <span className="hidden">current theme: {resolvedTheme}</span>

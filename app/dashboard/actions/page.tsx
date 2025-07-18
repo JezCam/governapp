@@ -2,37 +2,43 @@
 
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Hexagon01Icon } from '@hugeicons-pro/core-solid-rounded';
-import { Comment01Icon, Edit04Icon } from '@hugeicons-pro/core-stroke-rounded';
+import { Edit04Icon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
+import { CornerDownLeft } from 'lucide-react';
 import { useState } from 'react';
 import DueDateLabel from '@/app/dashboard/actions/due-date';
 import ExpandChevron from '@/components/expand-chevron';
+import EditActionForm from '@/components/forms/edit-action-form';
 import UserLabel from '@/components/labels/user-label';
+import { LoadingButton } from '@/components/loading-button';
 import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-// import { Progress } from '@/components/ui/progress';
-import { type ActionsRow, assessmentActionsRows } from '@/dummy-data/actions';
+import {
+  type ActionsRow,
+  type ActionsRowAction,
+  assessmentActionsRows,
+} from '@/dummy-data/actions';
 import { cn } from '@/lib/utils';
 import { ActionsDataTable } from './actions-data-table';
 import { hierarchicalFilterFn } from './row-functions';
 
-// import DueDatesOverview from './due-dates-overview-cell';
-
 const getActionsColumns = (
-  onOpenComments: () => void
+  onEditAction: (action: ActionsRowAction) => void
 ): ColumnDef<ActionsRow>[] => [
   {
     id: 'first',
@@ -84,23 +90,26 @@ const getActionsColumns = (
               <Badge variant={row.original.risk} />
             </div>
           );
-        case 'action':
+        case 'action': {
+          const expanded = row.getIsExpanded();
+
           return (
             <div className="flex w-full gap-2">
               <ExpandChevron
                 className="mt-0.5 ml-12 shrink-0"
-                expanded={row.getIsExpanded()}
+                expanded={expanded}
               />
               <span
                 className={cn(
                   'whitespace-pre-wrap font-medium',
-                  row.getIsExpanded() ? '' : 'line-clamp-1 truncate'
+                  expanded ? '' : 'line-clamp-1 truncate'
                 )}
               >
                 {row.original.text}
               </span>
             </div>
           );
+        }
         default:
       }
     },
@@ -108,17 +117,21 @@ const getActionsColumns = (
   {
     size: 15,
     maxSize: 15,
-    id: 'progress',
+    id: 'status',
     accessorFn: (row) => {
       if (row.type === 'action') {
         return row.status;
       }
       return null;
     },
-    header: ({ column }) => <SortButton column={column}>Progress</SortButton>,
+    header: ({ column }) => <SortButton column={column}>Status</SortButton>,
     cell: ({ row }) => {
       if (row.original.type === 'action') {
-        return <Badge variant={row.original.status} />;
+        return (
+          <div className="flex h-7 items-center">
+            <Badge variant={row.original.status} />
+          </div>
+        );
       }
     },
   },
@@ -141,7 +154,11 @@ const getActionsColumns = (
       }
       if (row.original.type === 'action') {
         const dueDate = row.original.dueDate;
-        return <DueDateLabel dueDate={dueDate} />;
+        return (
+          <div className="flex h-7 items-center">
+            <DueDateLabel dueDate={dueDate} />
+          </div>
+        );
       }
     },
   },
@@ -160,7 +177,11 @@ const getActionsColumns = (
       }
       if (row.original.type === 'action') {
         const assignee = row.original.assignee;
-        return <UserLabel user={assignee} />;
+        return (
+          <div className="flex h-7 items-center">
+            <UserLabel user={assignee} />
+          </div>
+        );
       }
     },
   },
@@ -188,32 +209,17 @@ const getActionsColumns = (
                 <TooltipTrigger asChild>
                   <Button
                     className="float-right size-7"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEditAction(row.original as ActionsRowAction);
+                    }}
                     size="icon"
                     variant="outline"
                   >
                     <HugeiconsIcon icon={Edit04Icon} />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Edit action</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    className="relative float-right size-7"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onOpenComments();
-                    }}
-                    size="icon"
-                    variant="outline"
-                  >
-                    <HugeiconsIcon icon={Comment01Icon} />
-                    <div className="-top-1.5 -right-1.5 absolute flex size-3.5 items-center justify-center rounded-full bg-red-500 font-bold text-white text-xs">
-                      3
-                    </div>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>View comments</TooltipContent>
+                <TooltipContent>Update action</TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
@@ -224,19 +230,42 @@ const getActionsColumns = (
 ];
 
 export default function Actions() {
-  const [commentsOpen, setCommentsOpen] = useState<boolean>(false);
+  const [editAction, setEditAction] = useState<ActionsRowAction>();
 
-  const actionsColumns = getActionsColumns(() => {
-    setCommentsOpen(true);
+  const actionsColumns = getActionsColumns((action: ActionsRowAction) => {
+    setEditAction(action);
   });
 
   return (
     <div className="flex size-full flex-col gap-4 p-4">
-      <Sheet onOpenChange={setCommentsOpen} open={commentsOpen}>
+      <Sheet
+        modal={false}
+        onOpenChange={(open) => {
+          if (!open) {
+            setEditAction(undefined);
+          }
+        }}
+        open={!!editAction}
+      >
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Comments</SheetTitle>
+            <SheetTitle>Update Action</SheetTitle>
           </SheetHeader>
+          <div className="flex h-full flex-col gap-4 px-4 pb-4">
+            <EditActionForm />
+            <Separator className="mt-2" />
+            <h2 className="font-bold">Progress updates</h2>
+            <div className="h-full" />
+            <div className="flex flex-col items-end gap-2">
+              <Textarea
+                className="field-sizing-content max-h-40 min-h-20 resize-none py-1.75 pb-6"
+                placeholder="Add a progress update"
+              />
+              <LoadingButton className="w-fit">
+                Post <CornerDownLeft />
+              </LoadingButton>
+            </div>
+          </div>
         </SheetContent>
       </Sheet>
       <ActionsDataTable columns={actionsColumns} data={assessmentActionsRows} />

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
+import { teamMembers } from '@/dummy-data/team';
 import DatePicker from '../date-picker';
 import { Checkbox } from '../ui/checkbox';
 import {
@@ -53,40 +54,6 @@ const frameworks: Framework[] = [
       { _id: 'd3', name: 'Domain 3' },
       { _id: 'd4', name: 'Domain 4' },
     ],
-  },
-];
-
-type User = {
-  _id: string;
-  name: string;
-  imageUrl: string;
-};
-
-const users: User[] = [
-  {
-    _id: '0',
-    name: 'Jeremy Cameron',
-    imageUrl: 'https://avatars.githubusercontent.com/u/77473646?v=4',
-  },
-  {
-    _id: '1',
-    name: 'Alice Johnson',
-    imageUrl: 'https://i.pravatar.cc/150?img=2',
-  },
-  {
-    _id: '2',
-    name: 'Bob Smith',
-    imageUrl: 'https://i.pravatar.cc/150?img=3',
-  },
-  {
-    _id: '3',
-    name: 'Charlie Brown',
-    imageUrl: 'https://i.pravatar.cc/150?img=4',
-  },
-  {
-    _id: '4',
-    name: 'Diana Prince',
-    imageUrl: 'https://i.pravatar.cc/150?img=5',
   },
 ];
 
@@ -258,8 +225,8 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
               <FormLabel>Participants</FormLabel>
               <FormControl>
                 <UserMultiSelect
-                  defaultOptions={users.map((user) => ({
-                    id: user._id,
+                  defaultOptions={teamMembers.map((user) => ({
+                    id: user.userId,
                     name: user.name,
                     imageUrl: user.imageUrl,
                   }))}

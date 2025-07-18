@@ -33,16 +33,16 @@ import { cn } from '@/lib/utils';
 import ActionsAssessmentFilter from './actions-assessment-filter';
 import ActionsAssigneeFilter from './actions-assignee-filter';
 import DueDatesOverview from './due-dates-overview';
-import ProgressOverview from './progress-overview';
 import {
   expandToDepth,
   getAssigneesOverview,
   getDueDatesOverview,
-  getProgressOverview,
   getRowRiskBackground,
+  getStatusOverview,
   getTotal,
   hierarchicalFilterFn,
 } from './row-functions';
+import StatusOverview from './status-overview';
 
 interface ActionsDataTableProps {
   children?: ReactNode;
@@ -242,10 +242,10 @@ export function ActionsDataTable({
                             cell.getContext()
                           )
                         )}
-                        {/* Progress overview */}
-                        {cell.column.id === 'progress' &&
+                        {/* Status overview */}
+                        {cell.column.id === 'status' &&
                           row.subRows.length > 0 && (
-                            <ProgressOverview {...getProgressOverview(row)} />
+                            <StatusOverview {...getStatusOverview(row)} />
                           )}
                         {/* Due Date overview */}
                         {cell.column.id === 'date' &&

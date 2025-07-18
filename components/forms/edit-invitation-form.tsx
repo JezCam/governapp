@@ -163,7 +163,11 @@ export default function EditInvitationForm(props: FormProps) {
             />
           )}
         </div>
-        <FormButtons isLoading={isLoading} submitText="Save" />
+        <FormButtons
+          {...props.formButtonProps}
+          isLoading={isLoading}
+          submitText="Save"
+        />
       </form>
     </Form>
   );

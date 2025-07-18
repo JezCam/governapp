@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
-import { ComponentProps } from "react"
-import { getLocalTimeZone, today } from "@internationalized/date"
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
+import { getLocalTimeZone, today } from '@internationalized/date';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import type { ComponentProps } from 'react';
 import {
   Button,
   CalendarCell as CalendarCellRac,
@@ -14,46 +14,46 @@ import {
   composeRenderProps,
   Heading as HeadingRac,
   RangeCalendar as RangeCalendarRac,
-} from "react-aria-components"
+} from 'react-aria-components';
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils';
 
 interface BaseCalendarProps {
-  className?: string
+  className?: string;
 }
 
-type CalendarProps = ComponentProps<typeof CalendarRac> & BaseCalendarProps
+type CalendarProps = ComponentProps<typeof CalendarRac> & BaseCalendarProps;
 type RangeCalendarProps = ComponentProps<typeof RangeCalendarRac> &
-  BaseCalendarProps
+  BaseCalendarProps;
 
 function CalendarHeader() {
   return (
     <header className="flex w-full items-center gap-1 pb-1">
       <Button
+        className="flex size-9 items-center justify-center rounded-md text-muted-foreground/80 outline-none transition-[color,box-shadow] hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
         slot="previous"
-        className="text-muted-foreground/80 hover:bg-accent hover:text-foreground focus-visible:ring-ring/50 flex size-9 items-center justify-center rounded-md transition-[color,box-shadow] outline-none focus-visible:ring-[3px]"
       >
         <ChevronLeftIcon size={16} />
       </Button>
-      <HeadingRac className="grow text-center text-sm font-medium" />
+      <HeadingRac className="grow text-center font-medium text-sm" />
       <Button
+        className="flex size-9 items-center justify-center rounded-md text-muted-foreground/80 outline-none transition-[color,box-shadow] hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
         slot="next"
-        className="text-muted-foreground/80 hover:bg-accent hover:text-foreground focus-visible:ring-ring/50 flex size-9 items-center justify-center rounded-md transition-[color,box-shadow] outline-none focus-visible:ring-[3px]"
       >
         <ChevronRightIcon size={16} />
       </Button>
     </header>
-  )
+  );
 }
 
 function CalendarGridComponent({ isRange = false }: { isRange?: boolean }) {
-  const now = today(getLocalTimeZone())
+  const now = today(getLocalTimeZone());
 
   return (
     <CalendarGridRac>
       <CalendarGridHeaderRac>
         {(day) => (
-          <CalendarHeaderCellRac className="text-muted-foreground/80 size-9 rounded-md p-0 text-xs font-medium">
+          <CalendarHeaderCellRac className="size-9 rounded-md p-0 font-medium text-muted-foreground/80 text-xs">
             {day}
           </CalendarHeaderCellRac>
         )}
@@ -61,26 +61,26 @@ function CalendarGridComponent({ isRange = false }: { isRange?: boolean }) {
       <CalendarGridBodyRac className="[&_td]:px-0 [&_td]:py-px">
         {(date) => (
           <CalendarCellRac
-            date={date}
             className={cn(
-              "text-foreground data-hovered:bg-accent data-selected:bg-primary data-hovered:text-foreground data-selected:text-primary-foreground data-focus-visible:ring-ring/50 relative flex size-9 items-center justify-center rounded-md p-0 text-sm font-normal whitespace-nowrap [transition-property:color,background-color,border-radius,box-shadow] duration-150 outline-none data-disabled:pointer-events-none data-disabled:opacity-30 data-focus-visible:z-10 data-focus-visible:ring-[3px] data-unavailable:pointer-events-none data-unavailable:line-through data-unavailable:opacity-30",
+              'relative flex size-9 items-center justify-center whitespace-nowrap rounded-md p-0 font-normal text-foreground text-sm outline-none duration-150 [transition-property:color,background-color,border-radius,box-shadow] data-disabled:pointer-events-none data-unavailable:pointer-events-none data-focus-visible:z-10 data-hovered:bg-accent data-selected:bg-primary data-hovered:text-foreground data-selected:text-primary-foreground data-unavailable:line-through data-disabled:opacity-30 data-unavailable:opacity-30 data-focus-visible:ring-[3px] data-focus-visible:ring-ring/50',
               // Range-specific styles
               isRange &&
-                "data-selected:bg-accent data-selected:text-foreground data-invalid:data-selection-end:bg-destructive data-invalid:data-selection-start:bg-destructive data-selection-end:bg-primary data-selection-start:bg-primary data-selection-end:text-primary-foreground data-selection-start:text-primary-foreground data-invalid:bg-red-100 data-selected:rounded-none data-selection-end:rounded-e-md data-invalid:data-selection-end:text-white data-selection-start:rounded-s-md data-invalid:data-selection-start:text-white",
+                'data-invalid:data-selection-end:bg-destructive data-invalid:data-selection-start:bg-destructive data-invalid:data-selection-end:text-white data-invalid:data-selection-start:text-white data-selected:rounded-none data-selection-start:rounded-s-md data-selection-end:rounded-e-md data-invalid:bg-red-100 data-selected:bg-accent data-selection-end:bg-primary data-selection-start:bg-primary data-selected:text-foreground data-selection-end:text-primary-foreground data-selection-start:text-primary-foreground',
               // Today indicator styles
               date.compare(now) === 0 &&
                 cn(
-                  "after:bg-primary after:pointer-events-none after:absolute after:start-1/2 after:bottom-1 after:z-10 after:size-[3px] after:-translate-x-1/2 after:rounded-full",
+                  'after:-translate-x-1/2 after:pointer-events-none after:absolute after:start-1/2 after:bottom-1 after:z-10 after:size-[3px] after:rounded-full after:bg-primary',
                   isRange
-                    ? "data-selection-end:after:bg-background data-selection-start:after:bg-background"
-                    : "data-selected:after:bg-background"
+                    ? 'data-selection-end:after:bg-background data-selection-start:after:bg-background'
+                    : 'data-selected:after:bg-background'
                 )
             )}
+            date={date}
           />
         )}
       </CalendarGridBodyRac>
     </CalendarGridRac>
-  )
+  );
 }
 
 function Calendar({ className, ...props }: CalendarProps) {
@@ -88,13 +88,13 @@ function Calendar({ className, ...props }: CalendarProps) {
     <CalendarRac
       {...props}
       className={composeRenderProps(className, (className) =>
-        cn("w-fit", className)
+        cn('w-fit', className)
       )}
     >
       <CalendarHeader />
       <CalendarGridComponent />
     </CalendarRac>
-  )
+  );
 }
 
 function RangeCalendar({ className, ...props }: RangeCalendarProps) {
@@ -102,13 +102,13 @@ function RangeCalendar({ className, ...props }: RangeCalendarProps) {
     <RangeCalendarRac
       {...props}
       className={composeRenderProps(className, (className) =>
-        cn("w-fit", className)
+        cn('w-fit', className)
       )}
     >
       <CalendarHeader />
       <CalendarGridComponent isRange />
     </RangeCalendarRac>
-  )
+  );
 }
 
-export { Calendar, RangeCalendar }
+export { Calendar, RangeCalendar };

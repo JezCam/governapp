@@ -28,21 +28,21 @@ function SheetPortal({
   return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />;
 }
 
-function SheetOverlay({
-  className,
-  ...props
-}: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
-  return (
-    <SheetPrimitive.Overlay
-      className={cn(
-        'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=open]:animate-in',
-        className
-      )}
-      data-slot="sheet-overlay"
-      {...props}
-    />
-  );
-}
+// function SheetOverlay({
+//   className,
+//   ...props
+// }: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
+//   return (
+//     <SheetPrimitive.Overlay
+//       className={cn(
+//         'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50 backdrop-blur-[2px] data-[state=closed]:animate-out data-[state=open]:animate-in',
+//         className
+//       )}
+//       data-slot="sheet-overlay"
+//       {...props}
+//     />
+//   );
+// }
 
 function SheetContent({
   className,
@@ -54,12 +54,12 @@ function SheetContent({
 }) {
   return (
     <SheetPortal>
-      <SheetOverlay />
+      {/* <SheetOverlay /> */}
       <SheetPrimitive.Content
         className={cn(
-          'fixed z-50 flex flex-col gap-4 rounded-xl bg-background shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:duration-300 data-[state=open]:duration-500',
+          'fixed z-30 flex flex-col gap-4 bg-background shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:duration-300 data-[state=open]:duration-500',
           side === 'right' &&
-            'data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 top-16 right-4 h-[calc(100%-128px)] w-3/4 border-l sm:max-w-sm',
+            'data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 top-16 right-0 h-[calc(100%-128px)] w-3/4 border border-r-0 sm:max-w-sm',
           side === 'left' &&
             'data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm',
           side === 'top' &&

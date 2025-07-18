@@ -20,7 +20,7 @@ export const getTotal = (rows: Row<ActionsRow>[]) => {
   return total;
 };
 
-export const getProgressOverview = (row: Row<ActionsRow>) => {
+export const getStatusOverview = (row: Row<ActionsRow>) => {
   let total = 0;
   let completed = 0;
   let inProgress = 0;

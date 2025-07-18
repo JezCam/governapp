@@ -1,4 +1,4 @@
-export default function ProgressOverview({
+export default function StatusOverview({
   completed,
   inProgress,
   total,

@@ -25,7 +25,7 @@ export default function UserLabel({
   }
   return (
     <div
-      className={cn('flex items-center gap-2 text-sm', className)}
+      className={cn('flex items-center gap-1.5 text-sm', className)}
       title={user.name}
     >
       <UserAvatar className="size-6" user={user} />
