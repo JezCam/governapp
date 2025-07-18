@@ -27,10 +27,10 @@ export const getStatusOverview = (row: Row<ActionsRow>) => {
   const countProgress = (_row: Row<ActionsRow>) => {
     if (_row.depth === 2) {
       total++;
-      if (_row.getValue('progress') === 'completed') {
+      if (_row.getValue('status') === 'completed') {
         completed++;
       }
-      if (_row.getValue('progress') === 'in-progress') {
+      if (_row.getValue('status') === 'in-progress') {
         inProgress++;
       }
     }
