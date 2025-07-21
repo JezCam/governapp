@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   type ColumnDef,
@@ -11,9 +11,9 @@ import {
   getSortedRowModel,
   type SortingState,
   useReactTable,
-} from '@tanstack/react-table';
-import { SearchIcon, XIcon } from 'lucide-react';
-import { type ReactNode, useRef, useState } from 'react';
+} from "@tanstack/react-table";
+import { SearchIcon, XIcon } from "lucide-react";
+import { type ReactNode, useRef, useState } from "react";
 import {
   Table,
   TableBody,
@@ -21,15 +21,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { cn } from '@/lib/utils';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import type { DataTableFilters } from './types';
+} from "@/components/ui/table";
+import { cn } from "@/lib/utils";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import type { DataTableFilters } from "./types";
 
 interface DataTableProps<TData, TValue> {
   title?: string;
+  minWidth?: string; // Minimum width for the table
+  className?: string; // Additional classes for the table container
   actionText?: string;
   actionOnClick?: () => void;
   searchable?: boolean; // If true, shows the search input
@@ -41,16 +43,18 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({
-  title = 'Data',
+  title = "Data",
+  minWidth,
+  className,
   actionText,
   actionOnClick,
   searchable,
-  searchPlaceholder = 'Search...',
+  searchPlaceholder = "Search...",
   filters,
   columns,
   data,
 }: DataTableProps<TData, TValue> & {}) {
-  const [globalFilter, setGlobalFilter] = useState<string>('');
+  const [globalFilter, setGlobalFilter] = useState<string>("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // can set initial column filter state here
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
@@ -63,7 +67,7 @@ export function DataTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(), // needed for client-side global filtering
-    globalFilterFn: 'includesString',
+    globalFilterFn: "includesString",
     onGlobalFilterChange: setGlobalFilter,
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
@@ -80,7 +84,7 @@ export function DataTable<TData, TValue>({
   });
 
   const handleClearInput = () => {
-    table.setGlobalFilter('');
+    table.setGlobalFilter("");
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -102,7 +106,9 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="flex size-full flex-col gap-4">
+    <div
+      className={cn("flex size-full flex-col gap-4 overflow-auto", className)}
+    >
       <div className="flex items-center gap-2">
         {searchable && (
           <div className="relative w-full max-w-xs">
@@ -112,7 +118,7 @@ export function DataTable<TData, TValue>({
               placeholder={searchPlaceholder}
               ref={inputRef}
               type="text"
-              value={globalFilter ?? ''}
+              value={globalFilter ?? ""}
             />
             {globalFilter && (
               <Button
@@ -155,7 +161,10 @@ export function DataTable<TData, TValue>({
             </Button>
           )}
         </div>
-        <Table className="relative h-full table-fixed border-separate border-spacing-0 overflow-auto px-2 pb-2">
+        <Table
+          className="h-full table-fixed border-separate border-spacing-0 px-2 pb-2"
+          style={{ minWidth }}
+        >
           <TableHeader className="sticky top-0 z-10 bg-accent">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
@@ -165,7 +174,7 @@ export function DataTable<TData, TValue>({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
-                      className="text-muted-foreground"
+                      className="last:!w-14 text-muted-foreground"
                       key={header.id}
                       style={{ width: `${header.getSize()}%` }}
                     >
@@ -186,31 +195,31 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   className={cn(
-                    'group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:bg-background [&>td]:px-3 [&>td]:last:border-l-0',
+                    "group [&>td]:last:!bg-transparent relative border-none [&>td]:bg-background [&>td]:px-3 [&>td]:group-hover:bg-blue-50 dark:[&>td]:group-hover:bg-blue-950/50",
                     // Table Cell Borders
-                    '[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-r',
+                    "[&>td]:nth-last-2:border-r [&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-none",
                     // First Row
-                    'first:[&>td]:border-t',
+                    "first:[&>td]:border-t",
                     // Bottom Right
-                    'last:[&>td]:last:rounded-br-md',
+                    "last:[&>td]:nth-last-2:rounded-br-md",
                     // Bottom Left
-                    'last:[&>td]:first:rounded-bl-md',
+                    "last:[&>td]:first:rounded-bl-md",
                     // Top Right
-                    'first:[&>td]:last:rounded-tr-md',
+                    "first:[&>td]:nth-last-2:rounded-tr-md",
                     // Top Left
-                    'first:[&>td]:first:rounded-tl-md'
+                    "first:[&>td]:first:rounded-tl-md"
                   )}
-                  data-state={row.getIsSelected() && 'selected'}
+                  data-state={row.getIsSelected() && "selected"}
                   key={row.id}
                   onClick={() => row.toggleExpanded()}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       className={cn(
-                        'relative',
+                        "last:sticky last:right-2",
                         row.depth === 2 && row.getIsExpanded()
-                          ? 'content-start'
-                          : ''
+                          ? "content-start"
+                          : ""
                       )}
                       key={cell.id}
                     >

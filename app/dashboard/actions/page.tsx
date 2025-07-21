@@ -1,13 +1,13 @@
 "use client";
 
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Hexagon01Icon } from "@hugeicons-pro/core-solid-rounded";
 import { Comment01Icon, Edit04Icon } from "@hugeicons-pro/core-stroke-rounded";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
 import DueDateLabel from "@/app/dashboard/actions/due-date";
 import EditActionDialog from "@/components/dialogs/edit-action-dialog";
 import ExpandChevron from "@/components/expand-chevron";
+import FrameworkLabel from "@/components/labels/framework-label";
 import UserLabel from "@/components/labels/user-label";
 import SortButton from "@/components/sort-button";
 import { Badge } from "@/components/ui/badge";
@@ -62,16 +62,7 @@ const getActionsColumns = (
                 <span className="line-clamp-1 truncate font-medium text-base">
                   {row.original.name}
                 </span>
-                <div className="flex items-center gap-1">
-                  {/* Framework Icon */}
-                  <HugeiconsIcon
-                    className="size-3.5 text-primary"
-                    icon={Hexagon01Icon}
-                  />
-                  <span className="line-clamp-1 truncate font-medium text-primary">
-                    {row.original.framework}
-                  </span>
-                </div>
+                <FrameworkLabel framework={row.original.framework} />
               </div>
             </div>
           );

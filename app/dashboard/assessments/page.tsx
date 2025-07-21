@@ -1,21 +1,26 @@
-'use client';
+"use client";
 
-import { HugeiconsIcon } from '@hugeicons/react';
-import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
-import type { ColumnDef } from '@tanstack/react-table';
-import { useState } from 'react';
-import AssessmentsStatusFilter from '@/app/dashboard/assessments/assessments-status-filter';
-import { DataTable } from '@/components/data-table/data-table';
-import NewAssessmentDialog from '@/components/dialogs/new-assessment-dialog';
-import SortButton from '@/components/sort-button';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { type Assessment, assessments } from '@/dummy-data/assessments';
-import { formatDateTime } from '@/lib/utils';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { MoreHorizontalIcon } from "@hugeicons-pro/core-stroke-rounded";
+import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import AssessmentsStatusFilter from "@/app/dashboard/assessments/assessments-status-filter";
+import { DataTable } from "@/components/data-table/data-table";
+import AssessmentDetailsDialog from "@/components/dialogs/assessment-details-dialog";
+import NewAssessmentDialog from "@/components/dialogs/new-assessment-dialog";
+import SortButton from "@/components/sort-button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { type Assessment, assessments } from "@/dummy-data/assessments";
+import { formatDateTime } from "@/lib/utils";
 
-const columns: ColumnDef<Assessment>[] = [
+const getAssessmentColumns = (
+  onOpenDetails: (assessment: Assessment) => void
+): ColumnDef<Assessment>[] => [
   {
-    accessorKey: 'type',
+    size: 10,
+    maxSize: 10,
+    accessorKey: "type",
     header: ({ column }) => <SortButton column={column}>Type</SortButton>,
     cell: ({ row }) => {
       const type = row.original.type;
@@ -23,7 +28,9 @@ const columns: ColumnDef<Assessment>[] = [
     },
   },
   {
-    accessorKey: 'name',
+    size: 30,
+    maxSize: 30,
+    accessorKey: "name",
     header: ({ column }) => <SortButton column={column}>Name</SortButton>,
     cell: ({ row }) => {
       const name = row.original.name;
@@ -31,7 +38,9 @@ const columns: ColumnDef<Assessment>[] = [
     },
   },
   {
-    accessorKey: 'status',
+    size: 15,
+    maxSize: 15,
+    accessorKey: "status",
     header: ({ column }) => <SortButton column={column}>Status</SortButton>,
     cell: ({ row }) => {
       const status = row.original.status;
@@ -39,7 +48,9 @@ const columns: ColumnDef<Assessment>[] = [
     },
   },
   {
-    accessorKey: 'dueDate',
+    size: 20,
+    maxSize: 20,
+    accessorKey: "dueDate",
     header: ({ column }) => <SortButton column={column}>Due Date</SortButton>,
     cell: ({ row }) => {
       const dueDate = row.original.dueDate;
@@ -47,8 +58,10 @@ const columns: ColumnDef<Assessment>[] = [
     },
   },
   {
-    id: 'actions',
-    header: 'Actions',
+    size: 20,
+    maxSize: 20,
+    id: "actions",
+    header: "Actions",
     cell: () => (
       <Button size="sm" variant="outline">
         Start assessment
@@ -56,9 +69,16 @@ const columns: ColumnDef<Assessment>[] = [
     ),
   },
   {
-    id: 'menu',
-    cell: () => (
-      <Button className="float-right size-7" size="icon" variant="outline">
+    size: 5,
+    maxSize: 5,
+    id: "menu",
+    cell: ({ row }) => (
+      <Button
+        className="float-right size-8"
+        onClick={() => onOpenDetails(row.original as Assessment)}
+        size="icon"
+        variant="outline"
+      >
         <HugeiconsIcon icon={MoreHorizontalIcon} />
       </Button>
     ),
@@ -67,6 +87,11 @@ const columns: ColumnDef<Assessment>[] = [
 
 export default function Assessments() {
   const [newAssessmentOpen, setNewAssessmentOpen] = useState(false);
+  const [detailsAssessment, setDetailsAssessment] = useState<Assessment>();
+
+  const columns = getAssessmentColumns((assessment) => {
+    setDetailsAssessment(assessment);
+  });
 
   return (
     <>
@@ -74,7 +99,18 @@ export default function Assessments() {
         onOpenChange={setNewAssessmentOpen}
         open={newAssessmentOpen}
       />
-      <div className="flex size-full flex-col gap-4 p-4">
+      {detailsAssessment && (
+        <AssessmentDetailsDialog
+          assessment={detailsAssessment}
+          onOpenChange={(open) => {
+            if (!open) {
+              setDetailsAssessment(undefined);
+            }
+          }}
+          open={true}
+        />
+      )}
+      <div className="flex size-full flex-col gap-4 overflow-auto p-4">
         <DataTable
           actionOnClick={() => setNewAssessmentOpen(true)}
           actionText="Create new assessment"
@@ -82,10 +118,11 @@ export default function Assessments() {
           data={assessments}
           filters={[
             {
-              columnKey: 'status',
+              columnKey: "status",
               Filter: AssessmentsStatusFilter,
             },
           ]}
+          minWidth="1200px"
           searchable
           searchPlaceholder="Search for an assessment"
           title="Assessments"
