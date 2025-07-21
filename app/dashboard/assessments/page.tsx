@@ -58,8 +58,8 @@ const getAssessmentColumns = (
     },
   },
   {
-    size: 20,
-    maxSize: 20,
+    size: 25,
+    maxSize: 25,
     id: "actions",
     header: "Actions",
     cell: () => (
@@ -69,8 +69,6 @@ const getAssessmentColumns = (
     ),
   },
   {
-    size: 5,
-    maxSize: 5,
     id: "menu",
     cell: ({ row }) => (
       <Button

@@ -12,6 +12,8 @@ import { Separator } from "../ui/separator";
 
 const participantsTableColumns: ColumnDef<UserAssessment>[] = [
   {
+    size: 75,
+    maxSize: 75,
     accessorKey: "user",
     header: "Name",
     cell: ({ row }) => {
@@ -19,6 +21,8 @@ const participantsTableColumns: ColumnDef<UserAssessment>[] = [
     },
   },
   {
+    size: 25,
+    maxSize: 25,
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {

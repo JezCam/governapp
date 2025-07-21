@@ -162,7 +162,7 @@ export function DataTable<TData, TValue>({
           )}
         </div>
         <Table
-          className="h-full table-fixed border-separate border-spacing-0 px-2 pb-2"
+          className="h-full table-fixed border-separate border-spacing-0 pb-2 pl-2"
           style={{ minWidth }}
         >
           <TableHeader className="sticky top-0 z-10 bg-accent">
@@ -216,7 +216,7 @@ export function DataTable<TData, TValue>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       className={cn(
-                        "last:sticky last:right-2",
+                        "last:sticky last:right-0",
                         row.depth === 2 && row.getIsExpanded()
                           ? "content-start"
                           : ""
