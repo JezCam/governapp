@@ -1,6 +1,6 @@
-import { HugeiconsIcon } from '@hugeicons/react';
-import { categoriseDueDate, cn } from '@/lib/utils';
-import { dueDateCategoryIcons } from './icons';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { categoriseDueDate, cn } from "@/lib/utils";
+import { dueDateCategoryIcons } from "./icons";
 
 export default function DueDate({
   dueDate,
@@ -14,9 +14,9 @@ export default function DueDate({
   return (
     <div
       className={cn(
-        'flex items-center gap-1 text-muted-foreground text-xs',
-        category === 'soon' ? 'text-amber-600' : '',
-        category === 'overdue' ? 'text-red-600' : '',
+        "flex items-center gap-1 text-muted-foreground text-xs",
+        category === "soon" ? "text-amber-600 dark:text-amber-500" : "",
+        category === "overdue" ? "text-red-600 dark:text-red-500" : "",
         className
       )}
     >
@@ -26,9 +26,9 @@ export default function DueDate({
         strokeWidth={2}
       />
       <span className={`font-medium ${className}`}>
-        {category === 'overdue' && `Overdue by ${Math.abs(daysRemaining)} days`}
-        {daysRemaining >= 0 && daysRemaining < 1 && 'Due today'}
-        {daysRemaining === 1 && 'Due tomorrow'}
+        {category === "overdue" && `Overdue by ${Math.abs(daysRemaining)} days`}
+        {daysRemaining >= 0 && daysRemaining < 1 && "Due today"}
+        {daysRemaining === 1 && "Due tomorrow"}
         {daysRemaining > 1 && `Due in ${daysRemaining} days`}
       </span>
     </div>

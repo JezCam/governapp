@@ -1,10 +1,11 @@
-import Image from 'next/image';
-import Logomark from '@/public/logomark.svg';
-import { NavMain } from './nav-main';
-import NavTeam from './nav-team';
-import OrganisationSwitcher from './organisation-switcher';
-import SearchButton from './search-button';
-import { ScrollArea } from './ui/scroll-area';
+import Image from "next/image";
+import Link from "next/link";
+import Logomark from "@/public/logomark.svg";
+import { NavMain } from "./nav-main";
+import NavTeam from "./nav-team";
+import OrganisationSwitcher from "./organisation-switcher";
+import SearchButton from "./search-button";
+import { ScrollArea } from "./ui/scroll-area";
 import {
   Sidebar,
   SidebarContent,
@@ -12,13 +13,16 @@ import {
   SidebarHeader,
   SidebarRail,
   SidebarSeparator,
-} from './ui/sidebar';
+} from "./ui/sidebar";
 
 export default function AppSidebar() {
   return (
     <Sidebar className="border-sidebar-border" collapsible="icon">
       <SidebarHeader className="gap-0 p-0">
-        <div className="flex h-16 flex-row items-center gap-2 overflow-clip border border-transparent px-4">
+        <Link
+          className="flex h-16 flex-row items-center gap-2 overflow-clip border border-transparent px-4"
+          href="/dashboard"
+        >
           <div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-sidebar-border bg-white shadow-sm">
             <Image
               alt="GovernApp Logomark"
@@ -30,7 +34,7 @@ export default function AppSidebar() {
           <span className="font-extrabold text-ga-purple-800 text-lg transition-all group-data-[collapsible=icon]:translate-x-3 group-data-[collapsible=icon]:opacity-0 dark:text-white">
             GovernApp
           </span>
-        </div>
+        </Link>
         <SidebarSeparator className="mx-auto my-0 w-full" />
         <div className="px-4.25 py-4">
           <SearchButton />
