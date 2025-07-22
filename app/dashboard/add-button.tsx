@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import { HugeiconsIcon } from '@hugeicons/react';
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Building03Icon,
   PlusSignIcon,
   TaskAdd02Icon,
   UserAdd01Icon,
-} from '@hugeicons-pro/core-stroke-rounded';
-import { DialogClose, DialogContent } from '@radix-ui/react-dialog';
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import AddOrganisationDialog from './dialogs/add-organisation-dialog';
-import AddTeamMemberDialog from './dialogs/add-team-member-dialog';
-import NewAssessmentDialog from './dialogs/new-assessment-dialog';
-import { Button } from './ui/button';
+} from "@hugeicons-pro/core-stroke-rounded";
+import { DialogClose, DialogContent } from "@radix-ui/react-dialog";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import AddOrganisationDialog from "../../components/dialogs/add-organisation-dialog";
+import AddTeamMemberDialog from "../../components/dialogs/add-team-member-dialog";
+import NewAssessmentDialog from "../../components/dialogs/new-assessment-dialog";
+import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogOverlay,
   DialogPortal,
   DialogTitle,
   DialogTrigger,
-} from './ui/dialog';
+} from "../../components/ui/dialog";
 
 export default function AddButton() {
   const [open, setOpen] = useState(false);
@@ -61,7 +61,7 @@ export default function AddButton() {
             <div className="relative">
               <Button
                 className={cn(
-                  'peer peer/1 -translate-y-1/2 hover:!bg-white absolute top-[50%] right-[calc(100%+2rem)] bg-black/40 text-lg text-white hover:text-black dark:bg-white/15',
+                  "peer peer/1 -translate-y-1/2 hover:!bg-white absolute top-[50%] right-[calc(100%+2rem)] bg-black/40 text-lg text-white hover:text-black dark:bg-white/15",
                   'hover:before:-inset-15 before:absolute before:content-[""]'
                 )}
                 onClick={() => {
@@ -79,7 +79,7 @@ export default function AddButton() {
               </Button>
               <Button
                 className={cn(
-                  'peer peer/2 -top-[calc(100%-2rem)] -translate-x-1/2 hover:!bg-white absolute left-[50%] bg-black/40 text-lg text-white hover:text-black dark:bg-white/15',
+                  "peer peer/2 -top-[calc(100%-2rem)] -translate-x-1/2 hover:!bg-white absolute left-[50%] bg-black/40 text-lg text-white hover:text-black dark:bg-white/15",
                   'hover:before:-inset-15 before:absolute before:content-[""]'
                 )}
                 onClick={() => {
@@ -97,7 +97,7 @@ export default function AddButton() {
               </Button>
               <Button
                 className={cn(
-                  'peer peer/3 -translate-y-1/2 hover:!bg-white absolute top-[50%] left-[calc(100%+2rem)] bg-black/40 text-lg text-white hover:text-black dark:bg-white/15',
+                  "peer peer/3 -translate-y-1/2 hover:!bg-white absolute top-[50%] left-[calc(100%+2rem)] bg-black/40 text-lg text-white hover:text-black dark:bg-white/15",
                   'hover:before:-inset-15 before:absolute before:content-[""]'
                 )}
                 onClick={() => {

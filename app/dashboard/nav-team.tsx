@@ -1,34 +1,41 @@
-'use client';
+"use client";
 
-import { HugeiconsIcon } from '@hugeicons/react';
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Edit04Icon,
   MoreHorizontalIcon,
   PlusSignCircleIcon,
   UserGroupIcon,
-} from '@hugeicons-pro/core-stroke-rounded';
-import { ChevronRight } from 'lucide-react';
-import { useState } from 'react';
-import { teamMembers } from '@/dummy-data/team';
-import AddTeamMemberDialogContent from './dialogs/add-team-member-dialog';
-import TeamMemberDropdownContent from './team-member-dropdown-content';
-import { Badge } from './ui/badge';
-import { Button } from './ui/button';
+} from "@hugeicons-pro/core-stroke-rounded";
+import { ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { teamMembers } from "@/dummy-data/team";
+import AddTeamMemberDialogContent from "../../components/dialogs/add-team-member-dialog";
+import TeamMemberDropdownContent from "../../components/team-member-dropdown-content";
+import { Badge } from "../../components/ui/badge";
+import { Button } from "../../components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from './ui/collapsible';
-import { DropdownMenu, DropdownMenuTrigger } from './ui/dropdown-menu';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+} from "../../components/ui/collapsible";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from "../../components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../components/ui/popover";
 import {
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from './ui/sidebar';
-import UserAvatar from './user-avatar';
+} from "../../components/ui/sidebar";
+import UserAvatar from "../../components/user-avatar";
 
 export default function NavTeam() {
   const [_open, setOpen] = useState(true);
@@ -73,7 +80,7 @@ export default function NavTeam() {
                           tooltip={member.name}
                         >
                           <UserAvatar
-                            className="size-7 border-sidebar-border"
+                            className="size-7 border-background"
                             user={member}
                           />
                           <span className="truncate font-medium">
@@ -116,7 +123,7 @@ export default function NavTeam() {
                             <span className="text-xs">{member.email}</span>
                           </div>
                           <Badge variant="outline">{member.role}</Badge>
-                          {member.userId === '0' && (
+                          {member.userId === "0" && (
                             <Button variant="secondary">
                               <HugeiconsIcon
                                 icon={Edit04Icon}

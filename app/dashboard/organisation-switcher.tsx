@@ -17,8 +17,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import AddOrganisationDialog from "./dialogs/add-organisation-dialog";
-import UnfoldClose from "./unfold-close";
+import AddOrganisationDialog from "../../components/dialogs/add-organisation-dialog";
+import UnfoldClose from "../../components/unfold-close";
 
 const organisations = [
   {

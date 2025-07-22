@@ -1,7 +1,7 @@
+import NotificationsDropdown from "../../components/notifications-dropdown";
+import { Separator } from "../../components/ui/separator";
+import UserDropdown from "../../components/user-dropdown";
 import AppBreadcrumb from "./app-breadcrumb";
-import NotificationsDropdown from "./notifications-dropdown";
-import { Separator } from "./ui/separator";
-import UserDropdown from "./user-dropdown";
 
 export default function AppHeader() {
   return (

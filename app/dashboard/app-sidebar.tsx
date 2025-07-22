@@ -1,11 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import Logomark from "@/public/logomark.svg";
-import { NavMain } from "./nav-main";
-import NavTeam from "./nav-team";
-import OrganisationSwitcher from "./organisation-switcher";
-import SearchButton from "./search-button";
-import { ScrollArea } from "./ui/scroll-area";
+import SearchButton from "../../components/search-button";
+import { ScrollArea } from "../../components/ui/scroll-area";
 import {
   Sidebar,
   SidebarContent,
@@ -13,7 +10,10 @@ import {
   SidebarHeader,
   SidebarRail,
   SidebarSeparator,
-} from "./ui/sidebar";
+} from "../../components/ui/sidebar";
+import { NavMain } from "./nav-main";
+import NavTeam from "./nav-team";
+import OrganisationSwitcher from "./organisation-switcher";
 
 export default function AppSidebar() {
   return (

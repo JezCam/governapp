@@ -27,33 +27,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import UserAvatarStack from "@/components/ui/user-avatar-stack";
-import type { ActionsRow, ActionsRowAssessment } from "@/dummy-data/actions";
+import type { ReportsRow, ReportsRowAssessment } from "@/dummy-data/reports";
 import { cn } from "@/lib/utils";
-import ActionsAssessmentFilter from "./actions-assessment-filter";
-import ActionsAssigneeFilter from "./actions-assignee-filter";
+import ReportsAssessmentFilter from "./reports-assessment-filter";
 import {
   expandToDepth,
-  getAssigneesOverview,
-  getDueDatesOverview,
-  getRowRiskBackground,
-  getStatusOverview,
   getTotal,
   hierarchicalFilterFn,
-} from "./actions-row-functions";
-import DueDatesOverview from "./due-dates-overview";
-import StatusOverview from "./status-overview";
+} from "./reports-row-functions";
 
-interface ActionsDataTableProps {
+interface ReportsDataTableProps {
   children?: ReactNode;
-  columns: ColumnDef<ActionsRow>[];
-  data: ActionsRowAssessment[];
+  columns: ColumnDef<ReportsRow>[];
+  data: ReportsRowAssessment[];
 }
 
-export function ActionsDataTable({
+export function ReportsDataTable({
   columns,
   data,
-}: ActionsDataTableProps & {}) {
+}: ReportsDataTableProps & {}) {
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // can set initial column filter state here
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -73,7 +65,7 @@ export function ActionsDataTable({
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onExpandedChange: setExpanded,
-    getSubRows: (row) => (row.type === "action" ? [] : row.subRows),
+    getSubRows: (row) => (row.type === "question" ? [] : row.subRows),
     getExpandedRowModel: getExpandedRowModel(),
     state: {
       globalFilter,
@@ -97,7 +89,7 @@ export function ActionsDataTable({
           <Input
             className="peer ps-9"
             onChange={(e) => table.setGlobalFilter(e.target.value)}
-            placeholder="Search actions"
+            placeholder="Search reports"
             ref={inputRef}
             type="text"
             value={globalFilter ?? ""}
@@ -117,21 +109,12 @@ export function ActionsDataTable({
             <SearchIcon size={16} />
           </div>
         </div>
-        <ActionsAssessmentFilter
+        <ReportsAssessmentFilter
           onChange={(value) => {
             table.getColumn("first")?.setFilterValue(value);
             expandToDepth(table, 0);
           }}
           value={(table.getColumn("first")?.getFilterValue() as string) ?? ""}
-        />
-        <ActionsAssigneeFilter
-          onChange={(value) => {
-            table.getColumn("assignee")?.setFilterValue(value);
-            expandToDepth(table, 1);
-          }}
-          value={
-            (table.getColumn("assignee")?.getFilterValue() as string) ?? ""
-          }
         />
         <Button
           disabled={!columnFilters.length}
@@ -147,8 +130,8 @@ export function ActionsDataTable({
       <div className="flex h-fit max-h-full flex-col overflow-hidden rounded-xl border bg-accent">
         <div className="flex items-center justify-between rounded-t-xl border-b bg-background px-3 py-3">
           <div className="flex w-full items-center gap-3">
-            <h2 className="font-semibold text-base">Actions</h2>
-            <Badge variant="actions">
+            <h2 className="font-semibold text-base">Reports</h2>
+            <Badge variant="outline">
               {getTotal(table.getFilteredRowModel().rows)}
             </Badge>
           </div>
@@ -212,54 +195,34 @@ export function ActionsDataTable({
                   key={row.id}
                   onClick={() => row.toggleExpanded()}
                 >
-                  {row.getVisibleCells().map((cell, index) => {
-                    const assignees = getAssigneesOverview(row);
-
-                    return (
-                      <TableCell
-                        className={cn(
-                          "relative",
-                          getRowRiskBackground(row),
-                          row.depth === 2 && row.getIsExpanded()
-                            ? "content-start"
-                            : ""
-                        )}
-                        key={cell.id}
-                      >
-                        {index === 0 && !!row.subRows.length ? (
-                          <div className="flex items-center justify-between">
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                            <Badge variant="actions">
-                              {getTotal(row.subRows)}
-                            </Badge>
-                          </div>
-                        ) : (
-                          flexRender(
+                  {row.getVisibleCells().map((cell, index) => (
+                    <TableCell
+                      className={cn(
+                        "relative",
+                        row.depth === 3 && row.getIsExpanded()
+                          ? "content-start"
+                          : ""
+                      )}
+                      key={cell.id}
+                    >
+                      {index === 0 && !!row.subRows.length ? (
+                        <div className="flex items-center justify-between">
+                          {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
-                          )
-                        )}
-                        {/* Status overview */}
-                        {cell.column.id === "status" &&
-                          row.subRows.length > 0 && (
-                            <StatusOverview {...getStatusOverview(row)} />
                           )}
-                        {/* Due Date overview */}
-                        {cell.column.id === "date" &&
-                          row.subRows.length > 0 && (
-                            <DueDatesOverview {...getDueDatesOverview(row)} />
-                          )}
-                        {/* Assignee overview */}
-                        {cell.column.id === "assignee" &&
-                          row.subRows.length > 0 && (
-                            <UserAvatarStack size={28} users={assignees} />
-                          )}
-                      </TableCell>
-                    );
-                  })}
+                          <Badge variant="actions">
+                            {getTotal(row.subRows)}
+                          </Badge>
+                        </div>
+                      ) : (
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))
             ) : (

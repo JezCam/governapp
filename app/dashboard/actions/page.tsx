@@ -25,8 +25,8 @@ import {
 } from "@/dummy-data/actions";
 import { cn } from "@/lib/utils";
 import { ActionsDataTable } from "./actions-data-table";
+import { hierarchicalFilterFn } from "./actions-row-functions";
 import ProgressUpdatesSheet from "./progress-updates-sheet";
-import { hierarchicalFilterFn } from "./row-functions";
 
 const getActionsColumns = (
   onOpenProgressUpdates: (action: ActionsRowAction) => void,
@@ -242,29 +242,26 @@ export default function Actions() {
   );
 
   return (
-    <div className="flex size-full flex-col gap-4 p-4">
-      {progressUpdatesAction && (
-        <ProgressUpdatesSheet
-          modal={false}
-          onOpenChange={(open) => {
-            if (!open) {
-              setProgressUpdatesAction(undefined);
-            }
-          }}
-          open={true}
-        />
-      )}
-      {editAction && (
-        <EditActionDialog
-          action={editAction}
-          onOpenChange={(open) => {
-            if (!open) {
-              setEditAction(undefined);
-            }
-          }}
-          open={true}
-        />
-      )}
+    <div className="size-full p-4">
+      <ProgressUpdatesSheet
+        modal={false}
+        onOpenChange={(open) => {
+          if (!open) {
+            setProgressUpdatesAction(undefined);
+          }
+        }}
+        open={!!progressUpdatesAction}
+      />
+      <EditActionDialog
+        action={editAction}
+        onOpenChange={(open) => {
+          if (!open) {
+            setEditAction(undefined);
+          }
+        }}
+        open={!!editAction}
+      />
+
       <ActionsDataTable columns={actionsColumns} data={assessmentActionsRows} />
     </div>
   );

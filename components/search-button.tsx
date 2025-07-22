@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { HugeiconsIcon } from '@hugeicons/react';
-import { SearchIcon } from '@hugeicons-pro/core-stroke-rounded';
-import { CornerDownLeft, MoonIcon, SunIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
-import { pages } from './nav-main';
-import { Button } from './ui/button';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { SearchIcon } from "@hugeicons-pro/core-stroke-rounded";
+import { CornerDownLeft, MoonIcon, SunIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import { pages } from "../app/dashboard/nav-main";
+import { Button } from "./ui/button";
 import {
   CommandDialog,
   CommandEmpty,
@@ -16,9 +16,9 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from './ui/command';
-import Kbd from './ui/kbd';
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar';
+} from "./ui/command";
+import Kbd from "./ui/kbd";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
 
 export default function SearchButton() {
   const [open, setOpen] = useState<boolean>(false);
@@ -28,14 +28,14 @@ export default function SearchButton() {
   // Toggle the menu when ⌘K is pressed
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((prev) => !prev);
       }
     };
 
-    document.addEventListener('keydown', down);
-    return () => document.removeEventListener('keydown', down);
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
   }, []);
 
   return (
@@ -92,9 +92,9 @@ export default function SearchButton() {
           <CommandSeparator />
           <CommandGroup heading="Settings">
             <CommandItem
-              key={'theme'}
+              key={"theme"}
               onSelect={() =>
-                setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+                setTheme(resolvedTheme === "dark" ? "light" : "dark")
               }
             >
               <MoonIcon aria-hidden="true" className="dark:hidden" size={16} />
