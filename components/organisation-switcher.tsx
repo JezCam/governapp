@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { AudioWaveform, Command, GalleryVerticalEnd, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { AudioWaveform, Command, GalleryVerticalEnd, Plus } from "lucide-react";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,35 +9,35 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar';
-import { cn } from '@/lib/utils';
-import AddOrganisationDialog from './dialogs/add-organisation-dialog';
-import UnfoldClose from './unfold-close';
+} from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
+import AddOrganisationDialog from "./dialogs/add-organisation-dialog";
+import UnfoldClose from "./unfold-close";
 
 const organisations = [
   {
     id: 0,
-    name: 'Acme Inc',
+    name: "Acme Inc",
     logo: GalleryVerticalEnd,
-    plan: 'Enterprise',
+    plan: "Enterprise",
   },
   {
     id: 1,
-    name: 'Acme Corp.',
+    name: "Acme Corp.",
     logo: AudioWaveform,
-    plan: 'Startup',
+    plan: "Startup",
   },
   {
     id: 2,
-    name: 'Evil Corp.',
+    name: "Evil Corp.",
     logo: Command,
-    plan: 'Free',
+    plan: "Free",
   },
 ];
 
@@ -72,7 +72,7 @@ export default function OrganisationSwitcher() {
           <DropdownMenuContent
             align="end"
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
-            side={isMobile ? 'bottom' : 'right'}
+            side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
@@ -81,8 +81,8 @@ export default function OrganisationSwitcher() {
             {organisations.map((organisation) => (
               <DropdownMenuItem
                 className={cn(
-                  'gap-2 p-2',
-                  organisation.id === activeOrganisationId ? 'bg-accent' : ''
+                  "gap-2 p-2",
+                  organisation.id === activeOrganisationId ? "bg-accent" : ""
                 )}
                 key={organisation.name}
               >

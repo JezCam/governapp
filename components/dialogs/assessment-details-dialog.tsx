@@ -12,8 +12,8 @@ import { Separator } from "../ui/separator";
 
 const participantsTableColumns: ColumnDef<UserAssessment>[] = [
   {
-    size: 75,
-    maxSize: 75,
+    size: 60,
+    maxSize: 60,
     accessorKey: "user",
     header: "Name",
     cell: ({ row }) => {
@@ -21,8 +21,8 @@ const participantsTableColumns: ColumnDef<UserAssessment>[] = [
     },
   },
   {
-    size: 25,
-    maxSize: 25,
+    size: 40,
+    maxSize: 40,
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
@@ -50,6 +50,7 @@ export default function AssessmentDetailsDialog({
               <span className="font-medium text-sm">62%</span>
             </div>
           </div>
+          <Separator orientation="vertical" />
           <div className="flex flex-col gap-1.5">
             <Label>Risk Level</Label>
             <Badge variant="amber" />
@@ -57,6 +58,8 @@ export default function AssessmentDetailsDialog({
         </div>
         <Separator />
         <DataTable
+          //   actionOnClick={() => {}}
+          //   actionText="Add participant"
           columns={participantsTableColumns}
           data={props.assessment.userAssessments}
           title="Participants"

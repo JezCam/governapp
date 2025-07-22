@@ -120,6 +120,7 @@ export default function Assessments() {
               Filter: AssessmentsStatusFilter,
             },
           ]}
+          hasMenu
           minWidth="1200px"
           searchable
           searchPlaceholder="Search for an assessment"

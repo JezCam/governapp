@@ -75,6 +75,7 @@ export default function TeamMembersTable() {
         className="h-fit"
         columns={columns}
         data={teamMembers}
+        hasMenu
         minWidth="900px"
         searchable
         searchPlaceholder="Search for a team member"

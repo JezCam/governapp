@@ -13,7 +13,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { SearchIcon, XIcon } from "lucide-react";
-import { type ReactNode, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Table,
   TableBody,
@@ -34,10 +34,10 @@ interface DataTableProps<TData, TValue> {
   className?: string; // Additional classes for the table container
   actionText?: string;
   actionOnClick?: () => void;
+  hasMenu?: boolean;
   searchable?: boolean; // If true, shows the search input
   searchPlaceholder?: string; // Placeholder for the search input
   filters?: DataTableFilters; // Filters to be applied to the table
-  children?: ReactNode;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
@@ -48,6 +48,7 @@ export function DataTable<TData, TValue>({
   className,
   actionText,
   actionOnClick,
+  hasMenu,
   searchable,
   searchPlaceholder = "Search...",
   filters,
@@ -106,9 +107,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div
-      className={cn("flex size-full flex-col gap-4 overflow-auto", className)}
-    >
+    <div className={cn("flex size-full flex-col gap-4", className)}>
       <div className="flex items-center gap-2">
         {searchable && (
           <div className="relative w-full max-w-xs">
@@ -162,7 +161,10 @@ export function DataTable<TData, TValue>({
           )}
         </div>
         <Table
-          className="h-full table-fixed border-separate border-spacing-0 pb-2 pl-2"
+          className={cn(
+            "h-full table-fixed border-separate border-spacing-0 pb-2 pl-2",
+            hasMenu ? "" : "pr-2"
+          )}
           style={{ minWidth }}
         >
           <TableHeader className="sticky top-0 z-10 bg-accent">
@@ -174,7 +176,10 @@ export function DataTable<TData, TValue>({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
-                      className="last:!w-14 text-muted-foreground"
+                      className={cn(
+                        "text-muted-foreground",
+                        hasMenu ? "last:!w-14 " : ""
+                      )}
                       key={header.id}
                       style={{ width: `${header.getSize()}%` }}
                     >
@@ -195,17 +200,28 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   className={cn(
-                    "group [&>td]:last:!bg-transparent relative border-none [&>td]:bg-background [&>td]:px-3 [&>td]:group-hover:bg-blue-50 dark:[&>td]:group-hover:bg-blue-950/50",
+                    "group relative border-none [&>td]:bg-background [&>td]:px-3 [&>td]:group-hover:bg-blue-50 dark:[&>td]:group-hover:bg-blue-950/50",
                     // Table Cell Borders
-                    "[&>td]:nth-last-2:border-r [&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-none",
+                    "[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed]",
+                    hasMenu
+                      ? "[&>td]:nth-last-2:border-r"
+                      : "[&>td]:last:border-r",
+                    // hasMenu
+                    hasMenu
+                      ? "[&>td]:last:!bg-transparent [&>td]:last:border-none"
+                      : "",
                     // First Row
                     "first:[&>td]:border-t",
                     // Bottom Right
-                    "last:[&>td]:nth-last-2:rounded-br-md",
+                    hasMenu
+                      ? "last:[&>td]:nth-last-2:rounded-br-md"
+                      : "last:[&>td]:last:rounded-br-md",
                     // Bottom Left
                     "last:[&>td]:first:rounded-bl-md",
                     // Top Right
-                    "first:[&>td]:nth-last-2:rounded-tr-md",
+                    hasMenu
+                      ? "first:[&>td]:nth-last-2:rounded-tr-md"
+                      : "first:[&>td]:last:rounded-tr-md",
                     // Top Left
                     "first:[&>td]:first:rounded-tl-md"
                   )}
@@ -216,7 +232,7 @@ export function DataTable<TData, TValue>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       className={cn(
-                        "last:sticky last:right-0",
+                        hasMenu ? "last:sticky last:right-0" : "",
                         row.depth === 2 && row.getIsExpanded()
                           ? "content-start"
                           : ""

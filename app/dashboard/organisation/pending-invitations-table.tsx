@@ -49,6 +49,7 @@ export default function PendingInvitationsTable() {
       className="h-fit"
       columns={columns}
       data={pendingInvitations}
+      hasMenu
       minWidth="600px"
       title="Pending Invitations"
     />

@@ -1,30 +1,24 @@
-'use client';
+"use client";
 
-import { HugeiconsIcon } from '@hugeicons/react';
-import { UserGroupIcon, UserIcon } from '@hugeicons-pro/core-stroke-rounded';
-import { useState } from 'react';
-import CreateBoardAssessmentForm from '../forms/create-board-assessment-form';
-import CreateSelfAssessmentForm from '../forms/create-self-assessment-form';
-import { Button } from '../ui/button';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { UserGroupIcon, UserIcon } from "@hugeicons-pro/core-stroke-rounded";
+import { useState } from "react";
+import CreateBoardAssessmentForm from "../forms/create-board-assessment-form";
+import CreateSelfAssessmentForm from "../forms/create-self-assessment-form";
+import { Button } from "../ui/button";
 import {
   DialogStack,
   DialogStackBody,
   DialogStackContent,
   DialogStackDescription,
   DialogStackHeader,
-  DialogStackOverlay,
   type DialogStackProps,
   DialogStackTitle,
-} from '../ui/kibo-ui/dialog-stack';
+} from "../ui/kibo-ui/dialog-stack";
 
-export default function NewAssessmentDialog({
-  overlay = true,
-  ...props
-}: DialogStackProps & {
-  overlay?: boolean;
-}) {
+export default function NewAssessmentDialog({ ...props }: DialogStackProps) {
   const [index, setIndex] = useState<number>(0);
-  const [type, setType] = useState<'self' | 'board'>('self');
+  const [type, setType] = useState<"self" | "board">("self");
 
   return (
     <DialogStack
@@ -40,8 +34,6 @@ export default function NewAssessmentDialog({
         props.onOpenChange?.(open);
       }}
     >
-      {overlay && <DialogStackOverlay />}
-
       <DialogStackBody>
         {/* Select Assessment Type */}
         <DialogStackContent offset={20}>
@@ -55,7 +47,7 @@ export default function NewAssessmentDialog({
             <Button
               className="h-full text-base"
               onClick={() => {
-                setType('self');
+                setType("self");
                 setIndex(1);
               }}
               variant="outline"
@@ -70,7 +62,7 @@ export default function NewAssessmentDialog({
             <Button
               className="h-full text-base"
               onClick={() => {
-                setType('board');
+                setType("board");
                 setIndex(1);
               }}
               variant="outline"
@@ -86,7 +78,7 @@ export default function NewAssessmentDialog({
         </DialogStackContent>
 
         {/* Self Assessment */}
-        {type === 'self' ? (
+        {type === "self" ? (
           <DialogStackContent>
             <DialogStackHeader>
               <DialogStackTitle>Create New Self Assessment</DialogStackTitle>
