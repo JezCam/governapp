@@ -1,7 +1,7 @@
 "use client";
 
 import { HugeiconsIcon } from "@hugeicons/react";
-import { File01Icon } from "@hugeicons-pro/core-stroke-rounded";
+import { ZapIcon } from "@hugeicons-pro/core-stroke-rounded";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -30,6 +30,7 @@ import {
 import type { ReportsRow, ReportsRowAssessment } from "@/dummy-data/reports";
 import { cn } from "@/lib/utils";
 import ReportsAssessmentFilter from "./reports-assessment-filter";
+import ReportsRiskFilter from "./reports-risk-filter";
 import {
   expandToDepth,
   getTotal,
@@ -42,10 +43,7 @@ interface ReportsDataTableProps {
   data: ReportsRowAssessment[];
 }
 
-export function ReportsDataTable({
-  columns,
-  data,
-}: ReportsDataTableProps & {}) {
+export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // can set initial column filter state here
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -116,6 +114,12 @@ export function ReportsDataTable({
           }}
           value={(table.getColumn("first")?.getFilterValue() as string) ?? ""}
         />
+        <ReportsRiskFilter
+          onChange={(value) => {
+            table.getColumn("risk")?.setFilterValue(value);
+          }}
+          value={(table.getColumn("risk")?.getFilterValue() as string) ?? ""}
+        />
         <Button
           disabled={!columnFilters.length}
           onClick={() => {
@@ -131,18 +135,18 @@ export function ReportsDataTable({
         <div className="flex items-center justify-between rounded-t-xl border-b bg-background px-3 py-3">
           <div className="flex w-full items-center gap-3">
             <h2 className="font-semibold text-base">Reports</h2>
-            <Badge variant="outline">
+            <Badge variant="blue">
               {getTotal(table.getFilteredRowModel().rows)}
             </Badge>
           </div>
           {columnFilters.find((filter) => filter.id === "first") && (
             <Button size="sm">
-              <HugeiconsIcon icon={File01Icon} strokeWidth={2} />
+              <HugeiconsIcon icon={ZapIcon} strokeWidth={2} />
               {
                 columnFilters.find((filter) => filter.id === "first")
                   ?.value as string
               }{" "}
-              Report
+              Action plan
             </Button>
           )}
         </div>
@@ -150,7 +154,7 @@ export function ReportsDataTable({
           <TableHeader className="sticky top-0 z-10 bg-accent">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
-                className="[&>th]:border-l [&>th]:px-3 [&>th]:first:border-l-0 [&>th]:last:border-l-0"
+                className="[&>th]:border-l [&>th]:px-3 [&>th]:first:border-l-0"
                 key={headerGroup.id}
               >
                 {headerGroup.headers.map((header) => {
@@ -177,7 +181,7 @@ export function ReportsDataTable({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   className={cn(
-                    "group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:px-3 [&>td]:last:border-l-0",
+                    "group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:px-3",
                     // Table Cell Borders
                     "[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-r",
                     // First Row
@@ -199,6 +203,16 @@ export function ReportsDataTable({
                     <TableCell
                       className={cn(
                         "relative",
+                        row.original.type === "assessment"
+                          ? "bg-background"
+                          : "",
+                        row.original.type === "domain"
+                          ? "bg-ga-blue-50 dark:bg-ga-blue-950"
+                          : "",
+                        row.original.type === "section"
+                          ? "bg-ga-green-50 dark:bg-ga-green-950"
+                          : "",
+                        row.original.type === "question" ? "bg-accent" : "",
                         row.depth === 3 && row.getIsExpanded()
                           ? "content-start"
                           : ""
@@ -211,9 +225,7 @@ export function ReportsDataTable({
                             cell.column.columnDef.cell,
                             cell.getContext()
                           )}
-                          <Badge variant="actions">
-                            {getTotal(row.subRows)}
-                          </Badge>
+                          <Badge variant="blue">{getTotal(row.subRows)}</Badge>
                         </div>
                       ) : (
                         flexRender(

@@ -62,9 +62,7 @@ export default function NavTeam() {
                     />
                   </div>
                   Team Members
-                  <Badge className="rounded-sm px-1.5" variant="blue">
-                    {teamMembers.length}
-                  </Badge>
+                  <Badge variant="blue">{teamMembers.length}</Badge>
                 </div>
                 <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
               </SidebarMenuButton>

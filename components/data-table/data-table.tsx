@@ -150,9 +150,7 @@ export function DataTable<TData, TValue>({
         <div className="flex items-center justify-between rounded-t-xl border-b bg-background px-3 py-3">
           <div className="flex w-full items-center gap-3">
             <h2 className="font-semibold text-base">{title}</h2>
-            <Badge className="px-1.5" variant="blue">
-              {data.length}
-            </Badge>
+            <Badge variant="blue">{data.length}</Badge>
           </div>
           {actionText && (
             <Button onClick={actionOnClick} size="sm">
@@ -170,7 +168,10 @@ export function DataTable<TData, TValue>({
           <TableHeader className="sticky top-0 z-10 bg-accent">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
-                className="[&>th]:border-l [&>th]:px-3 [&>th]:first:border-l-0 [&>th]:last:border-l-0"
+                className={cn(
+                  "[&>th]:border-l [&>th]:px-3 [&>th]:first:border-l-0",
+                  hasMenu ? "[&>th]:last:border-l-0" : ""
+                )}
                 key={headerGroup.id}
               >
                 {headerGroup.headers.map((header) => {

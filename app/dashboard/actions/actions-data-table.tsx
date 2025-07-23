@@ -50,10 +50,7 @@ interface ActionsDataTableProps {
   data: ActionsRowAssessment[];
 }
 
-export function ActionsDataTable({
-  columns,
-  data,
-}: ActionsDataTableProps & {}) {
+export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // can set initial column filter state here
   const [sorting, setSorting] = useState<SortingState>([]);

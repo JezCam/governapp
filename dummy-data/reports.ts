@@ -30,7 +30,7 @@ export type ReportsRowAssessment = {
   type: 'assessment';
   id: string;
   name: string;
-  framework?: string;
+  framework: string;
   score: number;
   risk: Risk;
   feedback: string;

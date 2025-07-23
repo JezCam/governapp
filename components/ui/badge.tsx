@@ -28,7 +28,7 @@ const badgeVariants = cva(
         outline:
           "bg-background text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         blue: `bg-gradient-to-b from-ga-blue-100 dark:from-ga-blue-950 to-white dark:to-ga-blue-900
-              border-1 border-ga-blue-300 dark:border-black rounded-sm
+              border-1 border-ga-blue-300 dark:border-black rounded-sm px-1.5
               text-ga-blue-700 dark:text-ga-blue-100
               shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-ga-blue-300)] dark:shadow-[inset_0_0_0_1px_var(--color-ga-blue-900),_0_1px_0_var(--color-black)]`,
         admin: `bg-gradient-to-b from-ga-purple-100 dark:from-ga-purple-950 to-white dark:to-ga-purple-900
