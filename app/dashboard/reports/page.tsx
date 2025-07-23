@@ -14,8 +14,8 @@ import Score from "./score";
 const columns: ColumnDef<ReportsRow>[] = [
   {
     id: "first",
-    size: 30,
-    maxSize: 30,
+    size: 35,
+    maxSize: 35,
     accessorFn: (row) => {
       switch (row.type) {
         case "assessment":
@@ -78,7 +78,7 @@ const columns: ColumnDef<ReportsRow>[] = [
           return (
             <div className="flex w-full gap-2">
               <ExpandChevron
-                className="mt-0.5 ml-12 shrink-0"
+                className="mt-0.5 ml-18 shrink-0"
                 expanded={expanded}
               />
               <span
@@ -138,8 +138,8 @@ const columns: ColumnDef<ReportsRow>[] = [
     cell: ({ row }) => <Badge variant={row.original.risk} />,
   },
   {
-    size: 45,
-    maxSize: 45,
+    size: 40,
+    maxSize: 40,
     accessorKey: "feedback",
     header: "Feedback",
   },

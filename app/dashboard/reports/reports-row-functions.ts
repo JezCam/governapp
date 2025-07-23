@@ -5,7 +5,7 @@ export const getTotal = (rows: Row<ReportsRow>[]) => {
   let total = 0;
   const countRows = (_rows: Row<ReportsRow>[]) => {
     for (const row of _rows) {
-      if (row.depth === 2) {
+      if (row.depth === 3) {
         total++;
       }
       if (row.subRows && row.subRows.length > 0) {

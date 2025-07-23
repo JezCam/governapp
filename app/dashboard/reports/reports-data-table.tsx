@@ -225,7 +225,23 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
                             cell.column.columnDef.cell,
                             cell.getContext()
                           )}
-                          <Badge variant="blue">{getTotal(row.subRows)}</Badge>
+                          <Badge
+                            variant={((type) => {
+                              switch (type) {
+                                case "assessment":
+                                  return "domain";
+                                case "domain":
+                                  return "section";
+                                case "section":
+                                  return "question";
+                                case "question":
+                                  return "secondary";
+                                default:
+                              }
+                            })(row.original.type)}
+                          >
+                            {getTotal(row.subRows)}
+                          </Badge>
                         </div>
                       ) : (
                         flexRender(

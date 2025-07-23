@@ -1,5 +1,10 @@
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
+  HelpCircleIcon,
+  SquareIcon,
+  TriangleIcon,
+} from "@hugeicons-pro/core-solid-standard";
+import {
   Alert02Icon,
   CheckmarkBadge03Icon,
   MicrosoftAdminIcon,
@@ -103,6 +108,18 @@ const badgeVariants = cva(
                   shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-ga-purple-300)] dark:shadow-[inset_0_0_0_1px_var(--color-ga-purple-900),_0_1px_0_var(--color-black)]
                   
                   pl-1 pr-1.5 gap-0.75 rounded-sm`,
+        domain: `bg-gradient-to-b from-ga-blue-100 dark:from-ga-blue-950 to-white dark:to-ga-blue-900
+              border-1 border-ga-blue-300 dark:border-black rounded-sm px-1.5
+              text-ga-blue-700 dark:text-ga-blue-100
+              shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-ga-blue-300)] dark:shadow-[inset_0_0_0_1px_var(--color-ga-blue-900),_0_1px_0_var(--color-black)]`,
+        section: `bg-gradient-to-b from-ga-green-100 dark:from-ga-green-950 to-white dark:to-ga-green-900
+              border-1 border-ga-green-300 dark:border-black rounded-sm px-1.5
+              text-ga-green-700 dark:text-ga-green-100
+              shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-ga-green-300)] dark:shadow-[inset_0_0_0_1px_var(--color-ga-green-900),_0_1px_0_var(--color-black)]`,
+        question: `bg-gradient-to-b from-gray-100 dark:from-gray-950 to-white dark:to-gray-900
+              border-1 border-gray-300 dark:border-black rounded-sm px-1.5
+              text-gray-700 dark:text-gray-100
+              shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-gray-300)] dark:shadow-[inset_0_0_0_1px_var(--color-gray-900),_0_1px_0_var(--color-black)]`,
       },
     },
     defaultVariants: {
@@ -178,6 +195,13 @@ function Badge({
       )}
       {variant === "actions" && (
         <HugeiconsIcon icon={ZapIcon} strokeWidth={2} />
+      )}
+      {variant === "domain" && (
+        <HugeiconsIcon className="!size-3.5" icon={TriangleIcon} />
+      )}
+      {variant === "section" && <HugeiconsIcon icon={SquareIcon} />}
+      {variant === "question" && (
+        <HugeiconsIcon className="!size-3.5" icon={HelpCircleIcon} />
       )}
       {props.children}
     </Comp>
