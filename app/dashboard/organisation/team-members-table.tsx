@@ -1,54 +1,57 @@
-'use client';
+"use client";
 
-import { HugeiconsIcon } from '@hugeicons/react';
-import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
-import type { ColumnDef } from '@tanstack/react-table';
-import { useState } from 'react';
-import { DataTable } from '@/components/data-table/data-table';
-import AddTeamMemberDialog from '@/components/dialogs/add-team-member-dialog';
-import SortButton from '@/components/sort-button';
-import TeamMemberDropdownContent from '@/components/team-member-dropdown-content';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { MoreVerticalIcon } from "@hugeicons-pro/core-stroke-rounded";
+import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { DataTable } from "@/components/data-table/data-table";
+import AddTeamMemberDialog from "@/components/dialogs/add-team-member-dialog";
+import UserLabel from "@/components/labels/user-label";
+import SortButton from "@/components/sort-button";
+import TeamMemberDropdownContent from "@/components/team-member-dropdown-content";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import UserAvatar from '@/components/user-avatar';
-import { type TeamMember, teamMembers } from '@/dummy-data/team';
+} from "@/components/ui/dropdown-menu";
+import { type TeamMember, teamMembers } from "@/dummy-data/team";
 
 export const columns: ColumnDef<TeamMember>[] = [
   {
-    accessorKey: 'name',
+    size: 30,
+    maxSize: 30,
+    accessorKey: "name",
     header: ({ column }) => <SortButton column={column}>Name</SortButton>,
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2.5">
-        <UserAvatar user={row.original} />
-        <span className="font-medium">{row.original.name}</span>
-      </div>
-    ),
+    cell: ({ row }) => <UserLabel user={row.original} />,
   },
   {
-    accessorKey: 'email',
+    size: 30,
+    maxSize: 30,
+    accessorKey: "email",
     header: ({ column }) => <SortButton column={column}>Email</SortButton>,
   },
   {
-    accessorKey: 'role',
+    size: 25,
+    maxSize: 25,
+    accessorKey: "role",
     header: ({ column }) => <SortButton column={column}>Role</SortButton>,
     cell: ({ row }) => <Badge variant="outline">{row.original.role}</Badge>,
   },
   {
-    accessorKey: 'permission',
+    size: 15,
+    maxSize: 15,
+    accessorKey: "permission",
     header: ({ column }) => <SortButton column={column}>Permission</SortButton>,
-    cell: ({ row }) => <Badge variant={row.getValue('permission')} />,
+    cell: ({ row }) => <Badge variant={row.getValue("permission")} />,
   },
   {
-    id: 'menu',
+    id: "menu",
     cell: ({ row }) => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="float-right size-7" size="icon" variant="outline">
-            <HugeiconsIcon icon={MoreHorizontalIcon} />
+          <Button className="float-right size-8" size="icon" variant="outline">
+            <HugeiconsIcon icon={MoreVerticalIcon} />
           </Button>
         </DropdownMenuTrigger>
         <TeamMemberDropdownContent user={row.original} />
@@ -69,11 +72,14 @@ export default function TeamMembersTable() {
       <DataTable
         actionOnClick={() => setAddTeamMemberOpen(true)}
         actionText="Add team member"
+        className="h-fit"
         columns={columns}
         data={teamMembers}
+        hasMenu
+        minWidth="900px"
         searchable
         searchPlaceholder="Search for a team member"
-        title={'Team Members'}
+        title={"Team Members"}
       />
     </>
   );

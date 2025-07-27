@@ -1,7 +1,7 @@
 "use client";
 
 import { HugeiconsIcon } from "@hugeicons/react";
-import { File01Icon } from "@hugeicons-pro/core-stroke-rounded";
+import { ZapIcon } from "@hugeicons-pro/core-stroke-rounded";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -27,30 +27,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import UserAvatarStack from "@/components/ui/user-avatar-stack";
-import type { ActionsRow, ActionsRowAssessment } from "@/dummy-data/actions";
+import type { ReportsRow, ReportsRowAssessment } from "@/dummy-data/reports";
 import { cn } from "@/lib/utils";
-import ActionsAssessmentFilter from "./actions-assessment-filter";
-import ActionsAssigneeFilter from "./actions-assignee-filter";
+import ReportsAssessmentFilter from "./reports-assessment-filter";
+import ReportsRiskFilter from "./reports-risk-filter";
 import {
   expandToDepth,
-  getAssigneesOverview,
-  getDueDatesOverview,
-  getRowRiskBackground,
-  getStatusOverview,
   getTotal,
   hierarchicalFilterFn,
-} from "./actions-row-functions";
-import DueDatesOverview from "./due-dates-overview";
-import StatusOverview from "./status-overview";
+} from "./reports-row-functions";
 
-interface ActionsDataTableProps {
+interface ReportsDataTableProps {
   children?: ReactNode;
-  columns: ColumnDef<ActionsRow>[];
-  data: ActionsRowAssessment[];
+  columns: ColumnDef<ReportsRow>[];
+  data: ReportsRowAssessment[];
 }
 
-export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
+export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // can set initial column filter state here
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -70,7 +63,7 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onExpandedChange: setExpanded,
-    getSubRows: (row) => (row.type === "action" ? [] : row.subRows),
+    getSubRows: (row) => (row.type === "question" ? [] : row.subRows),
     getExpandedRowModel: getExpandedRowModel(),
     state: {
       globalFilter,
@@ -94,7 +87,7 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
           <Input
             className="peer ps-9"
             onChange={(e) => table.setGlobalFilter(e.target.value)}
-            placeholder="Search actions"
+            placeholder="Search reports"
             ref={inputRef}
             type="text"
             value={globalFilter ?? ""}
@@ -114,21 +107,18 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
             <SearchIcon size={16} />
           </div>
         </div>
-        <ActionsAssessmentFilter
+        <ReportsAssessmentFilter
           onChange={(value) => {
             table.getColumn("first")?.setFilterValue(value);
             expandToDepth(table, 0);
           }}
           value={(table.getColumn("first")?.getFilterValue() as string) ?? ""}
         />
-        <ActionsAssigneeFilter
+        <ReportsRiskFilter
           onChange={(value) => {
-            table.getColumn("assignee")?.setFilterValue(value);
-            expandToDepth(table, 1);
+            table.getColumn("risk")?.setFilterValue(value);
           }}
-          value={
-            (table.getColumn("assignee")?.getFilterValue() as string) ?? ""
-          }
+          value={(table.getColumn("risk")?.getFilterValue() as string) ?? ""}
         />
         <Button
           disabled={!columnFilters.length}
@@ -144,19 +134,19 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
       <div className="flex h-fit max-h-full flex-col overflow-hidden rounded-xl border bg-accent">
         <div className="flex items-center justify-between rounded-t-xl border-b bg-background px-3 py-3">
           <div className="flex w-full items-center gap-3">
-            <h2 className="font-semibold text-base">Actions</h2>
-            <Badge variant="actions">
+            <h2 className="font-semibold text-base">Reports</h2>
+            <Badge variant="blue">
               {getTotal(table.getFilteredRowModel().rows)}
             </Badge>
           </div>
           {columnFilters.find((filter) => filter.id === "first") && (
             <Button size="sm">
-              <HugeiconsIcon icon={File01Icon} strokeWidth={2} />
+              <HugeiconsIcon icon={ZapIcon} strokeWidth={2} />
               {
                 columnFilters.find((filter) => filter.id === "first")
                   ?.value as string
               }{" "}
-              Report
+              Action plan
             </Button>
           )}
         </div>
@@ -164,7 +154,7 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
           <TableHeader className="sticky top-0 z-10 bg-accent">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
-                className="[&>th]:border-l [&>th]:px-3 [&>th]:first:border-l-0 [&>th]:last:border-l-0"
+                className="[&>th]:border-l [&>th]:px-3 [&>th]:first:border-l-0"
                 key={headerGroup.id}
               >
                 {headerGroup.headers.map((header) => {
@@ -191,7 +181,7 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   className={cn(
-                    "group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:px-3 [&>td]:last:border-l-0",
+                    "group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:px-3",
                     // Table Cell Borders
                     "[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-r",
                     // First Row
@@ -209,54 +199,58 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
                   key={row.id}
                   onClick={() => row.toggleExpanded()}
                 >
-                  {row.getVisibleCells().map((cell, index) => {
-                    const assignees = getAssigneesOverview(row);
-
-                    return (
-                      <TableCell
-                        className={cn(
-                          "relative",
-                          getRowRiskBackground(row),
-                          row.depth === 2 && row.getIsExpanded()
-                            ? "content-start"
-                            : ""
-                        )}
-                        key={cell.id}
-                      >
-                        {index === 0 && !!row.subRows.length ? (
-                          <div className="flex items-center justify-between">
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                            <Badge variant="actions">
-                              {getTotal(row.subRows)}
-                            </Badge>
-                          </div>
-                        ) : (
-                          flexRender(
+                  {row.getVisibleCells().map((cell, index) => (
+                    <TableCell
+                      className={cn(
+                        "relative",
+                        row.original.type === "assessment"
+                          ? "bg-background"
+                          : "",
+                        row.original.type === "domain"
+                          ? "bg-ga-blue-50 dark:bg-ga-blue-950"
+                          : "",
+                        row.original.type === "section"
+                          ? "bg-ga-green-50 dark:bg-ga-green-950"
+                          : "",
+                        row.original.type === "question" ? "bg-accent" : "",
+                        row.depth === 3 && row.getIsExpanded()
+                          ? "content-start"
+                          : ""
+                      )}
+                      key={cell.id}
+                    >
+                      {index === 0 && !!row.subRows.length ? (
+                        <div className="flex items-center justify-between">
+                          {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
-                          )
-                        )}
-                        {/* Status overview */}
-                        {cell.column.id === "status" &&
-                          row.subRows.length > 0 && (
-                            <StatusOverview {...getStatusOverview(row)} />
                           )}
-                        {/* Due Date overview */}
-                        {cell.column.id === "date" &&
-                          row.subRows.length > 0 && (
-                            <DueDatesOverview {...getDueDatesOverview(row)} />
-                          )}
-                        {/* Assignee overview */}
-                        {cell.column.id === "assignee" &&
-                          row.subRows.length > 0 && (
-                            <UserAvatarStack size={28} users={assignees} />
-                          )}
-                      </TableCell>
-                    );
-                  })}
+                          <Badge
+                            variant={((type) => {
+                              switch (type) {
+                                case "assessment":
+                                  return "domain";
+                                case "domain":
+                                  return "section";
+                                case "section":
+                                  return "question";
+                                case "question":
+                                  return "secondary";
+                                default:
+                              }
+                            })(row.original.type)}
+                          >
+                            {getTotal(row.subRows)}
+                          </Badge>
+                        </div>
+                      ) : (
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))
             ) : (

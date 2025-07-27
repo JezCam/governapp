@@ -1,5 +1,5 @@
-import { HugeiconsIcon } from '@hugeicons/react';
-import { dueDateCategoryIcons } from './icons';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { dueDateCategoryIcons } from "./icons";
 
 export default function DueDatesOverview({
   total,
@@ -13,7 +13,7 @@ export default function DueDatesOverview({
   const remaining = total - overdue - soon;
 
   return (
-    <div className="flex items-center gap-2 font-medium text-red-600">
+    <div className="flex items-center gap-2 font-medium text-red-600 dark:text-red-500">
       {/* Overdue */}
       {!!overdue && (
         <div className="flex items-center gap-1">
@@ -27,7 +27,7 @@ export default function DueDatesOverview({
       )}
       {/* Soon */}
       {!!soon && (
-        <div className="flex items-center gap-1 text-amber-600">
+        <div className="flex items-center gap-1 text-amber-600 dark:text-amver-500">
           <HugeiconsIcon
             className="size-4"
             icon={dueDateCategoryIcons.soon}

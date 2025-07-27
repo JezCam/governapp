@@ -1,27 +1,21 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import OrganisationConfirmForm from '../forms/organisation-confirm-form';
-import OrganisationDetailsForm from '../forms/organisation-details-form';
-import UserDetailsForm from '../forms/user-details-form';
-import WelcomeForm from '../forms/welcome-form';
+import { useState } from "react";
+import OrganisationConfirmForm from "../forms/organisation-confirm-form";
+import OrganisationDetailsForm from "../forms/organisation-details-form";
+import UserDetailsForm from "../forms/user-details-form";
+import WelcomeForm from "../forms/welcome-form";
 import {
   DialogStack,
   DialogStackBody,
   DialogStackContent,
   DialogStackDescription,
   DialogStackHeader,
-  DialogStackOverlay,
   type DialogStackProps,
   DialogStackTitle,
-} from '../ui/kibo-ui/dialog-stack';
+} from "../ui/kibo-ui/dialog-stack";
 
-export default function OnboardingDialog({
-  overlay = true,
-  ...props
-}: DialogStackProps & {
-  overlay?: boolean;
-}) {
+export default function OnboardingDialog({ ...props }: DialogStackProps) {
   const [index, setIndex] = useState<number>(0);
 
   return (
@@ -38,8 +32,6 @@ export default function OnboardingDialog({
         props.onOpenChange?.(open);
       }}
     >
-      {overlay && <DialogStackOverlay />}
-
       <DialogStackBody>
         {/* Welcome */}
         <DialogStackContent offset={20} showCloseButton={false}>
@@ -59,7 +51,7 @@ export default function OnboardingDialog({
             <DialogStackTitle>Your Details</DialogStackTitle>
           </DialogStackHeader>
           <UserDetailsForm
-            formButtonProps={{ submitText: 'Next' }}
+            formButtonProps={{ submitText: "Next" }}
             onSuccess={() => setIndex(2)}
           />
         </DialogStackContent>

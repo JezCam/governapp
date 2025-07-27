@@ -1,4 +1,4 @@
-import { Card } from '@/components/ui/card';
+import { Card } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -6,25 +6,25 @@ import {
   TableCell,
   TableHead,
   TableRow,
-} from '@/components/ui/table';
-import PendingInvitationsTable from './pending-invitations-table';
-import TeamMembersTable from './team-members-table';
+} from "@/components/ui/table";
+import PendingInvitationsTable from "./pending-invitations-table";
+import TeamMembersTable from "./team-members-table";
 
 export default function Organisation() {
   return (
-    <div className="flex size-full flex-col gap-4 overflow-auto p-4">
+    <div className="flex h-fit flex-col gap-4 overflow-auto p-4">
       {/* Organisation Header */}
       <Card className="relative flex h-fit w-full shrink-0 items-end justify-end overflow-hidden rounded-xl p-2 pb-4 shadow-none">
         <div
           className="absolute inset-0 bg-[url('/pattern-light.svg')] bg-primary stroke-current text-foreground dark:bg-[url('/pattern-dark.svg')]"
           style={{
-            backgroundColor: 'var(--color-accent)',
-            backgroundRepeat: 'repeat',
-            backgroundSize: '100px',
+            backgroundColor: "var(--color-accent)",
+            backgroundRepeat: "repeat",
+            backgroundSize: "100px",
             maskImage:
-              'linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))',
-            maskRepeat: 'no-repeat',
-            maskSize: '100% 100%',
+              "linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))",
+            maskRepeat: "no-repeat",
+            maskSize: "100% 100%",
           }}
         />
         <Table className="float-right w-fit border-separate border-spacing-0 ">

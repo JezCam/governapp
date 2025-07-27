@@ -1,24 +1,18 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import OrganisationConfirmForm from '../forms/organisation-confirm-form';
-import OrganisationDetailsForm from '../forms/organisation-details-form';
+import { useState } from "react";
+import OrganisationConfirmForm from "../forms/organisation-confirm-form";
+import OrganisationDetailsForm from "../forms/organisation-details-form";
 import {
   DialogStack,
   DialogStackBody,
   DialogStackContent,
   DialogStackHeader,
-  DialogStackOverlay,
   type DialogStackProps,
   DialogStackTitle,
-} from '../ui/kibo-ui/dialog-stack';
+} from "../ui/kibo-ui/dialog-stack";
 
-export default function AddOrganisationDialog({
-  overlay = true,
-  ...props
-}: DialogStackProps & {
-  overlay?: boolean;
-}) {
+export default function AddOrganisationDialog({ ...props }: DialogStackProps) {
   const [index, setIndex] = useState<number>(0);
 
   return (
@@ -35,8 +29,6 @@ export default function AddOrganisationDialog({
         props.onOpenChange?.(open);
       }}
     >
-      {overlay && <DialogStackOverlay />}
-
       <DialogStackBody>
         {/* Organisation Details */}
         <DialogStackContent offset={20}>
