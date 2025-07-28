@@ -2,12 +2,14 @@
 
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  LinkSquare02Icon,
-  PlusSignIcon,
   TaskDoneIcon,
   TaskIcon,
   UserIcon,
   ZapIcon,
+} from '@hugeicons-pro/core-bulk-rounded';
+import {
+  ArrowUpRight03Icon,
+  PlusSignIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -40,7 +42,6 @@ export default function HomeActions() {
               <HugeiconsIcon
                 className="size-12 text-ga-purple-600 dark:text-ga-purple-500"
                 icon={TaskIcon}
-                strokeWidth={2}
               />
               <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-purple-700 bg-ga-purple-600 shadow-highlight">
                 <HugeiconsIcon
@@ -52,7 +53,7 @@ export default function HomeActions() {
             </div>
             <div className="-bottom-1 absolute h-1 w-full shadow-[0_0_24px_0_var(--color-ga-purple-500)] transition-shadow group-hover:shadow-[0_0_64px_8px_var(--color-ga-purple-500)] dark:shadow-[0_0_24px_0_var(--color-ga-purple-700)] dark:group-hover:shadow-[0_0_64px_8px_var(--color-ga-purple-700)]" />
           </div>
-          <h2 className="my-1 font-medium text-base">New Assessment</h2>
+          <h2 className="my-1 font-medium text-base">New assessment</h2>
         </Button>
         <Button
           className="group h-fit flex-col justify-start gap-2 rounded-2xl p-2 hover:border-ga-blue-300 hover:bg-background dark:hover:border-ga-blue-800"
@@ -64,7 +65,6 @@ export default function HomeActions() {
               <HugeiconsIcon
                 className="size-12 text-ga-blue-600 dark:text-ga-blue-500"
                 icon={UserIcon}
-                strokeWidth={2}
               />
               <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-blue-700 bg-ga-blue-600 shadow-highlight">
                 <HugeiconsIcon
@@ -76,7 +76,7 @@ export default function HomeActions() {
             </div>
             <div className="-bottom-1 absolute h-1 w-full shadow-[0_0_24px_0_var(--color-ga-blue-500)] transition-shadow group-hover:shadow-[0_0_64px_8px_var(--color-ga-blue-500)] dark:shadow-[0_0_24px_0_var(--color-ga-blue-700)] dark:group-hover:shadow-[0_0_64px_8px_var(--color-ga-blue-700)]" />
           </div>
-          <h2 className="my-1 font-medium text-base">Add Team Member</h2>
+          <h2 className="my-1 font-medium text-base">Add team member</h2>
         </Button>
         <Button
           asChild
@@ -89,12 +89,11 @@ export default function HomeActions() {
                 <HugeiconsIcon
                   className="size-12 text-ga-green-600 dark:text-ga-green-500"
                   icon={TaskDoneIcon}
-                  strokeWidth={2}
                 />
                 <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-green-700 bg-ga-green-600 shadow-highlight">
                   <HugeiconsIcon
                     className="size-4 text-white"
-                    icon={LinkSquare02Icon}
+                    icon={ArrowUpRight03Icon}
                     strokeWidth={2}
                   />
                 </div>
@@ -102,7 +101,7 @@ export default function HomeActions() {
               <div className="-bottom-1 absolute h-1 w-full shadow-[0_0_24px_0_var(--color-ga-green-500)] transition-shadow group-hover:shadow-[0_0_64px_8px_var(--color-ga-green-500)] dark:shadow-[0_0_24px_0_var(--color-ga-green-700)] dark:group-hover:shadow-[0_0_64px_8px_var(--color-ga-green-700)]" />
             </div>
             <h2 className="my-1 font-medium text-base">
-              View your Assessments
+              View your assessments
             </h2>
           </Link>
         </Button>
@@ -117,19 +116,18 @@ export default function HomeActions() {
                 <HugeiconsIcon
                   className="size-12 text-ga-purple-600 dark:text-ga-purple-500"
                   icon={ZapIcon}
-                  strokeWidth={2}
                 />
                 <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-purple-700 bg-ga-purple-600 shadow-highlight">
                   <HugeiconsIcon
                     className="size-4 text-white"
-                    icon={LinkSquare02Icon}
+                    icon={ArrowUpRight03Icon}
                     strokeWidth={2}
                   />
                 </div>
               </div>
               <div className="-bottom-1 absolute h-1 w-full shadow-[0_0_24px_0_var(--color-ga-purple-500)] transition-shadow group-hover:shadow-[0_0_64px_8px_var(--color-ga-purple-500)] dark:shadow-[0_0_24px_0_var(--color-ga-purple-700)] dark:group-hover:shadow-[0_0_64px_8px_var(--color-ga-purple-700)]" />
             </div>
-            <h2 className="my-1 font-medium text-base">View your Actions</h2>
+            <h2 className="my-1 font-medium text-base">View your actions</h2>
           </Link>
         </Button>
       </div>

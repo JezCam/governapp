@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
+    "@hugeicons-pro/core-bulk-rounded": "^1.0.16",
     "@hugeicons-pro/core-solid-rounded": "^1.0.14",
     "@hugeicons-pro/core-solid-standard": "^1.0.14",
     "@hugeicons-pro/core-stroke-rounded": "^1.0.14",

@@ -92,7 +92,7 @@ export default function Assessments() {
   });
 
   return (
-    <>
+    <div className="size-full p-4">
       <NewAssessmentDialog
         onOpenChange={setNewAssessmentOpen}
         open={newAssessmentOpen}
@@ -108,25 +108,23 @@ export default function Assessments() {
           open={true}
         />
       )}
-      <div className="flex size-full flex-col gap-4 overflow-auto p-4">
-        <DataTable
-          actionOnClick={() => setNewAssessmentOpen(true)}
-          actionText="Create new assessment"
-          columns={columns}
-          data={assessments}
-          filters={[
-            {
-              columnKey: 'status',
-              Filter: AssessmentsStatusFilter,
-            },
-          ]}
-          hasMenu
-          minWidth="1200px"
-          searchable
-          searchPlaceholder="Search for an assessment"
-          title="Assessments"
-        />
-      </div>
-    </>
+      <DataTable
+        actionOnClick={() => setNewAssessmentOpen(true)}
+        actionText="Create new assessment"
+        columns={columns}
+        data={assessments}
+        filters={[
+          {
+            columnKey: 'status',
+            Filter: AssessmentsStatusFilter,
+          },
+        ]}
+        hasMenu
+        minWidth="1200px"
+        searchable
+        searchPlaceholder="Search for an assessment"
+        title="Assessments"
+      />
+    </div>
   );
 }

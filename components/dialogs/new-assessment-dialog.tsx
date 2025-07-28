@@ -1,11 +1,8 @@
 'use client';
 
 import { HugeiconsIcon } from '@hugeicons/react';
-import {
-  PlusSignIcon,
-  UserGroupIcon,
-  UserIcon,
-} from '@hugeicons-pro/core-stroke-rounded';
+import { UserGroupIcon, UserIcon } from '@hugeicons-pro/core-bulk-rounded';
+import { PlusSignIcon } from '@hugeicons-pro/core-stroke-rounded';
 import { useState } from 'react';
 import CreateBoardAssessmentForm from '../forms/create-board-assessment-form';
 import CreateSelfAssessmentForm from '../forms/create-self-assessment-form';
@@ -47,7 +44,7 @@ export default function NewAssessmentDialog({ ...props }: DialogStackProps) {
               Select the type of the assessment that you would like to create
             </DialogStackDescription>
           </DialogStackHeader>
-          <div className="grid h-fit w-full grid-cols-2 gap-2">
+          <div className="grid h-fit w-full grid-cols-2 gap-4">
             <Button
               className="group h-fit flex-col justify-start gap-2 rounded-2xl p-2 hover:border-ga-blue-300 hover:bg-background dark:hover:border-ga-blue-800"
               onClick={() => {
@@ -61,7 +58,6 @@ export default function NewAssessmentDialog({ ...props }: DialogStackProps) {
                   <HugeiconsIcon
                     className="size-12 text-ga-blue-600 dark:text-ga-blue-500"
                     icon={UserIcon}
-                    strokeWidth={2}
                   />
                   <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-blue-700 bg-ga-blue-600 shadow-highlight">
                     <HugeiconsIcon
@@ -88,7 +84,6 @@ export default function NewAssessmentDialog({ ...props }: DialogStackProps) {
                   <HugeiconsIcon
                     className="size-12 text-ga-green-600 dark:text-ga-green-500"
                     icon={UserGroupIcon}
-                    strokeWidth={2}
                   />
                   <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-green-700 bg-ga-green-600 shadow-highlight">
                     <HugeiconsIcon

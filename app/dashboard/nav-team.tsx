@@ -1,41 +1,41 @@
-"use client";
+'use client';
 
-import { HugeiconsIcon } from "@hugeicons/react";
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Edit04Icon,
   MoreHorizontalIcon,
   PlusSignCircleIcon,
   UserGroupIcon,
-} from "@hugeicons-pro/core-stroke-rounded";
-import { ChevronRight } from "lucide-react";
-import { useState } from "react";
-import { teamMembers } from "@/dummy-data/team";
-import AddTeamMemberDialogContent from "../../components/dialogs/add-team-member-dialog";
-import TeamMemberDropdownContent from "../../components/team-member-dropdown-content";
-import { Badge } from "../../components/ui/badge";
-import { Button } from "../../components/ui/button";
+} from '@hugeicons-pro/core-stroke-rounded';
+import { ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { teamMembers } from '@/dummy-data/team';
+import AddTeamMemberDialogContent from '../../components/dialogs/add-team-member-dialog';
+import TeamMemberDropdownContent from '../../components/team-member-dropdown-content';
+import { Badge } from '../../components/ui/badge';
+import { Button } from '../../components/ui/button';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "../../components/ui/collapsible";
+} from '../../components/ui/collapsible';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu";
+} from '../../components/ui/dropdown-menu';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../../components/ui/popover";
+} from '../../components/ui/popover';
 import {
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "../../components/ui/sidebar";
-import UserAvatar from "../../components/user-avatar";
+} from '../../components/ui/sidebar';
+import UserAvatar from '../../components/user-avatar';
 
 export default function NavTeam() {
   const [_open, setOpen] = useState(true);
@@ -52,7 +52,7 @@ export default function NavTeam() {
         >
           <SidebarMenuItem>
             <CollapsibleTrigger asChild>
-              <SidebarMenuButton className="h-12.5 min-w-fit gap-9 overflow-clip whitespace-nowrap rounded-xl border border-transparent font-medium transition-all transition-discrete group-data-[collapsible=icon]:h-0 group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:opacity-0">
+              <SidebarMenuButton className="h-12.5 min-w-fit gap-9.75 overflow-clip whitespace-nowrap rounded-xl border border-transparent font-medium transition-all transition-discrete group-data-[collapsible=icon]:h-0 group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:opacity-0">
                 <div className="flex items-center gap-2">
                   <div className="flex size-8 items-center justify-center [&>svg]:size-4.5">
                     <HugeiconsIcon
@@ -121,7 +121,7 @@ export default function NavTeam() {
                             <span className="text-xs">{member.email}</span>
                           </div>
                           <Badge variant="outline">{member.role}</Badge>
-                          {member.userId === "0" && (
+                          {member.userId === '0' && (
                             <Button variant="secondary">
                               <HugeiconsIcon
                                 icon={Edit04Icon}

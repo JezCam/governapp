@@ -1,8 +1,8 @@
-import Image from "next/image";
-import Link from "next/link";
-import Logomark from "@/public/logomark.svg";
-import SearchButton from "../../components/search-button";
-import { ScrollArea } from "../../components/ui/scroll-area";
+import Image from 'next/image';
+import Link from 'next/link';
+import Logomark from '@/public/logomark.svg';
+import SearchButton from '../../components/search-button';
+import { ScrollArea } from '../../components/ui/scroll-area';
 import {
   Sidebar,
   SidebarContent,
@@ -10,10 +10,10 @@ import {
   SidebarHeader,
   SidebarRail,
   SidebarSeparator,
-} from "../../components/ui/sidebar";
-import { NavMain } from "./nav-main";
-import NavTeam from "./nav-team";
-import OrganisationSwitcher from "./organisation-switcher";
+} from '../../components/ui/sidebar';
+import { NavMain } from './nav-main';
+import NavTeam from './nav-team';
+import OrganisationSwitcher from './organisation-switcher';
 
 export default function AppSidebar() {
   return (
@@ -42,7 +42,7 @@ export default function AppSidebar() {
       </SidebarHeader>
       <SidebarContent className="gap-0 border-sidebar-border border-y">
         <ScrollArea className="h-full [&_[data-slot=scroll-area-thumb]]:bg-sidebar-border">
-          <div className="w-63.75 transition-all duration-300 group-data-[collapsible=icon]:w-16.5">
+          <div className="w-63.75 transition-all duration-200 ease-linear group-data-[collapsible=icon]:w-16.5">
             <NavMain />
             <SidebarSeparator className="mx-auto my-0 w-full" />
             <NavTeam />

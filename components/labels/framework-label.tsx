@@ -27,7 +27,7 @@ export default function FrameworkLabel({
         icon={iconMap[variant]}
       />
       <span
-        className={`line-clamp-1 truncate font-medium ${colourMap[variant]}`}
+        className={`line-clamp-1 truncate font-medium ${colourMap[variant]} text-sm`}
       >
         {name}
       </span>

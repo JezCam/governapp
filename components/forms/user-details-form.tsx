@@ -87,6 +87,7 @@ export default function UserDetailsForm(props: FormProps) {
             className="@xl:mt-5.5 h-fit @xl:max-w-fit"
             {...props.formButtonProps}
             isLoading={isLoading}
+            submitText="Save"
           />
         </form>
       </Form>
