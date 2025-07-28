@@ -1,21 +1,21 @@
-import type { DialogProps } from "@radix-ui/react-dialog";
-import type { ColumnDef } from "@tanstack/react-table";
-import type { Assessment, UserAssessment } from "@/dummy-data/assessments";
-import { DataTable } from "../data-table/data-table";
-import FrameworkLabel from "../labels/framework-label";
-import UserLabel from "../labels/user-label";
-import { Badge } from "../ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Label } from "../ui/label";
-import { Progress } from "../ui/progress";
-import { Separator } from "../ui/separator";
+import type { DialogProps } from '@radix-ui/react-dialog';
+import type { ColumnDef } from '@tanstack/react-table';
+import type { Assessment, UserAssessment } from '@/dummy-data/assessments';
+import { DataTable } from '../data-table/data-table';
+import FrameworkLabel from '../labels/framework-label';
+import UserLabel from '../labels/user-label';
+import { Badge } from '../ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Label } from '../ui/label';
+import { Progress } from '../ui/progress';
+import { Separator } from '../ui/separator';
 
 const participantsTableColumns: ColumnDef<UserAssessment>[] = [
   {
     size: 60,
     maxSize: 60,
-    accessorKey: "user",
-    header: "Name",
+    accessorKey: 'user',
+    header: 'Name',
     cell: ({ row }) => {
       return <UserLabel user={row.original.user} />;
     },
@@ -23,8 +23,8 @@ const participantsTableColumns: ColumnDef<UserAssessment>[] = [
   {
     size: 40,
     maxSize: 40,
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: 'status',
+    header: 'Status',
     cell: ({ row }) => {
       const status = row.original.status;
       return <Badge variant={status} />;
@@ -41,7 +41,7 @@ export default function AssessmentDetailsDialog({
         <DialogHeader>
           <DialogTitle>{props.assessment.name}</DialogTitle>
         </DialogHeader>
-        <FrameworkLabel framework={props.assessment.framework} />
+        <FrameworkLabel name={props.assessment.framework} variant="framework" />
         <div className="flex w-full gap-4">
           <div className="flex w-full flex-col gap-1.5">
             <Label>Score</Label>

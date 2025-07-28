@@ -1,9 +1,9 @@
-import { HugeiconsIcon } from "@hugeicons/react";
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
   HelpCircleIcon,
   SquareIcon,
   TriangleIcon,
-} from "@hugeicons-pro/core-solid-standard";
+} from '@hugeicons-pro/core-solid-standard';
 import {
   Alert02Icon,
   CheckmarkBadge03Icon,
@@ -11,27 +11,27 @@ import {
   UserGroupIcon,
   UserIcon,
   ZapIcon,
-} from "@hugeicons-pro/core-stroke-rounded";
-import { Slot } from "@radix-ui/react-slot";
-import { cva, type VariantProps } from "class-variance-authority";
-import type * as React from "react";
-import { type Status, statuses } from "@/dummy-data/status";
-import { cn } from "@/lib/utils";
-import StatusLabel from "../labels/status-label";
+} from '@hugeicons-pro/core-stroke-rounded';
+import { Slot } from '@radix-ui/react-slot';
+import { cva, type VariantProps } from 'class-variance-authority';
+import type * as React from 'react';
+import { type Status, statuses } from '@/dummy-data/status';
+import { cn } from '@/lib/utils';
+import StatusLabel from '../labels/status-label';
 
 const badgeVariants = cva(
-  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-md border px-2 py-0.5 font-medium text-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3",
+  'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-md border px-2 py-0.5 font-medium text-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3',
   {
     variants: {
       variant: {
         default:
-          "border-primary bg-primary/80 text-primary-foreground shadow-highlight [a&]:hover:bg-primary/90",
+          'border-primary bg-primary/80 text-primary-foreground shadow-highlight [a&]:hover:bg-primary/90',
         secondary:
-          "border-border bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
+          'border-border bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
         destructive:
-          "border-transparent bg-destructive text-white focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40 [a&]:hover:bg-destructive/90",
+          'border-transparent bg-destructive text-white focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40 [a&]:hover:bg-destructive/90',
         outline:
-          "bg-background text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
+          'bg-background text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
         blue: `bg-gradient-to-b from-ga-blue-100 dark:from-ga-blue-950 to-white dark:to-ga-blue-900
               border-1 border-ga-blue-300 dark:border-black rounded-sm px-1.5
               text-ga-blue-700 dark:text-ga-blue-100
@@ -46,13 +46,13 @@ const badgeVariants = cva(
                   border-1 border-gray-300 dark:border-black
                   text-gray-800 dark:text-white
                   shadow-[inset_0_0_0_1px_var(--color-gray-100),_0_1px_0_var(--color-gray-300)] dark:shadow-[inset_0_0_0_1px_var(--color-gray-700),_0_1px_0_var(--color-black)]`,
-        "not-started": `bg-gradient-to-b from-gray-100 dark:from-gray-900 to-white dark:to-gray-700
+        'not-started': `bg-gradient-to-b from-gray-100 dark:from-gray-900 to-white dark:to-gray-700
                   border-1 border-gray-300 dark:border-black
                   text-gray-800 dark:text-gray-100 dark:[&>svg]:text-gray-100
                   shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-gray-300)] dark:shadow-[inset_0_0_0_1px_var(--color-gray-700),_0_1px_0_var(--color-black)]
                   
                   pl-1.5 rounded-full`,
-        "in-progress": `bg-gradient-to-b from-amber-100 dark:from-amber-950 to-white dark:to-amber-900
+        'in-progress': `bg-gradient-to-b from-amber-100 dark:from-amber-950 to-white dark:to-amber-900
                   border-1 border-amber-300 dark:border-black
                   text-amber-800 dark:text-amber-100 dark:[&>svg]:!text-amber-100
                   shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-amber-300)] dark:shadow-[inset_0_0_0_1px_var(--color-amber-900),_0_1px_0_var(--color-black)]
@@ -76,8 +76,9 @@ const badgeVariants = cva(
                   shadow-[inset_0_0_0_1px_var(--color-white),_0_1px_0_var(--color-red-300)] dark:shadow-[inset_0_0_0_1px_var(--color-red-900),_0_1px_0_var(--color-black)]
                   
                   pl-1.5 rounded-full`,
-        self: "bg-background pl-1.5 text-foreground",
-        board: "bg-background pl-1.5 text-foreground",
+        self: 'border-ga-blue-200 bg-background pl-1.5 text-foreground dark:border-ga-blue-800',
+        board:
+          'border-ga-green-200 bg-background pl-1.5 text-foreground dark:border-ga-green-800',
         green: `bg-gradient-to-b from-ga-green-600 to-ga-green-500
                 border-1 border-ga-green-800 dark:border-black
                 text-white text-shadow-md
@@ -123,7 +124,7 @@ const badgeVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: 'default',
     },
   }
 );
@@ -133,9 +134,9 @@ function Badge({
   variant,
   asChild = false,
   ...props
-}: React.ComponentProps<"span"> &
+}: React.ComponentProps<'span'> &
   VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
-  const Comp = asChild ? Slot : "span";
+  const Comp = asChild ? Slot : 'span';
 
   return (
     <Comp
@@ -143,64 +144,68 @@ function Badge({
       data-slot="badge"
       {...props}
     >
-      {variant === "admin" && (
+      {variant === 'admin' && (
         <>
           <HugeiconsIcon icon={MicrosoftAdminIcon} strokeWidth={2} />
           Admin
         </>
       )}
-      {variant === "member" && "Member"}
+      {variant === 'member' && 'Member'}
       {variant && (statuses as readonly string[]).includes(variant) && (
         <StatusLabel status={variant as Status} />
       )}
-      {variant === "self" && (
+      {variant === 'self' && (
         <>
-          <HugeiconsIcon icon={UserIcon} strokeWidth={2} />
+          <HugeiconsIcon
+            className="text-ga-blue-600 dark:text-ga-blue-500"
+            icon={UserIcon}
+            strokeWidth={2}
+          />
           Self
         </>
       )}
-      {variant === "board" && (
+      {variant === 'board' && (
         <>
           <HugeiconsIcon
-            className="!size-3.5"
+            className="!size-3.5 text-ga-green-600 dark:text-ga-green-500"
             icon={UserGroupIcon}
             strokeWidth={1.8}
           />
           Board
         </>
       )}
-      {variant === "green" && (
+      {variant === 'green' && (
         <>
           <HugeiconsIcon icon={CheckmarkBadge03Icon} strokeWidth={2} />
           Green
         </>
       )}
-      {variant === "amber" && (
+      {variant === 'amber' && (
         <>
           <HugeiconsIcon icon={Alert02Icon} strokeWidth={2} />
           Amber
         </>
       )}
-      {variant === "red" && (
+      {variant === 'red' && (
         <>
           <HugeiconsIcon icon={Alert02Icon} strokeWidth={2} />
           Red
         </>
       )}
-      {variant === "black" && (
+      {variant === 'black' && (
         <>
           <HugeiconsIcon icon={Alert02Icon} strokeWidth={2} />
           Black
         </>
       )}
-      {variant === "actions" && (
+      {variant === 'actions' && (
         <HugeiconsIcon icon={ZapIcon} strokeWidth={2} />
       )}
-      {variant === "domain" && (
+      {variant === 'domain' && (
         <HugeiconsIcon className="!size-3.5" icon={TriangleIcon} />
       )}
-      {variant === "section" && <HugeiconsIcon icon={SquareIcon} />}
-      {variant === "question" && (
+      {variant === 'section' && <HugeiconsIcon icon={SquareIcon} />}
+      {variant === 'question' && (
         <HugeiconsIcon className="!size-3.5" icon={HelpCircleIcon} />
       )}
       {props.children}

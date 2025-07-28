@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { HugeiconsIcon } from "@hugeicons/react";
-import { MoreHorizontalIcon } from "@hugeicons-pro/core-stroke-rounded";
-import type { ColumnDef } from "@tanstack/react-table";
-import { useState } from "react";
-import AssessmentsStatusFilter from "@/app/dashboard/assessments/assessments-status-filter";
-import { DataTable } from "@/components/data-table/data-table";
-import AssessmentDetailsDialog from "@/components/dialogs/assessment-details-dialog";
-import NewAssessmentDialog from "@/components/dialogs/new-assessment-dialog";
-import SortButton from "@/components/sort-button";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { type Assessment, assessments } from "@/dummy-data/assessments";
-import { formatDateTime } from "@/lib/utils";
+import { HugeiconsIcon } from '@hugeicons/react';
+import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
+import type { ColumnDef } from '@tanstack/react-table';
+import { useState } from 'react';
+import AssessmentsStatusFilter from '@/app/dashboard/assessments/assessments-status-filter';
+import { DataTable } from '@/components/data-table/data-table';
+import AssessmentDetailsDialog from '@/components/dialogs/assessment-details-dialog';
+import NewAssessmentDialog from '@/components/dialogs/new-assessment-dialog';
+import SortButton from '@/components/sort-button';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { type Assessment, assessments } from '@/dummy-data/assessments';
+import { formatDateTime } from '@/lib/utils';
 
 const getAssessmentColumns = (
   onOpenDetails: (assessment: Assessment) => void
@@ -20,17 +20,17 @@ const getAssessmentColumns = (
   {
     size: 10,
     maxSize: 10,
-    accessorKey: "type",
+    accessorKey: 'type',
     header: ({ column }) => <SortButton column={column}>Type</SortButton>,
     cell: ({ row }) => {
       const type = row.original.type;
-      return <Badge className="" variant={type} />;
+      return <Badge variant={type} />;
     },
   },
   {
     size: 30,
     maxSize: 30,
-    accessorKey: "name",
+    accessorKey: 'name',
     header: ({ column }) => <SortButton column={column}>Name</SortButton>,
     cell: ({ row }) => {
       const name = row.original.name;
@@ -40,7 +40,7 @@ const getAssessmentColumns = (
   {
     size: 15,
     maxSize: 15,
-    accessorKey: "status",
+    accessorKey: 'status',
     header: ({ column }) => <SortButton column={column}>Status</SortButton>,
     cell: ({ row }) => {
       const status = row.original.status;
@@ -50,7 +50,7 @@ const getAssessmentColumns = (
   {
     size: 20,
     maxSize: 20,
-    accessorKey: "dueDate",
+    accessorKey: 'dueDate',
     header: ({ column }) => <SortButton column={column}>Due Date</SortButton>,
     cell: ({ row }) => {
       const dueDate = row.original.dueDate;
@@ -60,8 +60,8 @@ const getAssessmentColumns = (
   {
     size: 25,
     maxSize: 25,
-    id: "actions",
-    header: "Actions",
+    id: 'actions',
+    header: 'Actions',
     cell: () => (
       <Button size="sm" variant="outline">
         Start assessment
@@ -69,7 +69,7 @@ const getAssessmentColumns = (
     ),
   },
   {
-    id: "menu",
+    id: 'menu',
     cell: ({ row }) => (
       <Button
         className="float-right size-8"
@@ -116,7 +116,7 @@ export default function Assessments() {
           data={assessments}
           filters={[
             {
-              columnKey: "status",
+              columnKey: 'status',
               Filter: AssessmentsStatusFilter,
             },
           ]}

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ZapIcon } from "@hugeicons-pro/core-stroke-rounded";
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ZapIcon } from '@hugeicons-pro/core-stroke-rounded';
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -13,12 +13,12 @@ import {
   getSortedRowModel,
   type SortingState,
   useReactTable,
-} from "@tanstack/react-table";
-import { SearchIcon, XIcon } from "lucide-react";
-import { type ReactNode, useRef, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+} from '@tanstack/react-table';
+import { SearchIcon, XIcon } from 'lucide-react';
+import { type ReactNode, useRef, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -26,16 +26,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import type { ReportsRow, ReportsRowAssessment } from "@/dummy-data/reports";
-import { cn } from "@/lib/utils";
-import ReportsAssessmentFilter from "./reports-assessment-filter";
-import ReportsRiskFilter from "./reports-risk-filter";
+} from '@/components/ui/table';
+import type { ReportsRow, ReportsRowAssessment } from '@/dummy-data/reports';
+import { cn } from '@/lib/utils';
+import ReportsAssessmentFilter from './reports-assessment-filter';
+import ReportsRiskFilter from './reports-risk-filter';
 import {
   expandToDepth,
   getTotal,
   hierarchicalFilterFn,
-} from "./reports-row-functions";
+} from './reports-row-functions';
 
 interface ReportsDataTableProps {
   children?: ReactNode;
@@ -44,7 +44,7 @@ interface ReportsDataTableProps {
 }
 
 export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
-  const [globalFilter, setGlobalFilter] = useState<string>("");
+  const [globalFilter, setGlobalFilter] = useState<string>('');
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // can set initial column filter state here
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
@@ -63,7 +63,7 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onExpandedChange: setExpanded,
-    getSubRows: (row) => (row.type === "question" ? [] : row.subRows),
+    getSubRows: (row) => (row.type === 'question' ? [] : row.subRows),
     getExpandedRowModel: getExpandedRowModel(),
     state: {
       globalFilter,
@@ -74,7 +74,7 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
   });
 
   const handleClearInput = () => {
-    table.setGlobalFilter("");
+    table.setGlobalFilter('');
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -90,7 +90,7 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
             placeholder="Search reports"
             ref={inputRef}
             type="text"
-            value={globalFilter ?? ""}
+            value={globalFilter ?? ''}
           />
           {globalFilter && (
             <Button
@@ -109,16 +109,16 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
         </div>
         <ReportsAssessmentFilter
           onChange={(value) => {
-            table.getColumn("first")?.setFilterValue(value);
+            table.getColumn('first')?.setFilterValue(value);
             expandToDepth(table, 0);
           }}
-          value={(table.getColumn("first")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn('first')?.getFilterValue() as string) ?? ''}
         />
         <ReportsRiskFilter
           onChange={(value) => {
-            table.getColumn("risk")?.setFilterValue(value);
+            table.getColumn('risk')?.setFilterValue(value);
           }}
-          value={(table.getColumn("risk")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn('risk')?.getFilterValue() as string) ?? ''}
         />
         <Button
           disabled={!columnFilters.length}
@@ -135,17 +135,15 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
         <div className="flex items-center justify-between rounded-t-xl border-b bg-background px-3 py-3">
           <div className="flex w-full items-center gap-3">
             <h2 className="font-semibold text-base">Reports</h2>
-            <Badge variant="blue">
-              {getTotal(table.getFilteredRowModel().rows)}
-            </Badge>
+            <Badge variant="blue">{data.length}</Badge>
           </div>
-          {columnFilters.find((filter) => filter.id === "first") && (
+          {columnFilters.find((filter) => filter.id === 'first') && (
             <Button size="sm">
               <HugeiconsIcon icon={ZapIcon} strokeWidth={2} />
               {
-                columnFilters.find((filter) => filter.id === "first")
+                columnFilters.find((filter) => filter.id === 'first')
                   ?.value as string
-              }{" "}
+              }{' '}
               Action plan
             </Button>
           )}
@@ -181,41 +179,41 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   className={cn(
-                    "group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:px-3",
+                    'group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:px-3',
                     // Table Cell Borders
-                    "[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-r",
+                    '[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-r',
                     // First Row
-                    "first:[&>td]:border-t",
+                    'first:[&>td]:border-t',
                     // Bottom Right
-                    "last:[&>td]:last:rounded-br-md",
+                    'last:[&>td]:last:rounded-br-md',
                     // Bottom Left
-                    "last:[&>td]:first:rounded-bl-md",
+                    'last:[&>td]:first:rounded-bl-md',
                     // Top Right
-                    "first:[&>td]:last:rounded-tr-md",
+                    'first:[&>td]:last:rounded-tr-md',
                     // Top Left
-                    "first:[&>td]:first:rounded-tl-md"
+                    'first:[&>td]:first:rounded-tl-md'
                   )}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() && 'selected'}
                   key={row.id}
                   onClick={() => row.toggleExpanded()}
                 >
                   {row.getVisibleCells().map((cell, index) => (
                     <TableCell
                       className={cn(
-                        "relative",
-                        row.original.type === "assessment"
-                          ? "bg-background"
-                          : "",
-                        row.original.type === "domain"
-                          ? "bg-ga-blue-50 dark:bg-ga-blue-950"
-                          : "",
-                        row.original.type === "section"
-                          ? "bg-ga-green-50 dark:bg-ga-green-950"
-                          : "",
-                        row.original.type === "question" ? "bg-accent" : "",
+                        'relative',
+                        row.original.type === 'assessment'
+                          ? 'bg-background'
+                          : '',
+                        row.original.type === 'domain'
+                          ? 'bg-ga-blue-50 dark:bg-ga-blue-950'
+                          : '',
+                        row.original.type === 'section'
+                          ? 'bg-ga-green-50 dark:bg-ga-green-950'
+                          : '',
+                        row.original.type === 'question' ? 'bg-accent' : '',
                         row.depth === 3 && row.getIsExpanded()
-                          ? "content-start"
-                          : ""
+                          ? 'content-start'
+                          : ''
                       )}
                       key={cell.id}
                     >
@@ -228,14 +226,14 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
                           <Badge
                             variant={((type) => {
                               switch (type) {
-                                case "assessment":
-                                  return "domain";
-                                case "domain":
-                                  return "section";
-                                case "section":
-                                  return "question";
-                                case "question":
-                                  return "secondary";
+                                case 'assessment':
+                                  return 'domain';
+                                case 'domain':
+                                  return 'section';
+                                case 'section':
+                                  return 'question';
+                                case 'question':
+                                  return 'secondary';
                                 default:
                               }
                             })(row.original.type)}

@@ -1,48 +1,48 @@
-"use client";
+'use client';
 
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Comment01Icon, Edit04Icon } from "@hugeicons-pro/core-stroke-rounded";
-import type { ColumnDef } from "@tanstack/react-table";
-import { useState } from "react";
-import DueDateLabel from "@/app/dashboard/actions/due-date";
-import EditActionDialog from "@/components/dialogs/edit-action-dialog";
-import ExpandChevron from "@/components/expand-chevron";
-import FrameworkLabel from "@/components/labels/framework-label";
-import UserLabel from "@/components/labels/user-label";
-import SortButton from "@/components/sort-button";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Comment01Icon, Edit04Icon } from '@hugeicons-pro/core-stroke-rounded';
+import type { ColumnDef } from '@tanstack/react-table';
+import { useState } from 'react';
+import DueDateLabel from '@/app/dashboard/actions/due-date';
+import EditActionDialog from '@/components/dialogs/edit-action-dialog';
+import ExpandChevron from '@/components/expand-chevron';
+import FrameworkLabel from '@/components/labels/framework-label';
+import UserLabel from '@/components/labels/user-label';
+import SortButton from '@/components/sort-button';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from '@/components/ui/tooltip';
 import {
   type ActionsRow,
   type ActionsRowAction,
   assessmentActionsRows,
-} from "@/dummy-data/actions";
-import { cn } from "@/lib/utils";
-import { ActionsDataTable } from "./actions-data-table";
-import { hierarchicalFilterFn } from "./actions-row-functions";
-import ProgressUpdatesSheet from "./progress-updates-sheet";
+} from '@/dummy-data/actions';
+import { cn } from '@/lib/utils';
+import { ActionsDataTable } from './actions-data-table';
+import { hierarchicalFilterFn } from './actions-row-functions';
+import ProgressUpdatesSheet from './progress-updates-sheet';
 
 const getActionsColumns = (
   onOpenProgressUpdates: (action: ActionsRowAction) => void,
   onEditAction: (action: ActionsRowAction) => void
 ): ColumnDef<ActionsRow>[] => [
   {
-    id: "first",
+    id: 'first',
     size: 40,
     maxSize: 40,
     accessorFn: (row) => {
       switch (row.type) {
-        case "assessment":
+        case 'assessment':
           return row.name;
-        case "risk":
+        case 'risk':
           return row.risk;
-        case "action":
+        case 'action':
           return row.text;
         default:
       }
@@ -51,7 +51,7 @@ const getActionsColumns = (
     header: undefined,
     cell: ({ row }) => {
       switch (row.original.type) {
-        case "assessment":
+        case 'assessment':
           return (
             <div className="flex gap-2">
               <ExpandChevron
@@ -62,18 +62,21 @@ const getActionsColumns = (
                 <span className="line-clamp-1 truncate font-medium text-base">
                   {row.original.name}
                 </span>
-                <FrameworkLabel framework={row.original.framework} />
+                <FrameworkLabel
+                  name={row.original.framework}
+                  variant="framework"
+                />
               </div>
             </div>
           );
-        case "risk":
+        case 'risk':
           return (
             <div className="flex items-center gap-2">
               <ExpandChevron className="ml-6" expanded={row.getIsExpanded()} />
               <Badge variant={row.original.risk} />
             </div>
           );
-        case "action": {
+        case 'action': {
           const expanded = row.getIsExpanded();
 
           return (
@@ -84,8 +87,8 @@ const getActionsColumns = (
               />
               <span
                 className={cn(
-                  "whitespace-pre-wrap font-medium",
-                  expanded ? "" : "line-clamp-1 truncate"
+                  'whitespace-pre-wrap font-medium',
+                  expanded ? '' : 'line-clamp-1 truncate'
                 )}
               >
                 {row.original.text}
@@ -100,16 +103,16 @@ const getActionsColumns = (
   {
     size: 15,
     maxSize: 15,
-    id: "status",
+    id: 'status',
     accessorFn: (row) => {
-      if (row.type === "action") {
+      if (row.type === 'action') {
         return row.status;
       }
       return null;
     },
     header: ({ column }) => <SortButton column={column}>Status</SortButton>,
     cell: ({ row }) => {
-      if (row.original.type === "action") {
+      if (row.original.type === 'action') {
         return (
           <div className="flex h-7 items-center">
             <Badge variant={row.original.status} />
@@ -119,23 +122,23 @@ const getActionsColumns = (
     },
   },
   {
-    id: "date",
+    id: 'date',
     size: 15,
     maxSize: 15,
-    accessorKey: "dueDate",
+    accessorKey: 'dueDate',
     header: ({ column }) => <SortButton column={column}>Due Date</SortButton>,
     cell: ({ row }) => {
-      if (row.original.type === "assessment") {
+      if (row.original.type === 'assessment') {
         // return <DueDatesOverview actionDueSummary={row.original.dueSummary} />;
         // <span className="font-medium text-xs">
         //   {row.original.assessmentType === 'self' ? 'Completed' : 'Closed'}{' '}
         //   {formatDateTime(row.original.date.getTime())}
         // </span>
       }
-      if (row.original.type === "risk") {
+      if (row.original.type === 'risk') {
         // return <DueDatesOverview actionDueSummary={row.original.dueSummary} />;
       }
-      if (row.original.type === "action") {
+      if (row.original.type === 'action') {
         const dueDate = row.original.dueDate;
         return (
           <div className="flex h-7 items-center">
@@ -148,17 +151,17 @@ const getActionsColumns = (
   {
     size: 15,
     maxSize: 15,
-    id: "assignee",
-    header: "Assignee/s",
-    accessorKey: "assignee.userId",
+    id: 'assignee',
+    header: 'Assignee/s',
+    accessorKey: 'assignee.userId',
     cell: ({ row }) => {
-      if (row.original.type === "assessment") {
+      if (row.original.type === 'assessment') {
         return;
       }
-      if (row.original.type === "risk") {
+      if (row.original.type === 'risk') {
         return;
       }
-      if (row.original.type === "action") {
+      if (row.original.type === 'action') {
         const assignee = row.original.assignee;
         return (
           <div className="flex h-7 items-center">
@@ -171,20 +174,20 @@ const getActionsColumns = (
   {
     size: 7.5,
     maxSize: 7.5,
-    header: "Resource",
+    header: 'Resource',
   },
   {
     size: 7.5,
     maxSize: 7.5,
-    id: "menu",
+    id: 'menu',
     cell: ({ row }) => {
-      if (row.original.type === "assessment") {
+      if (row.original.type === 'assessment') {
         return;
       }
-      if (row.original.type === "risk") {
+      if (row.original.type === 'risk') {
         return;
       }
-      if (row.original.type === "action") {
+      if (row.original.type === 'action') {
         return (
           <div className="flex items-center justify-end gap-1">
             <TooltipProvider>
