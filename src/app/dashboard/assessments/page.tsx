@@ -3,6 +3,7 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
+import Link from 'next/link';
 import { useState } from 'react';
 import AssessmentsStatusFilter from '@/app/dashboard/assessments/assessments-status-filter';
 import { DataTable } from '@/components/data-table/data-table';
@@ -63,8 +64,8 @@ const getAssessmentColumns = (
     id: 'actions',
     header: 'Actions',
     cell: () => (
-      <Button size="sm" variant="outline">
-        Start assessment
+      <Button asChild size="sm" variant="outline">
+        <Link href="/dashboard/assessments/123">Start assessment</Link>
       </Button>
     ),
   },

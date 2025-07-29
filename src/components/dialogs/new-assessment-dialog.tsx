@@ -54,7 +54,7 @@ export default function NewAssessmentDialog({ ...props }: DialogStackProps) {
               variant="outline"
             >
               <div className="relative flex w-full items-center justify-center overflow-hidden rounded-md border bg-accent py-8">
-                <div className="group-hover:-translate-y-1 relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-blue-300 bg-ga-blue-200 shadow-highlight transition-transform group-hover:scale-105 dark:border-ga-blue-900 dark:bg-ga-blue-950 dark:shadow-sm">
+                <div className="group-hover:-translate-y-1 relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-blue-300 bg-gradient-to-b from-ga-blue-100 to-ga-blue-200 shadow-highlight transition-transform group-hover:scale-105 dark:border-ga-blue-900 dark:from-ga-blue-950 dark:to-gray-900 dark:shadow-sm">
                   <HugeiconsIcon
                     className="size-12 text-ga-blue-600 dark:text-ga-blue-500"
                     icon={UserIcon}
@@ -80,7 +80,7 @@ export default function NewAssessmentDialog({ ...props }: DialogStackProps) {
               variant="outline"
             >
               <div className="relative flex w-full items-center justify-center overflow-hidden rounded-md border bg-accent py-8">
-                <div className="group-hover:-translate-y-1 relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-green-300 bg-ga-green-200 shadow-highlight transition-transform group-hover:scale-105 dark:border-ga-green-900 dark:bg-ga-green-950 dark:shadow-sm">
+                <div className="group-hover:-translate-y-1 relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-green-300 bg-gradient-to-b from-ga-green-100 to-ga-green-200 shadow-highlight transition-transform group-hover:scale-105 dark:border-ga-green-900 dark:from-ga-green-950 dark:to-gray-900 dark:shadow-sm">
                   <HugeiconsIcon
                     className="size-12 text-ga-green-600 dark:text-ga-green-500"
                     icon={UserGroupIcon}
