@@ -77,16 +77,16 @@ export default function Questionnaire() {
                         <FormItem key={option.id}>
                           <FormControl>
                             <FormLabel
-                              className="group flex w-full cursor-pointer items-center gap-4 rounded-md border bg-slate-100 p-4 transition-all has-data-[state=checked]:border-primary/30 has-data-[state=checked]:bg-primary/15"
+                              className="group flex w-full cursor-pointer items-center gap-4 rounded-md border bg-accent p-4 transition-all has-data-[state=checked]:border-primary/30 has-data-[state=checked]:bg-primary/15"
                               htmlFor={option.id}
                             >
                               <RadioGroupItem
                                 checked={field.value === option.id}
-                                className="bg-white"
+                                className="bg-background"
                                 id={option.id}
                                 value={option.id}
                               />
-                              <span className="font-medium text-slate-700 transition-all group-has-data-[state=checked]:text-primary">
+                              <span className="font-medium transition-all group-has-data-[state=checked]:text-primary">
                                 {option.text}
                               </span>
                             </FormLabel>
