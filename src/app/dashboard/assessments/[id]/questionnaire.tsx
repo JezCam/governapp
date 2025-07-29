@@ -27,7 +27,7 @@ const responseOptions = [
 ];
 
 const formSchema = z.object({
-  responseOptionId: z.string().min(1, 'Please select an option'),
+  responseOptionId: z.string({ message: 'Please select an option' }),
 });
 
 export default function Questionnaire() {

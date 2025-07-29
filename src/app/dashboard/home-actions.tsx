@@ -4,7 +4,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import {
   TaskDoneIcon,
   TaskIcon,
-  UserIcon,
+  UserGroupIcon,
   ZapIcon,
 } from '@hugeicons-pro/core-bulk-rounded';
 import {
@@ -64,7 +64,7 @@ export default function HomeActions() {
             <div className="group-hover:-translate-y-1 relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-blue-300 bg-gradient-to-b from-ga-blue-100 to-ga-blue-200 shadow-highlight transition-transform group-hover:scale-105 dark:border-ga-blue-900 dark:from-ga-blue-950 dark:to-gray-900 dark:shadow-sm">
               <HugeiconsIcon
                 className="size-12 text-ga-blue-600 dark:text-ga-blue-500"
-                icon={UserIcon}
+                icon={UserGroupIcon}
               />
               <div className="-right-2 -bottom-2 absolute flex size-6 items-center justify-center rounded-md border border-ga-blue-700 bg-ga-blue-600 shadow-highlight">
                 <HugeiconsIcon
