@@ -1,7 +1,9 @@
+import { type Assessment, assessments } from './assessments';
 import type { Risk } from './risk';
 
 export type ReportsRowQuestion = {
   type: 'question';
+  assessmentId: string;
   text: string;
   response: string;
   risk: Risk;
@@ -10,6 +12,7 @@ export type ReportsRowQuestion = {
 
 export type ReportsRowSection = {
   type: 'section';
+  assessmentId: string;
   name: string;
   score: number;
   risk: Risk;
@@ -19,6 +22,7 @@ export type ReportsRowSection = {
 
 export type ReportsRowDomain = {
   type: 'domain';
+  assessmentId: string;
   name: string;
   score: number;
   risk: Risk;
@@ -28,9 +32,7 @@ export type ReportsRowDomain = {
 
 export type ReportsRowAssessment = {
   type: 'assessment';
-  id: string;
-  name: string;
-  framework: string;
+  assessment: Assessment;
   score: number;
   risk: Risk;
   feedback: string;
@@ -45,16 +47,15 @@ export type ReportsRow =
 
 export const assessmentReportsRows: ReportsRowAssessment[] = [
   {
-    id: '1',
     type: 'assessment',
-    name: 'Governance Framework Assessment 1',
-    framework: 'Governance Framework',
+    assessment: assessments[2],
     score: 85,
     risk: 'green',
     feedback: 'Overall good governance practices observed.',
     subRows: [
       {
         type: 'domain',
+        assessmentId: assessments[2].id,
         name: 'Risk Management 1',
         score: 90,
         risk: 'green',
@@ -62,6 +63,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
         subRows: [
           {
             type: 'section',
+            assessmentId: assessments[2].id,
             name: 'Risk Identification 1',
             score: 95,
             risk: 'green',
@@ -69,6 +71,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
             subRows: [
               {
                 type: 'question',
+                assessmentId: assessments[2].id,
                 text: 'How are risks identified?',
                 response: 'Regular risk assessments and audits.',
                 risk: 'green',
@@ -76,6 +79,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
               },
               {
                 type: 'question',
+                assessmentId: assessments[2].id,
                 text: 'Are there any recent risks identified?',
                 response:
                   'Yes, several risks were identified in the last quarter.',
@@ -86,6 +90,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
           },
           {
             type: 'section',
+            assessmentId: assessments[2].id,
             name: 'Risk Identification 2',
             score: 95,
             risk: 'green',
@@ -93,6 +98,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
             subRows: [
               {
                 type: 'question',
+                assessmentId: assessments[2].id,
                 text: 'How are risks identified?',
                 response: 'Regular risk assessments and audits.',
                 risk: 'green',
@@ -100,6 +106,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
               },
               {
                 type: 'question',
+                assessmentId: assessments[2].id,
                 text: 'Are there any recent risks identified?',
                 response:
                   'Yes, several risks were identified in the last quarter.',
@@ -112,6 +119,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
       },
       {
         type: 'domain',
+        assessmentId: assessments[2].id,
         name: 'Risk Management 2',
         score: 90,
         risk: 'green',
@@ -119,6 +127,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
         subRows: [
           {
             type: 'section',
+            assessmentId: assessments[2].id,
             name: 'Risk Identification',
             score: 95,
             risk: 'green',
@@ -126,6 +135,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
             subRows: [
               {
                 type: 'question',
+                assessmentId: assessments[2].id,
                 text: 'How are risks identified?',
                 response: 'Regular risk assessments and audits.',
                 risk: 'green',
@@ -133,6 +143,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
               },
               {
                 type: 'question',
+                assessmentId: assessments[2].id,
                 text: 'Are there any recent risks identified?',
                 response:
                   'Yes, several risks were identified in the last quarter.',
@@ -143,6 +154,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
           },
           {
             type: 'section',
+            assessmentId: assessments[2].id,
             name: 'Risk Identification',
             score: 95,
             risk: 'green',
@@ -150,6 +162,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
             subRows: [
               {
                 type: 'question',
+                assessmentId: assessments[2].id,
                 text: 'How are risks identified?',
                 response: 'Regular risk assessments and audits.',
                 risk: 'green',
@@ -157,6 +170,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
               },
               {
                 type: 'question',
+                assessmentId: assessments[2].id,
                 text: 'Are there any recent risks identified?',
                 response:
                   'Yes, several risks were identified in the last quarter.',
@@ -170,16 +184,15 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
     ],
   },
   {
-    id: '1',
     type: 'assessment',
-    name: 'Governance Framework Assessment 2',
-    framework: 'Governance Framework',
+    assessment: assessments[3],
     score: 85,
     risk: 'green',
     feedback: 'Overall good governance practices observed.',
     subRows: [
       {
         type: 'domain',
+        assessmentId: assessments[3].id,
         name: 'Risk Management 1',
         score: 90,
         risk: 'green',
@@ -187,6 +200,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
         subRows: [
           {
             type: 'section',
+            assessmentId: assessments[3].id,
             name: 'Risk Identification 1',
             score: 95,
             risk: 'green',
@@ -194,6 +208,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
             subRows: [
               {
                 type: 'question',
+                assessmentId: assessments[3].id,
                 text: 'How are risks identified?',
                 response: 'Regular risk assessments and audits.',
                 risk: 'green',
@@ -201,6 +216,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
               },
               {
                 type: 'question',
+                assessmentId: assessments[3].id,
                 text: 'Are there any recent risks identified?',
                 response:
                   'Yes, several risks were identified in the last quarter.',
@@ -211,6 +227,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
           },
           {
             type: 'section',
+            assessmentId: assessments[3].id,
             name: 'Risk Identification 2',
             score: 95,
             risk: 'green',
@@ -218,6 +235,8 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
             subRows: [
               {
                 type: 'question',
+                assessmentId: assessments[3].id,
+
                 text: 'How are risks identified?',
                 response: 'Regular risk assessments and audits.',
                 risk: 'green',
@@ -225,6 +244,8 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
               },
               {
                 type: 'question',
+                assessmentId: assessments[3].id,
+
                 text: 'Are there any recent risks identified?',
                 response:
                   'Yes, several risks were identified in the last quarter.',
@@ -237,6 +258,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
       },
       {
         type: 'domain',
+        assessmentId: assessments[3].id,
         name: 'Risk Management 2',
         score: 90,
         risk: 'green',
@@ -244,6 +266,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
         subRows: [
           {
             type: 'section',
+            assessmentId: assessments[3].id,
             name: 'Risk Identification',
             score: 95,
             risk: 'green',
@@ -251,6 +274,8 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
             subRows: [
               {
                 type: 'question',
+                assessmentId: assessments[3].id,
+
                 text: 'How are risks identified?',
                 response: 'Regular risk assessments and audits.',
                 risk: 'green',
@@ -258,6 +283,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
               },
               {
                 type: 'question',
+                assessmentId: assessments[3].id,
                 text: 'Are there any recent risks identified?',
                 response:
                   'Yes, several risks were identified in the last quarter.',
@@ -268,6 +294,7 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
           },
           {
             type: 'section',
+            assessmentId: assessments[3].id,
             name: 'Risk Identification',
             score: 95,
             risk: 'green',
@@ -275,6 +302,8 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
             subRows: [
               {
                 type: 'question',
+                assessmentId: assessments[3].id,
+
                 text: 'How are risks identified?',
                 response: 'Regular risk assessments and audits.',
                 risk: 'green',
@@ -282,6 +311,8 @@ export const assessmentReportsRows: ReportsRowAssessment[] = [
               },
               {
                 type: 'question',
+                assessmentId: assessments[3].id,
+
                 text: 'Are there any recent risks identified?',
                 response:
                   'Yes, several risks were identified in the last quarter.',

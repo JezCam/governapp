@@ -91,15 +91,23 @@ export const getAssigneesOverview = (row: Row<ActionsRow>) => {
 };
 
 export const expandToDepth = (table: Table<ActionsRow>, depth: number) => {
-  for (const row of table.getRowModel().rows) {
-    if (row.depth <= depth) {
-      row.toggleExpanded(true);
+  const toggleRow = (row: Row<ActionsRow>) => {
+    if (row.depth >= depth) {
+      return; // Skip rows that are deeper than the specified depth
     }
-    if (depth > 0) {
+    if (!row.getIsExpanded()) {
+      row.toggleExpanded(true); // Expand the current row
+    }
+    // Recursively expand subRows if they exist
+    if (row.subRows && row.subRows.length > 0) {
       for (const subRow of row.subRows) {
-        subRow.toggleExpanded(true);
+        toggleRow(subRow);
       }
     }
+  };
+
+  for (const row of table.getCoreRowModel().rows) {
+    toggleRow(row);
   }
 };
 
@@ -109,6 +117,11 @@ export const hierarchicalFilterFn = (
   columnId: string,
   filterValue: unknown
 ) => {
+  // Only apply filter logic to leaf nodes (depth 2 - actions)
+  if (row.depth !== 2) {
+    return false; // Skip filtering for non-leaf nodes
+  }
+
   const checkRowAndParents = (currentRow: Row<ActionsRow>): boolean => {
     // Check if current row matches the filter
     const cellValue = currentRow.getValue(columnId);

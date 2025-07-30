@@ -14,6 +14,7 @@ export type UserAssessment = {
 };
 
 export type Assessment = {
+  id: string;
   type: 'self' | 'board';
   name: string;
   status: Status;
@@ -24,6 +25,7 @@ export type Assessment = {
 
 export const assessments: Assessment[] = [
   {
+    id: '0',
     type: 'self',
     name: 'Self-Assessment 2023',
     status: 'in-progress',
@@ -45,6 +47,7 @@ export const assessments: Assessment[] = [
     ],
   },
   {
+    id: '1',
     type: 'board',
     name: 'Board Assessment 2023',
     status: 'not-started',
@@ -74,6 +77,7 @@ export const assessments: Assessment[] = [
     ],
   },
   {
+    id: '2',
     type: 'self',
     name: 'Self-Assessment 2024',
     status: 'closed',
@@ -95,6 +99,7 @@ export const assessments: Assessment[] = [
     ],
   },
   {
+    id: '3',
     type: 'board',
     name: 'Board Assessment 2024',
     status: 'completed',

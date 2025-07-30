@@ -1,7 +1,11 @@
 'use client';
 
 import { HugeiconsIcon } from '@hugeicons/react';
-import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
+import {
+  File01Icon,
+  MoreHorizontalIcon,
+  ZapIcon,
+} from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -63,11 +67,58 @@ const getAssessmentColumns = (
     maxSize: 25,
     id: 'actions',
     header: 'Actions',
-    cell: () => (
-      <Button asChild size="sm" variant="outline">
-        <Link href="/dashboard/assessments/123">Start assessment</Link>
-      </Button>
-    ),
+    cell: ({ row }) => {
+      const id = row.original.id;
+      const status = row.original.status;
+
+      switch (status) {
+        case 'not-started':
+          return (
+            <Button asChild size="sm" variant="outline">
+              <Link href="/dashboard/assessments/123">Start assessment</Link>
+            </Button>
+          );
+        case 'in-progress':
+          return (
+            <Button asChild size="sm" variant="secondary">
+              <Link href="/dashboard/assessments/123">Continue assessment</Link>
+            </Button>
+          );
+        case 'completed':
+        case 'closed':
+          return (
+            <div className="flex gap-2">
+              <Button asChild size="sm" variant="outline">
+                <Link
+                  className="flex gap-2"
+                  href={`/dashboard/reports?assessment=${id}`}
+                >
+                  <HugeiconsIcon
+                    className="text-muted-foreground"
+                    icon={File01Icon}
+                    strokeWidth={2}
+                  />
+                  Report
+                </Link>
+              </Button>
+              <Button asChild className="!pl-2" size="sm" variant="outline">
+                <Link
+                  className="flex gap-1"
+                  href={`/dashboard/actions?assessment=${id}`}
+                >
+                  <HugeiconsIcon
+                    className="text-primary"
+                    icon={ZapIcon}
+                    strokeWidth={2}
+                  />
+                  Actions
+                </Link>
+              </Button>
+            </div>
+          );
+        default:
+      }
+    },
   },
   {
     id: 'menu',

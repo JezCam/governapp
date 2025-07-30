@@ -7,9 +7,11 @@ import { useState } from 'react';
 import { DataTable } from '@/components/data-table/data-table';
 import FrameworkDetailsDialog from '@/components/dialogs/framework-details-dialog';
 import FrameworkLabel from '@/components/labels/framework-label';
+import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { type Framework, frameworks } from '@/dummy-data/frameworks';
+import { formatDateTime } from '@/lib/utils';
 
 const getFrameworkColumns = (
   onOpenDetails: (framework: Framework) => void
@@ -36,10 +38,22 @@ const getFrameworkColumns = (
   },
   {
     accessorKey: 'monthlyCost',
-    header: 'Monthly Cost',
+    header: ({ column }) => (
+      <SortButton column={column}>Monthly Cost</SortButton>
+    ),
     cell: ({ row }) => {
       const cost = row.original.monthlyCost;
       return `$${cost.toFixed(2)}`;
+    },
+  },
+  {
+    accessorKey: 'subscribedOn',
+    header: ({ column }) => (
+      <SortButton column={column}>Subscribed On</SortButton>
+    ),
+    cell: ({ row }) => {
+      const subscribedOn = row.original.subscribedOn;
+      return formatDateTime(subscribedOn.getTime());
     },
   },
   {
@@ -80,6 +94,7 @@ export default function Frameworks() {
         columns={columns}
         data={frameworks}
         hasMenu
+        minWidth="800px"
         title="Your Frameworks"
       />
     </div>

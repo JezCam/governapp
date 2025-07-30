@@ -19,15 +19,23 @@ export const getTotal = (rows: Row<ReportsRow>[]) => {
 };
 
 export const expandToDepth = (table: Table<ReportsRow>, depth: number) => {
-  for (const row of table.getRowModel().rows) {
-    if (row.depth <= depth) {
-      row.toggleExpanded(true);
+  const toggleRow = (row: Row<ReportsRow>) => {
+    if (row.depth >= depth) {
+      return; // Skip rows that are deeper than the specified depth
     }
-    if (depth > 0) {
+    if (!row.getIsExpanded()) {
+      row.toggleExpanded(true); // Expand the current row
+    }
+    // Recursively expand subRows if they exist
+    if (row.subRows && row.subRows.length > 0) {
       for (const subRow of row.subRows) {
-        subRow.toggleExpanded(true);
+        toggleRow(subRow);
       }
     }
+  };
+
+  for (const row of table.getCoreRowModel().rows) {
+    toggleRow(row);
   }
 };
 

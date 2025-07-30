@@ -15,7 +15,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { SearchIcon, XIcon } from 'lucide-react';
-import { type ReactNode, useRef, useState } from 'react';
+import Link from 'next/link';
+import { type ReactNode, Suspense, useRef, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,7 +53,7 @@ interface ActionsDataTableProps {
 
 export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
   const [globalFilter, setGlobalFilter] = useState<string>('');
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // can set initial column filter state here
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
 
@@ -114,17 +115,19 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
             <SearchIcon size={16} />
           </div>
         </div>
-        <ActionsAssessmentFilter
-          onChange={(value) => {
-            table.getColumn('first')?.setFilterValue(value);
-            expandToDepth(table, 0);
-          }}
-          value={(table.getColumn('first')?.getFilterValue() as string) ?? ''}
-        />
+        <Suspense>
+          <ActionsAssessmentFilter
+            onChange={(value) => {
+              table.getColumn('first')?.setFilterValue(value);
+              expandToDepth(table, 1);
+            }}
+            value={(table.getColumn('first')?.getFilterValue() as string) ?? ''}
+          />
+        </Suspense>
         <ActionsAssigneeFilter
           onChange={(value) => {
             table.getColumn('assignee')?.setFilterValue(value);
-            expandToDepth(table, 1);
+            expandToDepth(table, 2);
           }}
           value={
             (table.getColumn('assignee')?.getFilterValue() as string) ?? ''
@@ -150,17 +153,22 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
             </Badge>
           </div>
           {columnFilters.find((filter) => filter.id === 'first') && (
-            <Button size="sm">
-              <HugeiconsIcon icon={File01Icon} strokeWidth={2} />
-              {
-                columnFilters.find((filter) => filter.id === 'first')
-                  ?.value as string
-              }{' '}
-              Report
+            <Button asChild size="sm" variant="outline">
+              <Link
+                className="flex gap-2"
+                href={`/dashboard/reports/?assessment=${columnFilters[0].value}`}
+              >
+                <HugeiconsIcon
+                  className="text-muted-foreground"
+                  icon={File01Icon}
+                  strokeWidth={2}
+                />
+                Report
+              </Link>
             </Button>
           )}
         </div>
-        <Table className="relative h-full table-fixed border-separate border-spacing-0 overflow-auto px-2 pb-2">
+        <Table className="relative h-full min-w-[1200px] table-fixed border-separate border-spacing-0 overflow-auto px-2 pb-2">
           <TableHeader className="sticky top-0 z-10 bg-accent">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow

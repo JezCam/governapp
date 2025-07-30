@@ -19,7 +19,7 @@ const columns: ColumnDef<ReportsRow>[] = [
     accessorFn: (row) => {
       switch (row.type) {
         case 'assessment':
-          return row.name;
+          return row.assessment.name;
         case 'domain':
           return row.name;
         case 'section':
@@ -29,7 +29,18 @@ const columns: ColumnDef<ReportsRow>[] = [
         default:
       }
     },
-    filterFn: hierarchicalFilterFn,
+    filterFn: (row, _, filterValue) => {
+      switch (row.original.type) {
+        case 'assessment':
+          return row.original.assessment.id === filterValue;
+        case 'domain':
+        case 'section':
+        case 'question':
+          return row.original.assessmentId === filterValue;
+        default:
+          return false;
+      }
+    },
     header: undefined,
     cell: ({ row }) => {
       switch (row.original.type) {
@@ -42,10 +53,10 @@ const columns: ColumnDef<ReportsRow>[] = [
               />
               <div className="flex w-full flex-col">
                 <span className="line-clamp-1 truncate font-medium text-base">
-                  {row.original.name}
+                  {row.original.assessment.name}
                 </span>
                 <FrameworkLabel
-                  name={row.original.framework}
+                  name={row.original.assessment.framework}
                   variant="framework"
                 />
               </div>

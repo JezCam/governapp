@@ -25,7 +25,6 @@ import {
 } from '@/dummy-data/actions';
 import { cn } from '@/lib/utils';
 import { ActionsDataTable } from './actions-data-table';
-import { hierarchicalFilterFn } from './actions-row-functions';
 import ProgressUpdatesSheet from './progress-updates-sheet';
 
 const getActionsColumns = (
@@ -39,7 +38,7 @@ const getActionsColumns = (
     accessorFn: (row) => {
       switch (row.type) {
         case 'assessment':
-          return row.name;
+          return row.assessment.name;
         case 'risk':
           return row.risk;
         case 'action':
@@ -47,7 +46,17 @@ const getActionsColumns = (
         default:
       }
     },
-    filterFn: hierarchicalFilterFn,
+    filterFn: (row, _, filterValue) => {
+      switch (row.original.type) {
+        case 'assessment':
+          return row.original.assessment.id === filterValue;
+        case 'risk':
+        case 'action':
+          return row.original.assessmentId === filterValue;
+        default:
+          return false;
+      }
+    },
     header: undefined,
     cell: ({ row }) => {
       switch (row.original.type) {
@@ -60,10 +69,10 @@ const getActionsColumns = (
               />
               <div className="flex w-full flex-col">
                 <span className="line-clamp-1 truncate font-medium text-base">
-                  {row.original.name}
+                  {row.original.assessment.name}
                 </span>
                 <FrameworkLabel
-                  name={row.original.framework}
+                  name={row.original.assessment.framework}
                   variant="framework"
                 />
               </div>
