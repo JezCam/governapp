@@ -30,7 +30,7 @@ export default function AppSidebar() {
               width={20}
             />
           </div>
-          <span className="font-extrabold text-ga-purple-800 text-lg transition-all group-data-[collapsible=icon]:translate-x-3 group-data-[collapsible=icon]:opacity-0 dark:text-white">
+          <span className="font-extrabold text-ga-purple-800 text-lg transition-all group-data-[collapsible=icon]:opacity-0 dark:text-white">
             GovernApp
           </span>
         </Link>

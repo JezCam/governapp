@@ -6,23 +6,34 @@ import {
   UserMinus02Icon,
   ZapIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import ConfirmRemoveTeamMemberDialog from './dialogs/confirm-remove-team-member-dialog';
 import EditTeamMemberDialog from './dialogs/edit-team-member-dialog';
-import { DropdownMenuContent, DropdownMenuItem } from './ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 
 type User = {
   name: string;
   imageUrl?: string;
 };
 
-export default function TeamMemberDropdownContent({ user }: { user: User }) {
+export default function TeamMemberPopoverDropdown({
+  user,
+  children,
+}: {
+  user: User;
+  children: ReactNode;
+}) {
   const [editTeamMemberOpen, setEditTeamMemberOpen] = useState(false);
   const [confirmRemoveTeamMemberOpen, setConfirmRemoveTeamMemberOpen] =
     useState(false);
 
   return (
-    <>
+    <DropdownMenu>
       <EditTeamMemberDialog
         onOpenChange={setEditTeamMemberOpen}
         open={editTeamMemberOpen}
@@ -33,6 +44,7 @@ export default function TeamMemberDropdownContent({ user }: { user: User }) {
         open={confirmRemoveTeamMemberOpen}
         user={user}
       />
+      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"
         className="w-60 font-medium"
@@ -61,6 +73,6 @@ export default function TeamMemberDropdownContent({ user }: { user: User }) {
           Remove from team
         </DropdownMenuItem>
       </DropdownMenuContent>
-    </>
+    </DropdownMenu>
   );
 }

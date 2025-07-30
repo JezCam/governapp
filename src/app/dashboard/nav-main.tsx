@@ -49,7 +49,7 @@ export function NavMain() {
                 className={cn(
                   'h-fit rounded-xl border border-transparent font-medium transition-all duration-200',
                   pathname === page.url
-                    ? 'group-data-[collapsible=icon]:!bg-transparent group-data-[collapsible=icon]:!border-transparent !bg-white dark:!bg-ga-purple-800 border-sidebar-border group-data-[collapsible=icon]:rounded-2xl dark:border-border'
+                    ? 'group-data-[collapsible=icon]:!border-transparent dark:!bg-ga-purple-800 border-sidebar-border bg-white hover:bg-white group-data-[collapsible=icon]:rounded-2xl group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:hover:bg-sidebar-accent dark:border-border'
                     : ''
                 )}
                 tooltip={page.title}
