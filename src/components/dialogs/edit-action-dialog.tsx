@@ -1,7 +1,9 @@
-import type { DialogProps } from "@radix-ui/react-dialog";
-import type { ActionsRowAction } from "@/dummy-data/actions";
-import EditActionForm from "../forms/edit-action-form";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+'use client';
+
+import type { DialogProps } from '@radix-ui/react-dialog';
+import type { ActionsRowAction } from '@/dummy-data/actions';
+import EditActionForm from '../forms/edit-action-form';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 
 export default function EditActionDialog(
   props: DialogProps & { action?: ActionsRowAction }

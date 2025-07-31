@@ -104,7 +104,6 @@ export default function EditActionForm(props: FormProps) {
                 <DatePicker
                   error={fieldState.invalid}
                   isDateUnavailable={(date) => date.compare(today('UTC')) < 0}
-                  isNonModal
                   // Disable dates before today
                   onChange={(date) => {
                     field.onChange(date?.toString());

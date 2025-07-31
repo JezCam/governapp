@@ -24,9 +24,9 @@ export default function UserAvatar({
     );
   }
   return (
-    <Avatar className={cn('border', className)}>
+    <Avatar className={cn('size-6 border', className)}>
       <AvatarImage src={user.imageUrl} />
-      <AvatarFallback className="flex size-full items-center justify-center bg-background text-foreground">
+      <AvatarFallback className="flex size-full items-center justify-center bg-accent text-foreground">
         {user.name.charAt(0)}
       </AvatarFallback>
     </Avatar>
