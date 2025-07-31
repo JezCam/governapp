@@ -11,8 +11,8 @@ export default function FrameworkLabel({
 }) {
   const colourMap = {
     framework: 'text-primary',
-    domain: 'text-ga-blue-600 dark:text-ga-blue-500',
-    section: 'text-ga-green-600 dark:text-ga-green-500',
+    domain: 'text-ga-blue-600 dark:text-ga-blue-400',
+    section: 'text-ga-green-600 dark:text-ga-green-400',
   };
   const iconMap = {
     framework: Hexagon01Icon,

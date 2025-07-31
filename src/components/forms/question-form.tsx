@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
+import FrameworkInfoCard from '@/app/dashboard/assessments/[id]/framework-info-card';
 import { LoadingButton } from '@/components/loading-button';
 import {
   Form,
@@ -15,6 +16,21 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
+const infoCards = [
+  {
+    variant: 'domain',
+    title: ' GovernApp Self Assessment Framework Domain',
+    description:
+      'This is a basic framework to test basic governance knowledge. It is intended as an introductory assessment for new Board members, and is also useful for more experience Board members who are learning to use the GovernApp interface.',
+  },
+  {
+    variant: 'section',
+    title: 'People and Place Section',
+    description:
+      'The People and Place Section examines the relationship between Board and Management, Board roles and responsibilities and basic governance concepts.',
+  },
+];
 
 const responseOptions = [
   { text: 'Chair only.', id: '0' },
@@ -30,7 +46,7 @@ const formSchema = z.object({
   responseOptionId: z.string({ message: 'Please select an option' }),
 });
 
-export default function Questionnaire() {
+export default function QuestionForm() {
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,8 +66,18 @@ export default function Questionnaire() {
   }
 
   return (
-    <div className="flex size-full items-center justify-center p-4">
-      <div className="flex w-xl flex-col gap-2">
+    <div className="flex size-full flex-col items-center overflow-auto p-4">
+      <div className="flex w-xl flex-col gap-6">
+        <div className="flex flex-col gap-4">
+          {infoCards.map((info) => (
+            <FrameworkInfoCard
+              description={info.description}
+              key={info.title}
+              title={info.title}
+              variant={info.variant as 'domain' | 'section'}
+            />
+          ))}
+        </div>
         <p className="text-center font-medium">
           If you are an Incorporated Association, other than general members,
           what specific leadership roles are operating on your Board (whether
@@ -59,7 +85,7 @@ export default function Questionnaire() {
         </p>
         <Form {...form}>
           <form
-            className="flex h-full min-h-fit flex-col justify-between gap-12 py-12"
+            className="flex h-full min-h-fit flex-col gap-12"
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormField

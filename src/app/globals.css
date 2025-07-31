@@ -139,7 +139,7 @@
   --card-foreground: oklch(0.985 0.002 247.839); /* Gray 50 */
   --popover: oklch(0.21 0.034 264.665); /* Gray 900 */
   --popover-foreground: oklch(0.985 0.002 247.839); /* Gray 50 */
-  --primary: var(--color-ga-purple-600);
+  --primary: var(--color-ga-purple-500);
   --primary-foreground: oklch(0.278 0.033 256.848); /* Gray 800 */
   --secondary: oklch(0.373 0.034 259.733); /* Gray 700 */
   --secondary-foreground: oklch(0.985 0.002 247.839); /* Gray 50 */

@@ -1,8 +1,8 @@
+import QuestionForm from '@/components/forms/question-form';
 import FrameworkLabel from '@/components/labels/framework-label';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import ProgressTree from './progress-tree';
-import Questionnaire from './questionnaire';
 
 export default async function Page({
   params,
@@ -28,7 +28,7 @@ export default async function Page({
       </div>
       <div className="flex size-full overflow-auto">
         <ProgressTree />
-        <Questionnaire />
+        <QuestionForm />
       </div>
     </div>
   );
