@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import QuestionForm from '@/components/forms/question-form';
 import FrameworkLabel from '@/components/labels/framework-label';
 import { Button } from '@/components/ui/button';
@@ -19,8 +20,8 @@ export default async function Page({
           </div>
           <h1 className="shrink-0 font-bold">Assessment Name {id}</h1>
           <div className="flex w-full justify-end">
-            <Button size="sm" variant="outline">
-              Save & exit
+            <Button asChild size="sm" variant="outline">
+              <Link href="/dashboard/assessments">Save & exit</Link>
             </Button>
           </div>
         </div>

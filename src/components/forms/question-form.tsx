@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
-import FrameworkInfoCard from '@/app/dashboard/assessments/[id]/framework-info-card';
 import { LoadingButton } from '@/components/loading-button';
 import {
   Form,
@@ -16,21 +15,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-
-const infoCards = [
-  {
-    variant: 'domain',
-    title: ' GovernApp Self Assessment Framework Domain',
-    description:
-      'This is a basic framework to test basic governance knowledge. It is intended as an introductory assessment for new Board members, and is also useful for more experience Board members who are learning to use the GovernApp interface.',
-  },
-  {
-    variant: 'section',
-    title: 'People and Place Section',
-    description:
-      'The People and Place Section examines the relationship between Board and Management, Board roles and responsibilities and basic governance concepts.',
-  },
-];
 
 const responseOptions = [
   { text: 'Chair only.', id: '0' },
@@ -66,18 +50,8 @@ export default function QuestionForm() {
   }
 
   return (
-    <div className="flex size-full flex-col items-center overflow-auto p-4">
-      <div className="flex w-xl flex-col gap-6">
-        <div className="flex flex-col gap-4">
-          {infoCards.map((info) => (
-            <FrameworkInfoCard
-              description={info.description}
-              key={info.title}
-              title={info.title}
-              variant={info.variant as 'domain' | 'section'}
-            />
-          ))}
-        </div>
+    <div className="flex size-full flex-col items-center overflow-auto p-4 py-12">
+      <div className="flex w-xl flex-col gap-8">
         <p className="text-center font-medium">
           If you are an Incorporated Association, other than general members,
           what specific leadership roles are operating on your Board (whether
@@ -85,7 +59,7 @@ export default function QuestionForm() {
         </p>
         <Form {...form}>
           <form
-            className="flex h-full min-h-fit flex-col gap-12"
+            className="flex h-full min-h-fit flex-col gap-8"
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormField
@@ -103,7 +77,7 @@ export default function QuestionForm() {
                         <FormItem key={option.id}>
                           <FormControl>
                             <FormLabel
-                              className="group flex w-full cursor-pointer items-center gap-4 rounded-md border bg-accent p-4 transition-all has-data-[state=checked]:border-primary/30 has-data-[state=checked]:bg-primary/15"
+                              className="group flex w-full cursor-pointer items-center gap-4 rounded-md border bg-accent p-4 transition-all has-data-[state=checked]:border-ga-purple-200 has-data-[state=checked]:bg-ga-purple-100 dark:has-data-[state=checked]:border-ga-purple-800 dark:has-data-[state=checked]:bg-ga-purple-950"
                               htmlFor={option.id}
                             >
                               <RadioGroupItem
