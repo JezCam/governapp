@@ -122,11 +122,7 @@ export default function OrganisationConfirmForm(props: FormProps) {
             </Link>
           </AlertTitle>
         </Alert>
-        <FormButtons
-          isLoading={isLoading}
-          onPrevious={props.formButtonProps?.onPrevious}
-          submitText="Add"
-        />
+        <FormButtons {...props.formButtonProps} isLoading={isLoading} />
       </form>
     </Form>
   );

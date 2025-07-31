@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import OrganisationConfirmForm from "../forms/organisation-confirm-form";
-import OrganisationDetailsForm from "../forms/organisation-details-form";
-import UserDetailsForm from "../forms/user-details-form";
-import WelcomeForm from "../forms/welcome-form";
+import { useState } from 'react';
+import OrganisationConfirmForm from '../forms/organisation-confirm-form';
+import OrganisationDetailsForm from '../forms/organisation-details-form';
+import UserDetailsForm from '../forms/user-details-form';
+import WelcomeForm from '../forms/welcome-form';
 import {
   DialogStack,
   DialogStackBody,
@@ -13,7 +13,7 @@ import {
   DialogStackHeader,
   type DialogStackProps,
   DialogStackTitle,
-} from "../ui/kibo-ui/dialog-stack";
+} from '../ui/kibo-ui/dialog-stack';
 
 export default function OnboardingDialog({ ...props }: DialogStackProps) {
   const [index, setIndex] = useState<number>(0);
@@ -51,7 +51,7 @@ export default function OnboardingDialog({ ...props }: DialogStackProps) {
             <DialogStackTitle>Your Details</DialogStackTitle>
           </DialogStackHeader>
           <UserDetailsForm
-            formButtonProps={{ submitText: "Next" }}
+            formButtonProps={{ submitText: 'Next' }}
             onSuccess={() => setIndex(2)}
           />
         </DialogStackContent>
@@ -63,7 +63,10 @@ export default function OnboardingDialog({ ...props }: DialogStackProps) {
               Enter Your Organisation&apos;s Details
             </DialogStackTitle>
           </DialogStackHeader>
-          <OrganisationDetailsForm onSuccess={() => setIndex(3)} />
+          <OrganisationDetailsForm
+            formButtonProps={{ onPrevious: () => setIndex(1) }}
+            onSuccess={() => setIndex(3)}
+          />
         </DialogStackContent>
 
         {/* Organisation Confirm */}
@@ -74,7 +77,10 @@ export default function OnboardingDialog({ ...props }: DialogStackProps) {
             </DialogStackTitle>
           </DialogStackHeader>
           <OrganisationConfirmForm
-            formButtonProps={{ onPrevious: () => setIndex(2) }}
+            formButtonProps={{
+              onPrevious: () => setIndex(2),
+              submitText: 'Finish',
+            }}
             onSuccess={() => {
               props.onOpenChange?.(false);
             }}

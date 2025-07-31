@@ -196,7 +196,11 @@ export default function OrganisationDetailsForm(props: FormProps) {
             />
           )}
         </div>
-        <FormButtons isLoading={isLoading} submitText="Next" />
+        <FormButtons
+          {...props.formButtonProps}
+          isLoading={isLoading}
+          submitText="Next"
+        />
       </form>
     </Form>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import { HugeiconsIcon } from '@hugeicons/react';
-import { ZapIcon } from '@hugeicons-pro/core-stroke-rounded';
+import { Download04Icon, ZapIcon } from '@hugeicons-pro/core-stroke-rounded';
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -141,19 +141,25 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
             <Badge variant="blue">{data.length}</Badge>
           </div>
           {columnFilters.find((filter) => filter.id === 'first') && (
-            <Button asChild className="!pl-2" size="sm" variant="outline">
-              <Link
-                className="flex gap-1"
-                href={`/dashboard/actions/?assessment=${columnFilters[0].value}`}
-              >
-                <HugeiconsIcon
-                  className="text-primary"
-                  icon={ZapIcon}
-                  strokeWidth={2}
-                />
-                Actions
-              </Link>
-            </Button>
+            <div className="flex gap-2">
+              <Button asChild className="!pl-2" size="sm" variant="outline">
+                <Link
+                  className="flex gap-1"
+                  href={`/dashboard/actions/?assessment=${columnFilters[0].value}`}
+                >
+                  <HugeiconsIcon
+                    className="text-primary"
+                    icon={ZapIcon}
+                    strokeWidth={2}
+                  />
+                  Actions
+                </Link>
+              </Button>
+              <Button size="sm" variant="secondary">
+                Download PDF
+                <HugeiconsIcon icon={Download04Icon} strokeWidth={2} />
+              </Button>
+            </div>
           )}
         </div>
         <Table className="relative h-full min-w-[1200px] table-fixed border-separate border-spacing-0 overflow-auto px-2 pb-2">

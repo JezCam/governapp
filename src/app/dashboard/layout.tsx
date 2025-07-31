@@ -15,9 +15,9 @@ export default function Layout({ children }: { children: ReactNode }) {
     <SidebarProvider>
       <AppSidebar />
       <Toaster position="top-center" richColors />
-      <main className="flex max-h-screen flex-1 flex-col overflow-auto">
+      <main className="flex h-screen w-screen flex-1 flex-col overflow-hidden">
         <AppHeader />
-        <div className="flex w-full flex-1 justify-center overflow-auto border-t border-b">
+        <div className="flex flex-1 justify-center overflow-auto border-t border-b">
           {children}
         </div>
         <AppFooter />

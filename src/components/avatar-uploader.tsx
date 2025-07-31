@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/dialog';
 import { Slider } from '@/components/ui/slider';
 import { useFileUpload } from '@/hooks/use-file-upload';
+import { LoadingButton } from './loading-button';
 import { Label } from './ui/label';
 
 // Define type for pixel crop area
@@ -102,6 +103,8 @@ export default function AvatarUploader() {
   // State for zoom level
   const [zoom, setZoom] = useState(1);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   // Callback for Cropper to provide crop data - Wrap with useCallback
   const handleCropChange = useCallback((pixels: Area | null) => {
     setCroppedAreaPixels(pixels);
@@ -152,11 +155,15 @@ export default function AvatarUploader() {
     }
   };
 
-  const handleRemoveFinalImage = () => {
+  const handleRemoveFinalImage = async () => {
     if (finalImageUrl) {
       URL.revokeObjectURL(finalImageUrl);
     }
     setFinalImageUrl(null);
+    // sleep 1 second
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -224,13 +231,14 @@ export default function AvatarUploader() {
                 tabIndex={-1}
               />
             </div>
-            <Button
+            <LoadingButton
+              isLoading={isLoading}
               onClick={handleRemoveFinalImage}
               size="sm"
               variant="destructive"
             >
               Remove
-            </Button>
+            </LoadingButton>
           </div>
         </div>
       </div>
