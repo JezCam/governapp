@@ -12,11 +12,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { type Framework, frameworks } from '@/dummy-data/frameworks';
 import { formatDateTime } from '@/lib/utils';
+import FrameworkStore from './framework-store';
 
 const getFrameworkColumns = (
   onOpenDetails: (framework: Framework) => void
 ): ColumnDef<Framework>[] => [
   {
+    size: 35,
+    maxSize: 35,
     accessorKey: 'name',
     header: 'Name',
     cell: ({ row }) => {
@@ -25,6 +28,8 @@ const getFrameworkColumns = (
     },
   },
   {
+    size: 10,
+    maxSize: 10,
     accessorKey: 'type',
     header: 'Type',
     cell: ({ row }) => {
@@ -33,10 +38,14 @@ const getFrameworkColumns = (
     },
   },
   {
+    size: 20,
+    maxSize: 20,
     accessorKey: 'authority',
     header: 'Authority',
   },
   {
+    size: 15,
+    maxSize: 15,
     accessorKey: 'monthlyCost',
     header: ({ column }) => (
       <SortButton column={column}>Monthly Cost</SortButton>
@@ -47,6 +56,8 @@ const getFrameworkColumns = (
     },
   },
   {
+    size: 20,
+    maxSize: 20,
     accessorKey: 'subscribedOn',
     header: ({ column }) => (
       <SortButton column={column}>Subscribed On</SortButton>
@@ -79,7 +90,7 @@ export default function Frameworks() {
   );
 
   return (
-    <div className="size-full p-4">
+    <div className="flex size-full flex-col gap-8 overflow-auto p-4">
       <FrameworkDetailsDialog
         onOpenChange={(open) => {
           if (!open) {
@@ -89,14 +100,13 @@ export default function Frameworks() {
         open={!!detailsFramework}
       />
       <DataTable
-        actionOnClick={() => {}}
-        actionText="See additional frameworks"
         columns={columns}
         data={frameworks}
         hasMenu
         minWidth="800px"
         title="Your Frameworks"
       />
+      <FrameworkStore />
     </div>
   );
 }

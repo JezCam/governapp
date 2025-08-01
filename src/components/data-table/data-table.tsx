@@ -3,10 +3,8 @@
 import {
   type ColumnDef,
   type ColumnFiltersState,
-  type ExpandedState,
   flexRender,
   getCoreRowModel,
-  getExpandedRowModel,
   getFilteredRowModel,
   getSortedRowModel,
   type SortingState,
@@ -54,11 +52,10 @@ export function DataTable<TData, TValue>({
   filters,
   columns,
   data,
-}: DataTableProps<TData, TValue> & {}) {
+}: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = useState<string>('');
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // can set initial column filter state here
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [expanded, setExpanded] = useState<ExpandedState>({});
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -73,14 +70,10 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onExpandedChange: setExpanded,
-    getSubRows: (row) => (row as { subRows: [] })?.subRows,
-    getExpandedRowModel: getExpandedRowModel(),
     state: {
       globalFilter,
       columnFilters,
       sorting,
-      expanded,
     },
   });
 
@@ -107,7 +100,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className={cn('flex size-full flex-col', className)}>
+    <div className={cn('flex flex-col', className)}>
       {(searchable || filters) && (
         <div className="mb-4 flex items-center gap-2">
           {searchable && (
@@ -230,7 +223,6 @@ export function DataTable<TData, TValue>({
                   )}
                   data-state={row.getIsSelected() && 'selected'}
                   key={row.id}
-                  onClick={() => row.toggleExpanded()}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
