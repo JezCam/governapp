@@ -1,7 +1,3 @@
-'use client';
-
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -14,26 +10,12 @@ import {
 import { assessmentReportsRows } from '@/dummy-data/reports';
 import type { DataTableFilterProps } from '../../../components/data-table/types';
 
-export default function ReportsAssessmentFilter(props: DataTableFilterProps) {
-  const searchParams = useSearchParams();
-  const assessmentParam = searchParams.get('assessment');
-
-  const [value, setValue] = useState<string>();
-
-  useEffect(() => {
-    setValue(props.value ?? undefined);
-  }, [props.value]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (assessmentParam && !value) {
-      props.onChange(assessmentParam);
-      setValue(assessmentParam);
-    }
-  }, []);
-
+export default function ActionsAssessmentFilter({
+  value,
+  onChange,
+}: DataTableFilterProps) {
   return (
-    <Select onValueChange={props.onChange} value={value}>
+    <Select onValueChange={onChange} value={value}>
       <SelectTrigger className="w-fit">
         <SelectValue placeholder="Select assessment" />
       </SelectTrigger>

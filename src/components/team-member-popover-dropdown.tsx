@@ -6,6 +6,7 @@ import {
   UserMinus02Icon,
   ZapIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
+import Link from 'next/link';
 import { type ReactNode, useState } from 'react';
 import ConfirmRemoveTeamMemberDialog from './dialogs/confirm-remove-team-member-dialog';
 import EditTeamMemberDialog from './dialogs/edit-team-member-dialog';
@@ -18,6 +19,7 @@ import {
 
 type User = {
   name: string;
+  userId: string;
   imageUrl?: string;
 };
 
@@ -50,9 +52,11 @@ export default function TeamMemberPopoverDropdown({
         className="w-60 font-medium"
         side="right"
       >
-        <DropdownMenuItem className="gap-2 p-2">
-          <HugeiconsIcon icon={ZapIcon} strokeWidth={2} />
-          View assigned actions
+        <DropdownMenuItem asChild className="gap-2 p-2">
+          <Link href={`/dashboard/actions?assignee=${user.userId}`}>
+            <HugeiconsIcon icon={ZapIcon} strokeWidth={2} />
+            View assigned actions
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
           className="gap-2 p-2"

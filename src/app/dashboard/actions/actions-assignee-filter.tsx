@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import type { DataTableFilterProps } from '@/components/data-table/types';
 import UserLabel from '@/components/labels/user-label';
 import {
@@ -14,15 +13,12 @@ import {
 } from '@/components/ui/select';
 import { teamMembers } from '@/dummy-data/team';
 
-export default function ActionsAssigneeFilter(props: DataTableFilterProps) {
-  const [value, setValue] = useState<string>(props.value || '');
-
-  useEffect(() => {
-    setValue(props.value || '');
-  }, [props.value]);
-
+export default function ActionsAssigneeFilter({
+  value,
+  onChange,
+}: DataTableFilterProps) {
   return (
-    <Select onValueChange={props.onChange} value={value}>
+    <Select onValueChange={onChange} value={value}>
       <SelectTrigger className="w-fit">
         <SelectValue placeholder="Select assginee" />
       </SelectTrigger>

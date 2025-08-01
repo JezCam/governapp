@@ -16,7 +16,8 @@ import {
 } from '@tanstack/react-table';
 import { SearchIcon, XIcon } from 'lucide-react';
 import Link from 'next/link';
-import { type ReactNode, Suspense, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { type ReactNode, Suspense, useEffect, useRef, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,8 +46,19 @@ interface ReportsDataTableProps {
 }
 
 export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
+  const searchParams = useSearchParams();
+  const assessmentParam = searchParams.get('assessment');
+
+  const [selectedAssessmentId, setSelectedAssessmentId] = useState<string>(
+    assessmentParam ?? ''
+  );
+
   const [globalFilter, setGlobalFilter] = useState<string>('');
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
+    ...(selectedAssessmentId
+      ? [{ id: 'first', value: selectedAssessmentId }]
+      : []),
+  ]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
 
@@ -81,6 +93,17 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
     }
   };
 
+  const onAssessmentChange = (value: string) => {
+    setSelectedAssessmentId(value);
+    table.getColumn('first')?.setFilterValue(value);
+    expandToDepth(table, 1);
+  };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    onAssessmentChange(assessmentParam ?? '');
+  }, [assessmentParam]);
+
   return (
     <div className="flex size-full flex-col gap-4">
       <div className="flex items-center gap-2">
@@ -110,11 +133,8 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
         </div>
         <Suspense>
           <ReportsAssessmentFilter
-            onChange={(value) => {
-              table.getColumn('first')?.setFilterValue(value);
-              expandToDepth(table, 1);
-            }}
-            value={(table.getColumn('first')?.getFilterValue() as string) ?? ''}
+            onChange={onAssessmentChange}
+            value={selectedAssessmentId}
           />
         </Suspense>
         <ReportsRiskFilter
@@ -126,6 +146,7 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
         <Button
           disabled={!columnFilters.length}
           onClick={() => {
+            setSelectedAssessmentId('');
             setColumnFilters([]);
             setExpanded({});
           }}

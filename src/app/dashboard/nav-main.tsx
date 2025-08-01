@@ -59,7 +59,7 @@ export function NavMain() {
                     className={cn(
                       'flex size-8 shrink-0 items-center justify-center rounded-sm border border-transparent transition-all [&>svg]:size-4.5 [&>svg]:text-sidebar-primary',
                       pathname === page.url
-                        ? 'rounded-sm border-ga-purple-800 bg-sidebar-primary text-white shadow-highlight group-data-[collapsible=icon]:rounded-md dark:border-border-sidebar dark:bg-white dark:text-sidebar-accent [&>svg]:text-white dark:[&>svg]:text-primary'
+                        ? 'rounded-sm border-ga-purple-800 bg-sidebar-primary text-white shadow-highlight group-data-[collapsible=icon]:rounded-md dark:border-border-sidebar dark:bg-ga-purple-500 dark:text-sidebar-accent [&>svg]:text-white'
                         : ''
                     )}
                   >

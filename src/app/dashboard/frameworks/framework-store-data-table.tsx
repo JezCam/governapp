@@ -13,7 +13,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { SearchIcon, XIcon } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -168,7 +168,7 @@ export function FrameworksStoreDataTable({
           >
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <>
+                <Fragment key={row.id}>
                   <TableRow
                     className="group relative border-none"
                     data-state={row.getIsSelected() && 'selected'}
@@ -195,7 +195,7 @@ export function FrameworksStoreDataTable({
                       </TableCell>
                     </TableRow>
                   )}
-                </>
+                </Fragment>
               ))
             ) : (
               <TableRow>

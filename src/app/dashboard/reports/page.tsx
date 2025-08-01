@@ -1,6 +1,7 @@
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
+import { Suspense } from 'react';
 import ExpandChevron from '@/components/expand-chevron';
 import FrameworkLabel from '@/components/labels/framework-label';
 import SortButton from '@/components/sort-button';
@@ -158,7 +159,9 @@ const columns: ColumnDef<ReportsRow>[] = [
 export default function Reports() {
   return (
     <div className="size-full p-4">
-      <ReportsDataTable columns={columns} data={assessmentReportsRows} />
+      <Suspense>
+        <ReportsDataTable columns={columns} data={assessmentReportsRows} />
+      </Suspense>
     </div>
   );
 }
