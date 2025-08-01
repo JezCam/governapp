@@ -96,7 +96,9 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
   const onAssessmentChange = (value: string) => {
     setSelectedAssessmentId(value);
     table.getColumn('first')?.setFilterValue(value);
-    expandToDepth(table, 1);
+    if (value) {
+      expandToDepth(table, 1);
+    }
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>

@@ -110,12 +110,16 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
   const onAssessmentChange = (value: string) => {
     setSelectedAssessmentId(value);
     table.getColumn('first')?.setFilterValue(value);
-    expandToDepth(table, 1);
+    if (value) {
+      expandToDepth(table, 1);
+    }
   };
   const onAssigneeChange = (value: string) => {
     setSelectedAssigneeId(value);
     table.getColumn('assignee')?.setFilterValue(value);
-    expandToDepth(table, 2);
+    if (value) {
+      expandToDepth(table, 2);
+    }
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>

@@ -1,11 +1,27 @@
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function UnfoldClose({ className }: { className?: string }) {
+export default function UnfoldClose({
+  open,
+  className,
+}: {
+  open: boolean;
+  className?: string;
+}) {
   return (
     <div className={cn('flex flex-col', className)}>
-      <ChevronUp className="size-3 translate-y-0.5 stroke-3 transition-all group-data-[state=open]:translate-y-[7.5px]" />
-      <ChevronDown className="-translate-y-0.5 group-data-[state=open]:-translate-y-[7.5px] size-3 stroke-3 transition-all" />
+      <ChevronUp
+        className={cn(
+          'size-3 translate-y-0.5 stroke-3 transition-all',
+          open ? 'translate-y-[7.5px]' : ''
+        )}
+      />
+      <ChevronDown
+        className={cn(
+          '-translate-y-0.5 size-3 stroke-3 transition-all',
+          open ? '-translate-y-[7.5px]' : ''
+        )}
+      />
     </div>
   );
 }

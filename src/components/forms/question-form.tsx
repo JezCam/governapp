@@ -82,7 +82,6 @@ export default function QuestionForm() {
                             >
                               <RadioGroupItem
                                 checked={field.value === option.id}
-                                className="bg-background"
                                 id={option.id}
                                 value={option.id}
                               />

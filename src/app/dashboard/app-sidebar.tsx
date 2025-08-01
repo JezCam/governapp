@@ -16,7 +16,7 @@ import OrganisationSwitcher from './organisation-switcher';
 
 export default function AppSidebar() {
   return (
-    <Sidebar className="border-sidebar-border" collapsible="icon">
+    <Sidebar className="relative border-sidebar-border" collapsible="icon">
       <SidebarHeader className="gap-0 p-0">
         <Link
           className="flex h-16 flex-row items-center gap-2 overflow-clip border border-transparent px-4"
@@ -48,7 +48,7 @@ export default function AppSidebar() {
           </div>
         </ScrollArea>
       </SidebarContent>
-      <SidebarFooter className="flex h-16">
+      <SidebarFooter className="gap-0">
         <OrganisationSwitcher />
       </SidebarFooter>
       <SidebarRail />
