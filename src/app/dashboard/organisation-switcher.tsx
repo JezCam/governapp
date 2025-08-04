@@ -38,7 +38,7 @@ export default function OrganisationSwitcher() {
       />
       <SidebarMenu
         className={cn(
-          'flex h-12 flex-col justify-end gap-2 overflow-hidden transition-[height]',
+          'z-10 flex h-12 flex-col justify-end gap-2 overflow-hidden transition-[height]',
           open ? 'h-[calc-size(auto,_size)]' : ''
         )}
       >

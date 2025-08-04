@@ -27,7 +27,10 @@ export default function Home() {
           }}
         />
         <div className="flex h-full w-full max-w-7xl translate-y-24 flex-col items-center justify-end gap-16">
-          <h1 className="text-center font-extrabold text-7xl leading-22">
+          <h1
+            className="text-center font-extrabold text-7xl leading-22"
+            style={{ fontFamily: 'var(--font-m-plus-rounded-1c' }}
+          >
             Compliance is Hard
             <br />
             So We Fixed it

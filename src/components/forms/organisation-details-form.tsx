@@ -77,6 +77,7 @@ export default function OrganisationDetailsForm(props: FormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       abnOrAcn: '',
+      otherRole: '',
     },
   });
 
@@ -102,7 +103,7 @@ export default function OrganisationDetailsForm(props: FormProps) {
   return (
     <Form {...form}>
       <form
-        className="flex flex-1 flex-col gap-4"
+        className="flex w-full flex-1 flex-col gap-4"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
@@ -196,11 +197,7 @@ export default function OrganisationDetailsForm(props: FormProps) {
             />
           )}
         </div>
-        <FormButtons
-          {...props.formButtonProps}
-          isLoading={isLoading}
-          submitText="Next"
-        />
+        <FormButtons {...props.formButtonProps} isLoading={isLoading} />
       </form>
     </Form>
   );

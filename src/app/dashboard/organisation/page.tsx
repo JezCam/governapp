@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card";
+import { Card } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -6,9 +6,9 @@ import {
   TableCell,
   TableHead,
   TableRow,
-} from "@/components/ui/table";
-import PendingInvitationsTable from "./pending-invitations-table";
-import TeamMembersTable from "./team-members-table";
+} from '@/components/ui/table';
+import PendingInvitationsTable from './pending-invitations-table';
+import TeamMembersTable from './team-members-table';
 
 export default function Organisation() {
   return (
@@ -18,13 +18,13 @@ export default function Organisation() {
         <div
           className="absolute inset-0 bg-[url('/pattern-light.svg')] bg-primary stroke-current text-foreground dark:bg-[url('/pattern-dark.svg')]"
           style={{
-            backgroundColor: "var(--color-accent)",
-            backgroundRepeat: "repeat",
-            backgroundSize: "100px",
+            backgroundColor: 'var(--color-accent)',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '100px',
             maskImage:
-              "linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))",
-            maskRepeat: "no-repeat",
-            maskSize: "100% 100%",
+              'linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))',
+            maskRepeat: 'no-repeat',
+            maskSize: '100% 100%',
           }}
         />
         <Table className="float-right w-fit border-separate border-spacing-0 ">
@@ -67,7 +67,10 @@ export default function Organisation() {
             </TableRow>
           </TableBody>
         </Table>
-        <h1 className="absolute bottom-4 left-6 font-extrabold text-4xl">
+        <h1
+          className="absolute bottom-4 left-6 font-extrabold text-4xl"
+          style={{ fontFamily: 'var(--font-m-plus-rounded-1c' }}
+        >
           Acme Incorporated
         </h1>
       </Card>

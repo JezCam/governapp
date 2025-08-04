@@ -84,25 +84,25 @@ const badgeVariants = cva(
                 text-white text-shadow-md
                 shadow-[inset_0_0_0_1px_var(--color-ga-green-500),_0_1px_0_var(--color-ga-green-800)] dark:shadow-[inset_0_0_0_1px_var(--color-ga-green-500),_0_1px_0_var(--color-black)]
                   
-                rounded-sm pl-2`,
+                rounded-sm pl-1.5`,
         amber: `bg-gradient-to-b from-amber-600 to-amber-500
                 border-1 border-amber-800 dark:border-black
                 text-white text-shadow-md
                 shadow-[inset_0_0_0_1px_var(--color-amber-500),_0_1px_0_var(--color-amber-800)] dark:shadow-[inset_0_0_0_1px_var(--color-amber-500),_0_1px_0_var(--color-black)]
                   
-                rounded-sm pl-2`,
+                rounded-sm pl-1.5`,
         red: `bg-gradient-to-b from-red-600 to-red-500
               border-1 border-red-800 dark:border-black
               text-white text-shadow-md
               shadow-[inset_0_0_0_1px_var(--color-red-500),_0_1px_0_var(--color-red-800)] dark:shadow-[inset_0_0_0_1px_var(--color-red-500),_0_1px_0_var(--color-black)]
                   
-              rounded-sm pl-2`,
+              rounded-sm pl-1.5`,
         black: `bg-gradient-to-b from-gray-600 to-gray-500
                 border-1 border-black
                 text-white text-shadow-md
                 shadow-[inset_0_0_0_1px_var(--color-gray-500),_0_1px_0_var(--color-black)]
                 
-                rounded-sm pl-2`,
+                rounded-sm pl-1.5`,
         actions: `bg-gradient-to-b from-ga-purple-100 dark:from-ga-purple-950 to-white dark:to-ga-purple-900
                   border-1 border-ga-purple-300 dark:border-black
                   text-ga-purple-700 dark:text-ga-purple-100

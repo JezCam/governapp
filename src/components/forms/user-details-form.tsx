@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import validator from 'validator';
 import { z } from 'zod';
 import AvatarUploader from '../avatar-uploader';
 import {
@@ -21,6 +22,10 @@ import type { FormProps } from './types';
 const formSchema = z.object({
   firstName: z.string().min(1, 'Please enter your first name'),
   lastName: z.string().min(1, 'Please enter your last name'),
+  mobileNumber: z
+    .string()
+    .min(1, 'Please enter your mobile number')
+    .refine(validator.isMobilePhone, 'Please enter a valid mobile number'),
 });
 
 export default function UserDetailsForm(props: FormProps) {
@@ -31,6 +36,7 @@ export default function UserDetailsForm(props: FormProps) {
     defaultValues: {
       firstName: '',
       lastName: '',
+      mobileNumber: '',
     },
   });
 
@@ -49,12 +55,12 @@ export default function UserDetailsForm(props: FormProps) {
   }
 
   return (
-    <div className="@container flex flex-col gap-6">
+    <div className="flex w-full flex-col gap-6">
       {/* Avatar Uploader */}
       <AvatarUploader />
       <Form {...form}>
         <form
-          className="flex @xl:flex-row flex-col items-start @xl:gap-2 gap-4"
+          className="flex flex-col items-start gap-4"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
@@ -78,6 +84,19 @@ export default function UserDetailsForm(props: FormProps) {
                 <FormLabel>Last Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter your last name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="mobileNumber"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Mobile Number</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your mobile number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

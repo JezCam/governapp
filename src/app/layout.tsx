@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { M_PLUS_Rounded_1c } from 'next/font/google';
+import { Inter, M_PLUS_Rounded_1c } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 
@@ -7,6 +7,12 @@ const mPlusRounded1c = M_PLUS_Rounded_1c({
   weight: ['400', '500', '700', '800'],
   subsets: ['latin'],
   variable: '--font-m-plus-rounded-1c',
+});
+
+const inter = Inter({
+  weight: ['400', '500', '600', '700', '800'],
+  subsets: ['latin'],
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
@@ -29,7 +35,7 @@ export default function RootLayout({
         {/* rest of your scripts go under */}
       </head>
       <body
-        className={`${mPlusRounded1c.variable} ${mPlusRounded1c.className} antialiased`}
+        className={`${inter.variable} ${mPlusRounded1c.variable} ${inter.className} antialiased`}
         suppressHydrationWarning
       >
         <ThemeProvider

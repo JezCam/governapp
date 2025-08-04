@@ -18,7 +18,12 @@ export default async function Page({
           <div className="w-full">
             <FrameworkLabel name="Assessment Name" variant="framework" />
           </div>
-          <h1 className="shrink-0 font-bold">Assessment Name {id}</h1>
+          <h1
+            className="shrink-0 font-bold text-lg"
+            style={{ fontFamily: 'var(--font-m-plus-rounded-1c' }}
+          >
+            Assessment Name {id}
+          </h1>
           <div className="flex w-full justify-end">
             <Button asChild size="sm" variant="outline">
               <Link href="/dashboard/assessments">Save & exit</Link>

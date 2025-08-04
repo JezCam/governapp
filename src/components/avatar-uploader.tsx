@@ -231,14 +231,16 @@ export default function AvatarUploader() {
                 tabIndex={-1}
               />
             </div>
-            <LoadingButton
-              isLoading={isLoading}
-              onClick={handleRemoveFinalImage}
-              size="sm"
-              variant="destructive"
-            >
-              Remove
-            </LoadingButton>
+            {finalImageUrl && (
+              <LoadingButton
+                isLoading={isLoading}
+                onClick={handleRemoveFinalImage}
+                size="sm"
+                variant="destructive"
+              >
+                Remove
+              </LoadingButton>
+            )}
           </div>
         </div>
       </div>
