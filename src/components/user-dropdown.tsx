@@ -1,10 +1,14 @@
+'use client';
+
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Logout02Icon,
   Settings01Icon,
 } from '@hugeicons-pro/core-stroke-rounded';
+import { useQuery } from 'convex/react';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
+import { api } from '../../convex/_generated/api';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -14,9 +18,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { Skeleton } from './ui/skeleton';
 import UserAvatar from './user-avatar';
 
 export default function UserDropdown() {
+  const user = useQuery(api.services.user.currentUser);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -28,10 +35,19 @@ export default function UserDropdown() {
             }}
           />
           <div className="grid h-8 flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-medium">Jeremy Cameron</span>
-            <span className="truncate font-normal text-xs">
-              jeremy@cameron.org.au
-            </span>
+            {user ? (
+              <>
+                <span className="truncate font-medium">{`${user.firstName} ${user.lastName}`}</span>
+                <span className="truncate font-normal text-xs">
+                  {user.email}
+                </span>
+              </>
+            ) : (
+              <>
+                <Skeleton className="h-4 w-28 rounded-sm" />
+                <Skeleton className="h-3 w-38 rounded-sm" />
+              </>
+            )}
           </div>
           <ChevronDown className="ml-auto" />
         </Button>
