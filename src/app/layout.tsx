@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, M_PLUS_Rounded_1c } from 'next/font/google';
 import './globals.css';
+import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ConvexClientProvider } from './convex-client-provider';
 
@@ -27,29 +28,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        {/* <script
+    <ConvexAuthNextjsServerProvider>
+      <html lang="en" suppressHydrationWarning>
+        <head>
+          {/* <script
           crossOrigin="anonymous"
           src="//unpkg.com/react-scan/dist/auto.global.js"
         /> */}
-        {/* rest of your scripts go under */}
-      </head>
-      <body
-        className={`${inter.variable} ${mPlusRounded1c.variable} ${inter.className} antialiased`}
-        suppressHydrationWarning
-      >
-        <ConvexClientProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            disableTransitionOnChange
-            enableSystem
-          >
-            {children}
-          </ThemeProvider>
-        </ConvexClientProvider>
-      </body>
-    </html>
+          {/* rest of your scripts go under */}
+        </head>
+        <body
+          className={`${inter.variable} ${mPlusRounded1c.variable} ${inter.className} antialiased`}
+          suppressHydrationWarning
+        >
+          <ConvexClientProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              disableTransitionOnChange
+              enableSystem
+            >
+              {children}
+            </ThemeProvider>
+          </ConvexClientProvider>
+        </body>
+      </html>
+    </ConvexAuthNextjsServerProvider>
   );
 }

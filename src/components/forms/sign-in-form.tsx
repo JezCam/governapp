@@ -1,11 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import Image from 'next/image';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
+import { GoogleSignInButton } from '../google-sign-in-button';
 import { LoadingButton } from '../loading-button';
-import { Button } from '../ui/button';
 import {
   Form,
   FormControl,
@@ -49,15 +48,7 @@ export default function SignInForm() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Button variant="outline">
-        <Image
-          alt="Google logo"
-          height="16"
-          src="/google-logo.png"
-          width="16"
-        />
-        Continue with Google
-      </Button>
+      <GoogleSignInButton />
       <div className="grid grid-cols-[1fr_min-content_1fr] items-center gap-2 overflow-hidden text-muted-foreground text-sm">
         <Separator />
         or
