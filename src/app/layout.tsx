@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, M_PLUS_Rounded_1c } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import { ConvexClientProvider } from './convex-client-provider';
 
 const mPlusRounded1c = M_PLUS_Rounded_1c({
   weight: ['400', '500', '700', '800'],
@@ -38,14 +39,16 @@ export default function RootLayout({
         className={`${inter.variable} ${mPlusRounded1c.variable} ${inter.className} antialiased`}
         suppressHydrationWarning
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          disableTransitionOnChange
-          enableSystem
-        >
-          {children}
-        </ThemeProvider>
+        <ConvexClientProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            disableTransitionOnChange
+            enableSystem
+          >
+            {children}
+          </ThemeProvider>
+        </ConvexClientProvider>
       </body>
     </html>
   );
