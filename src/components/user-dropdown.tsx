@@ -45,7 +45,7 @@ export default function UserDropdown() {
               </>
             ) : (
               <>
-                <Skeleton className="h-4 w-28 rounded-sm" />
+                <Skeleton className="mb-1 h-4 w-28 rounded-sm" />
                 <Skeleton className="h-3 w-38 rounded-sm" />
               </>
             )}

@@ -8,14 +8,21 @@ import { cn } from '@/lib/utils';
 export default function ThemeSwitcher({ className }: { className?: string }) {
   const { resolvedTheme, setTheme } = useTheme();
 
+  if (!resolvedTheme) {
+    return <div className="w-full" />; // Avoid rendering if the theme is not resolved
+  }
+
   return (
     <div
-      className={cn('group inline-flex items-center gap-2', className)}
+      className={cn(
+        'group inline-flex items-center justify-end gap-2',
+        className
+      )}
       data-state={resolvedTheme === 'light' ? 'checked' : 'unchecked'}
     >
       <span className="hidden">current theme: {resolvedTheme}</span>
       <button
-        className="flex-1 cursor-pointer text-right font-medium text-sm group-data-[state=checked]:text-muted-foreground/70"
+        className="cursor-pointer text-right font-medium text-sm group-data-[state=checked]:text-muted-foreground/70"
         onClick={() => setTheme('dark')}
         type="button"
       >
@@ -27,7 +34,7 @@ export default function ThemeSwitcher({ className }: { className?: string }) {
         onCheckedChange={(checked) => setTheme(checked ? 'light' : 'dark')}
       />
       <button
-        className="flex-1 cursor-pointer text-left font-medium text-sm group-data-[state=unchecked]:text-muted-foreground/70"
+        className="cursor-pointer text-left font-medium text-sm group-data-[state=unchecked]:text-muted-foreground/70"
         onClick={() => setTheme('light')}
         type="button"
       >
