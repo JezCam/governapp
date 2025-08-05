@@ -5,7 +5,8 @@ import { SearchIcon } from '@hugeicons-pro/core-stroke-rounded';
 import { CornerDownLeft, MoonIcon, SunIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useContext } from 'react';
+import { SearchMenuContext } from '@/app/dashboard/layout';
 import { pages } from '../app/dashboard/nav-main';
 import { Button } from './ui/button';
 import {
@@ -21,22 +22,10 @@ import Kbd from './ui/kbd';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar';
 
 export default function SearchButton() {
-  const [open, setOpen] = useState<boolean>(false);
+  const { open, setOpen } = useContext(SearchMenuContext);
+
   const router = useRouter();
   const { resolvedTheme, setTheme } = useTheme();
-
-  // Toggle the menu when ⌘K is pressed
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setOpen((prev) => !prev);
-      }
-    };
-
-    document.addEventListener('keydown', down);
-    return () => document.removeEventListener('keydown', down);
-  }, []);
 
   return (
     <SidebarMenu>
@@ -59,7 +48,7 @@ export default function SearchButton() {
               <Kbd className="border-primary/30 group-hover/search:text-foreground">
                 ⌘
               </Kbd>
-              <Kbd className="aspect-square border-primary/30 group-hover/search:text-foreground">
+              <Kbd className="border-primary/30 group-hover/search:text-foreground">
                 K
               </Kbd>
             </div>
