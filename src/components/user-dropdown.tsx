@@ -22,18 +22,13 @@ import { Skeleton } from './ui/skeleton';
 import UserAvatar from './user-avatar';
 
 export default function UserDropdown() {
-  const user = useQuery(api.services.user.currentUser);
+  const user = useQuery(api.services.user.getCurrent);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="!p-2 h-12 w-[239px] items-center" variant="outline">
-          <UserAvatar
-            user={{
-              name: 'Jeremy Cameron',
-              imageUrl: 'https://avatars.githubusercontent.com/u/77473646?v=4',
-            }}
-          />
+          <UserAvatar className="size-8" user={user} />
           <div className="grid h-8 flex-1 text-left text-sm leading-tight">
             {user ? (
               <>

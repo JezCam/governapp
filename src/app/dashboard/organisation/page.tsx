@@ -1,3 +1,4 @@
+import AvatarUploader from '@/components/avatar-uploader';
 import { Card } from '@/components/ui/card';
 import {
   Table,
@@ -14,9 +15,9 @@ export default function Organisation() {
   return (
     <div className="flex h-fit flex-col gap-4 overflow-auto p-4">
       {/* Organisation Header */}
-      <Card className="relative flex h-fit w-full shrink-0 items-end justify-end overflow-hidden rounded-xl p-2 pb-4 shadow-none">
+      <Card className="relative grid h-min w-full shrink-0 grid-cols-2 flex-row items-start justify-end overflow-hidden rounded-xl bg-transparent p-2 pb-4 shadow-none">
         <div
-          className="absolute inset-0 bg-[url('/pattern-light.svg')] bg-primary stroke-current text-foreground dark:bg-[url('/pattern-dark.svg')]"
+          className="-z-1 absolute inset-0 bg-[url('/pattern-light.svg')] bg-primary stroke-current text-foreground dark:bg-[url('/pattern-dark.svg')]"
           style={{
             backgroundColor: 'var(--color-accent)',
             backgroundRepeat: 'repeat',
@@ -27,6 +28,23 @@ export default function Organisation() {
             maskSize: '100% 100%',
           }}
         />
+        <div className="flex h-full flex-col gap-6">
+          <div className="relative h-full w-full">
+            <AvatarUploader
+              className="absolute inset-0 h-full [&>div]:rounded-sm"
+              label="Organisation Image"
+              onChange={async (_data) => {
+                await console.log(_data);
+              }}
+            />
+          </div>
+          <h1
+            className="font-extrabold text-4xl"
+            style={{ fontFamily: 'var(--font-m-plus-rounded-1c' }}
+          >
+            Acme Incorporated
+          </h1>
+        </div>
         <Table className="float-right w-fit border-separate border-spacing-0 ">
           <TableCaption className="whitespace-nowrap">
             Please contact us if you need to update any of the above
@@ -67,12 +85,6 @@ export default function Organisation() {
             </TableRow>
           </TableBody>
         </Table>
-        <h1
-          className="absolute bottom-4 left-6 font-extrabold text-4xl"
-          style={{ fontFamily: 'var(--font-m-plus-rounded-1c' }}
-        >
-          Acme Incorporated
-        </h1>
       </Card>
       <TeamMembersTable />
       <PendingInvitationsTable />

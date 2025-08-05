@@ -16,7 +16,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import UserAvatar from './user-avatar';
+
+// import UserAvatar from './user-avatar';
 
 type User = {
   imageUrl?: string;
@@ -116,7 +117,7 @@ export default function NotificationsDropdown() {
               key={notification.id}
             >
               <div className="relative">
-                <UserAvatar className="size-10" user={notification.user} />
+                {/* <UserAvatar className="size-10" user={notification.user} /> */}
                 <div className="-bottom-2 -right-2 absolute flex size-6 items-center justify-center rounded-full border bg-background shadow-xs">
                   <HugeiconsIcon
                     className="size-3"

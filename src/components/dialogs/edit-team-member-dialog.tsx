@@ -7,7 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
-import UserAvatar from '../user-avatar';
+
+// import UserAvatar from '../user-avatar';
 
 type User = {
   name: string;
@@ -25,7 +26,7 @@ export default function EditTeamMemberDialog(
           <DialogDescription className="flex items-center gap-1">
             Edit the details of
             <span className="!h-0 flex items-center gap-1 font-medium">
-              <UserAvatar className="inline-block size-6" user={props.user} />
+              {/* <UserAvatar className="inline-block size-6" user={props.user} /> */}
               {props.user.name}
             </span>
           </DialogDescription>

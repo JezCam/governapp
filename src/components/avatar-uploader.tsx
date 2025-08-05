@@ -2,8 +2,10 @@
 
 import { HugeiconsIcon } from '@hugeicons/react';
 import { UserCircle02Icon } from '@hugeicons-pro/core-stroke-rounded';
-import { ArrowLeftIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
+import { ArrowLeftIcon, Loader2, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
+import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
   Cropper,
@@ -21,6 +23,7 @@ import {
 } from '@/components/ui/dialog';
 import { Slider } from '@/components/ui/slider';
 import { useFileUpload } from '@/hooks/use-file-upload';
+import { cn } from '@/lib/utils';
 import { LoadingButton } from './loading-button';
 import { Label } from './ui/label';
 
@@ -30,7 +33,7 @@ type Area = { x: number; y: number; width: number; height: number };
 // Helper function to create a cropped image blob
 const createImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
-    const image = new Image();
+    const image = document.createElement('img');
     image.addEventListener('load', () => resolve(image));
     image.addEventListener('error', (error) => reject(error));
     image.setAttribute('crossOrigin', 'anonymous'); // Needed for canvas Tainted check
@@ -81,17 +84,32 @@ async function getCroppedImg(
   }
 }
 
-export default function AvatarUploader() {
+export default function AvatarUploader({
+  imageUrl,
+  onChange,
+  label = 'Avatar',
+  rounded,
+  className,
+}: {
+  imageUrl?: string | null;
+  onChange: (
+    data: { bytes: ArrayBuffer; type: string } | null
+  ) => Promise<void>;
+  label?: string;
+  rounded?: boolean;
+  className?: string;
+}) {
   const [{ files }, { removeFile, openFileDialog, getInputProps }] =
     useFileUpload({
       accept: 'image/*',
     });
 
   const previewUrl = files[0]?.preview || null;
-  const fileName = files[0]?.file.name || null;
   const fileId = files[0]?.id;
 
-  const [finalImageUrl, setFinalImageUrl] = useState<string | null>(null);
+  const [isUpdateLoading, setIsUpdateLoading] = useState(false);
+  const [isRemoveLoading, setIsRemoveLoading] = useState(false);
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Ref to track the previous file ID to detect new uploads
@@ -102,8 +120,6 @@ export default function AvatarUploader() {
 
   // State for zoom level
   const [zoom, setZoom] = useState(1);
-
-  const [isLoading, setIsLoading] = useState(false);
 
   // Callback for Cropper to provide crop data - Wrap with useCallback
   const handleCropChange = useCallback((pixels: Area | null) => {
@@ -127,54 +143,54 @@ export default function AvatarUploader() {
     }
 
     try {
+      setIsUpdateLoading(true);
+
       // 1. Get the cropped image blob using the helper
       const croppedBlob = await getCroppedImg(previewUrl, croppedAreaPixels);
 
       if (!croppedBlob) {
-        throw new Error('Failed to generate cropped image blob.');
+        // Show toast
+        toast.error('Failed to upload image');
+        return;
       }
 
-      // 2. Create a NEW object URL from the cropped blob
-      const newFinalUrl = URL.createObjectURL(croppedBlob);
-
-      // 3. Revoke the OLD finalImageUrl if it exists
-      if (finalImageUrl) {
-        URL.revokeObjectURL(finalImageUrl);
-      }
+      const data = {
+        bytes: await croppedBlob.arrayBuffer(),
+        type: croppedBlob.type,
+      };
 
       // 4. Set the final avatar state to the NEW URL
-      setFinalImageUrl(newFinalUrl);
-      console.log('New final image URL:', newFinalUrl);
+      onChange(data).then(() => {
+        setIsUpdateLoading(false);
+      });
+
+      URL.revokeObjectURL(previewUrl); // Clean up the preview URL
 
       // 5. Close the dialog (don't remove the file yet)
       setIsDialogOpen(false);
     } catch (error) {
       console.error('Error during apply:', error);
+      toast.error('Failed to upload image, please try again.');
+      setIsUpdateLoading(false);
       // Close the dialog even if cropping fails
       setIsDialogOpen(false);
     }
   };
 
-  const handleRemoveFinalImage = async () => {
-    if (finalImageUrl) {
-      URL.revokeObjectURL(finalImageUrl);
+  const handleRemoveFinalImage = () => {
+    setIsRemoveLoading(true);
+    if (imageUrl) {
+      URL.revokeObjectURL(imageUrl);
     }
-    setFinalImageUrl(null);
-    // sleep 1 second
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
+    onChange(null)
+      .then(() => {
+        setIsRemoveLoading(false);
+      })
+      .catch(() => {
+        toast.error('Failed to remove image, please try again.');
+        setIsRemoveLoading(false);
+      });
   };
-
-  useEffect(() => {
-    const currentFinalUrl = finalImageUrl;
-    // Cleanup function
-    return () => {
-      if (currentFinalUrl?.startsWith('blob:')) {
-        URL.revokeObjectURL(currentFinalUrl);
-      }
-    };
-  }, [finalImageUrl]);
 
   // Effect to open dialog when a *new* file is ready
   useEffect(() => {
@@ -190,19 +206,12 @@ export default function AvatarUploader() {
 
   return (
     <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
-      <div className="flex items-center gap-4">
-        <div className="flex size-20 items-center justify-center overflow-hidden rounded-full border bg-accent text-muted-foreground">
-          {finalImageUrl ? (
-            // biome-ignore lint/performance/noImgElement: <explanation>
-            <img
-              alt="User avatar"
-              className="size-full object-cover"
-              height={64}
-              src={finalImageUrl}
-              style={{ objectFit: 'cover' }}
-              width={64}
-            />
-          ) : (
+      <div className={cn('flex h-20 items-center gap-4', className)}>
+        <div className="flex aspect-square h-full items-center justify-center overflow-hidden rounded-full border bg-accent text-muted-foreground">
+          {imageUrl === undefined && (
+            <Loader2 className="size-5 animate-spin" />
+          )}
+          {imageUrl === null && (
             <div aria-hidden="true">
               <HugeiconsIcon
                 className="size-5"
@@ -211,19 +220,30 @@ export default function AvatarUploader() {
               />
             </div>
           )}
+          {imageUrl && (
+            <Image
+              alt="User avatar"
+              className="size-full object-cover"
+              height={64}
+              src={imageUrl}
+              style={{ objectFit: 'cover' }}
+              width={64}
+            />
+          )}
         </div>
         <div className="flex flex-col gap-3">
-          <Label>Profile Picture</Label>
+          <Label>{label}</Label>
           <div className="flex gap-2">
             <div className="relative inline-block">
-              <Button
+              <LoadingButton
                 aria-haspopup="dialog"
+                isLoading={isUpdateLoading}
                 onClick={openFileDialog}
                 size="sm"
                 variant="outline"
               >
-                {fileName ? 'Change image' : 'Upload image'}
-              </Button>
+                {imageUrl ? 'Change image' : 'Upload image'}
+              </LoadingButton>
               <input
                 {...getInputProps()}
                 aria-label="Upload image file"
@@ -231,9 +251,9 @@ export default function AvatarUploader() {
                 tabIndex={-1}
               />
             </div>
-            {finalImageUrl && (
+            {imageUrl && (
               <LoadingButton
-                isLoading={isLoading}
+                isLoading={isRemoveLoading}
                 onClick={handleRemoveFinalImage}
                 size="sm"
                 variant="destructive"
@@ -288,7 +308,9 @@ export default function AvatarUploader() {
           >
             <CropperDescription />
             <CropperImage />
-            <CropperCropArea className="rounded-full" />
+            <CropperCropArea
+              className={rounded ? 'rounded-full' : 'rounded-lg'}
+            />
           </Cropper>
         )}
         <DialogFooter className="border-t px-4 py-6">

@@ -1,7 +1,8 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { DashedLineCircleIcon } from '@hugeicons-pro/core-stroke-rounded';
 import { cn } from '@/lib/utils';
-import UserAvatar from '../user-avatar';
+
+// import UserAvatar from '../user-avatar';
 
 type User = {
   name: string;
@@ -28,7 +29,7 @@ export default function UserLabel({
       className={cn('flex items-center gap-1.5 text-sm', className)}
       title={user.name}
     >
-      <UserAvatar className="size-6" user={user} />
+      {/* <UserAvatar className="size-6" user={user} /> */}
       <span className="font-medium">{user.name}</span>
     </div>
   );

@@ -23,7 +23,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '../../components/ui/sidebar';
-import UserAvatar from '../../components/user-avatar';
+// import UserAvatar from '../../components/user-avatar';
 
 export default function NavTeam() {
   const [_open, setOpen] = useState(true);
@@ -64,10 +64,10 @@ export default function NavTeam() {
                         className="h-fit gap-2.5 p-1.75 group-data-[collapsible=icon]:rounded-full"
                         tooltip={member.name}
                       >
-                        <UserAvatar
+                        {/* <UserAvatar
                           className="size-7 border-background"
                           user={member}
-                        />
+                        /> */}
                         <span className="truncate font-medium">
                           {member.name}
                         </span>

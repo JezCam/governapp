@@ -1,21 +1,18 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { DashedLineCircleIcon } from '@hugeicons-pro/core-stroke-rounded';
 import { cn } from '@/lib/utils';
+import type { DataModel } from '../../convex/_generated/dataModel';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-
-type User = {
-  name: string;
-  imageUrl?: string;
-};
+import { Skeleton } from './ui/skeleton';
 
 export default function UserAvatar({
   user,
   className,
 }: {
-  user?: User;
+  user?: DataModel['users']['document'];
   className?: string;
 }) {
-  if (!user) {
+  if (user === null) {
     return (
       <HugeiconsIcon
         className={cn('size-6 text-muted-foreground', className)}
@@ -23,11 +20,16 @@ export default function UserAvatar({
       />
     );
   }
+  if (user === undefined) {
+    return (
+      <Skeleton className={cn('h-6 w-6 rounded-full border', className)} />
+    );
+  }
   return (
     <Avatar className={cn('size-6 border', className)}>
-      <AvatarImage src={user.imageUrl} />
+      <AvatarImage src={user.image} />
       <AvatarFallback className="flex size-full items-center justify-center bg-accent text-foreground">
-        {user.name.charAt(0)}
+        {user.firstName?.[0]}
       </AvatarFallback>
     </Avatar>
   );

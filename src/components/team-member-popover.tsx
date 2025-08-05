@@ -12,7 +12,7 @@ import TeamMemberPopoverDropdown from './team-member-popover-dropdown';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import UserAvatar from './user-avatar';
+// import UserAvatar from './user-avatar';
 
 export default function TeamMemberPopover({
   member,
@@ -37,10 +37,10 @@ export default function TeamMemberPopover({
         side="right"
       >
         <div className="relative mb-6 h-20 rounded-sm bg-primary">
-          <UserAvatar
+          {/* <UserAvatar
             className="-bottom-6 absolute left-3 size-16 border-none ring-4 ring-popover"
             user={member}
-          />
+          /> */}
           <TeamMemberPopoverDropdown user={member}>
             <Button
               className="!bg-black/30 !border-white/30 absolute top-2 right-2 size-8 rounded-full !hover:bg-black/15 text-white hover:text-white"

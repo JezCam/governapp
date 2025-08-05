@@ -12,7 +12,7 @@ export default function Settings() {
     useState(false);
 
   return (
-    <div className="flex size-full max-w-3xl flex-col gap-8 p-12">
+    <div className="flex h-fit w-full max-w-lg flex-col gap-8 p-12">
       <h2 className="font-bold text-lg">Your Details</h2>
       <UserDetailsForm />
       <h2 className="mt-4 font-bold text-lg">Theme</h2>

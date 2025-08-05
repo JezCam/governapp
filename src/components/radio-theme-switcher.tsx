@@ -29,12 +29,8 @@ export default function RadioThemeSwitcher() {
     </div>
   );
 
-  if (!theme) {
-    return;
-  }
-
   return (
-    <div className="flex gap-3" defaultValue="1">
+    <div className="flex gap-3">
       <div className="flex flex-col items-center gap-2">
         <Button
           className={cn(

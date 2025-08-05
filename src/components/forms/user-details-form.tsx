@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import validator from 'validator';
 import { z } from 'zod';
-import AvatarUploader from '../avatar-uploader';
 import {
   Form,
   FormControl,
@@ -16,6 +15,7 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
+import UserImageUploader from '../user-image-uploader';
 import FormButtons from './form-buttons';
 import type { FormProps } from './types';
 
@@ -57,7 +57,7 @@ export default function UserDetailsForm(props: FormProps) {
   return (
     <div className="flex w-full flex-col gap-6">
       {/* Avatar Uploader */}
-      <AvatarUploader />
+      <UserImageUploader />
       <Form {...form}>
         <form
           className="flex flex-col items-start gap-4"

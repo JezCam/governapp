@@ -12,7 +12,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
-import UserAvatar from '../user-avatar';
+
+// import UserAvatar from '../user-avatar';
 
 type User = {
   name: string;
@@ -43,7 +44,7 @@ export default function ConfirmRemoveTeamMemberDialog(
           <DialogDescription className="flex flex-wrap items-center gap-1">
             Are you sure you want to remove{' '}
             <span className="!h-0 flex items-center gap-1 font-medium text-foreground">
-              <UserAvatar className="inline-block size-6" user={props.user} />
+              {/* <UserAvatar className="inline-block size-6" user={props.user} /> */}
               {props.user.name}
             </span>
             from your team?
