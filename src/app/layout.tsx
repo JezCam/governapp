@@ -38,7 +38,7 @@ export default function RootLayout({
           {/* rest of your scripts go under */}
         </head>
         <body
-          className={`${inter.variable} ${mPlusRounded1c.variable} ${inter.className} antialiased`}
+          className={`${inter.variable} ${mPlusRounded1c.variable} ${inter.className} overscroll-none antialiased`}
           suppressHydrationWarning
         >
           <ConvexClientProvider>

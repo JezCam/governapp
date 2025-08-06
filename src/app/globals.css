@@ -125,7 +125,7 @@
   /* --sidebar-accent: oklch(0.968 0.007 247.896); */
   --sidebar-accent: var(--color-ga-purple-300);
   /* --sidebar-accent-foreground: oklch(0.208 0.042 265.755); */
-  --sidebar-accent-foreground: var(--color-ga-purple-900);
+  --sidebar-accent-foreground: var(--color-ga-purple-800);
   /* --sidebar-border: oklch(0.929 0.013 255.508); */
   --sidebar-border: var(--color-ga-purple-300);
   /* --sidebar-ring: oklch(0.704 0.04 256.788); */

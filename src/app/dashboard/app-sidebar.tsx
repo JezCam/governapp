@@ -1,5 +1,8 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 import SearchButton from '../../components/search-button';
 import { ScrollArea } from '../../components/ui/scroll-area';
 import {
@@ -15,6 +18,8 @@ import NavTeam from './nav-team';
 import OrganisationSwitcher from './organisation-switcher';
 
 export default function AppSidebar() {
+  const [open, setOpen] = useState(false);
+
   return (
     <Sidebar className="relative border-sidebar-border" collapsible="icon">
       <SidebarHeader className="gap-0 p-0">
@@ -51,9 +56,14 @@ export default function AppSidebar() {
           </div>
         </ScrollArea>
       </SidebarContent>
-      <SidebarFooter className="gap-0">
-        <OrganisationSwitcher />
+      <SidebarFooter className="peer z-10 gap-0 bg-sidebar">
+        <OrganisationSwitcher open={open} setOpen={setOpen} />
       </SidebarFooter>
+      <button
+        className="absolute inset-0 hidden bg-black/30 opacity-0 transition-[display,opacity] transition-discrete peer-has-data-[state=open]:block peer-has-data-[state=open]:opacity-100 peer-has-data-[state=open]:starting:opacity-0"
+        onClick={() => setOpen(false)}
+        type="button"
+      />
       <SidebarRail />
     </Sidebar>
   );
