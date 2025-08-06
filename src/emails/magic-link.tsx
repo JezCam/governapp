@@ -13,7 +13,7 @@ import {
   Text,
 } from '@react-email/components';
 
-interface GovernAppMagicLinkEmailProps {
+interface MagicLinkEmailProps {
   magicLink?: string;
 }
 
@@ -21,9 +21,7 @@ const baseUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : '';
 
-export const GovernAppMagicLinkEmail = ({
-  magicLink,
-}: GovernAppMagicLinkEmailProps) => {
+export const MagicLinkEmail = ({ magicLink }: MagicLinkEmailProps) => {
   const previewText = 'Your magic link';
 
   return (
@@ -68,8 +66,8 @@ export const GovernAppMagicLinkEmail = ({
   );
 };
 
-GovernAppMagicLinkEmail.PreviewProps = {
+MagicLinkEmail.PreviewProps = {
   magicLink: 'https://governapp.com',
-} as GovernAppMagicLinkEmailProps;
+} as MagicLinkEmailProps;
 
-export default GovernAppMagicLinkEmail;
+export default MagicLinkEmail;

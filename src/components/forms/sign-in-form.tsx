@@ -1,3 +1,4 @@
+import { useAuthActions } from '@convex-dev/auth/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -24,6 +25,8 @@ const formSchema = z.object({
 });
 
 export default function SignInForm() {
+  const { signIn } = useAuthActions();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -43,6 +46,9 @@ export default function SignInForm() {
     setIsLoading(false);
     toast.error('Not yet implemented', {
       description: 'This feature is not yet implemented.',
+    });
+    signIn('magic-link', {
+      email: values.email,
     });
   }
 

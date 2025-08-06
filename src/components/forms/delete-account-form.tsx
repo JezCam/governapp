@@ -18,9 +18,7 @@ import FormButtons from './form-buttons';
 import type { FormProps } from './types';
 
 const formSchema = z.object({
-  confirmText: z.literal('delete my account', {
-    message: 'You must type "delete my account" to continue',
-  }), // The user must type this text to confirm deletion
+  confirmText: z.string(),
 });
 
 export default function DeleteAccountForm(props: FormProps) {
@@ -28,11 +26,20 @@ export default function DeleteAccountForm(props: FormProps) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      confirmText: '',
+    },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+    // Validate manually on submit
+    if (values.confirmText !== 'delete my account') {
+      form.setError('confirmText', {
+        message: 'You must type "delete my account" to continue',
+      });
+      return;
+    }
+
     setIsLoading(true);
     console.log('Form submitted:', values);
     // sleep for 1 second to simulate a network request
