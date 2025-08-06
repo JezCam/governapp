@@ -32,7 +32,7 @@ export default function SearchButton() {
       <SidebarMenuItem>
         <SidebarMenuButton asChild tooltip="Search">
           <Button
-            className="group/search after:-inset-4 w-full max-w-sm justify-between gap-21 border border-primary/15 bg-sidebar-accent px-1.5 text-ga-purple-600 shadow-none after:absolute after:content-[''] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground dark:text-ga-purple-300 dark:hover:text-ga-purple-100"
+            className="group after:-inset-4 w-full max-w-sm justify-between gap-21 border border-primary/15 bg-sidebar-accent px-1.5 text-ga-purple-600 shadow-none after:absolute after:content-[''] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground dark:text-ga-purple-300 dark:hover:text-ga-purple-100"
             onClick={() => setOpen(true)}
             variant="secondary"
           >
@@ -45,12 +45,8 @@ export default function SearchButton() {
               Search
             </div>
             <div className="flex gap-0.5">
-              <Kbd className="border-primary/30 group-hover/search:text-foreground">
-                ⌘
-              </Kbd>
-              <Kbd className="border-primary/30 group-hover/search:text-foreground">
-                K
-              </Kbd>
+              <Kbd className="border-primary/50">⌘</Kbd>
+              <Kbd className="border-primary/50">K</Kbd>
             </div>
           </Button>
         </SidebarMenuButton>

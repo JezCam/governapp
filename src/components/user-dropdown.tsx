@@ -1,8 +1,10 @@
 'use client';
 
+import { useAuthActions } from '@convex-dev/auth/react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Logout02Icon,
+  PaintBoardIcon,
   SearchIcon,
   Settings01Icon,
 } from '@hugeicons-pro/core-stroke-rounded';
@@ -22,10 +24,12 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import Kbd from './ui/kbd';
+import { ThemeSwitcher } from './ui/kibo-ui/theme-switcher';
 import { Skeleton } from './ui/skeleton';
 import UserAvatar from './user-avatar';
 
 export default function UserDropdown() {
+  const { signOut } = useAuthActions();
   const { setOpen } = useContext(SearchMenuContext);
 
   const user = useQuery(api.services.user.getCurrent);
@@ -33,7 +37,7 @@ export default function UserDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="!p-2 h-12 w-[239px] items-center" variant="outline">
+        <Button className="!p-2 h-12 w-[256px] items-center" variant="outline">
           <UserAvatar className="size-8" user={user} />
           <div className="grid h-8 flex-1 text-left text-sm leading-tight">
             {user ? (
@@ -60,17 +64,25 @@ export default function UserDropdown() {
         sideOffset={4}
       >
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild onSelect={() => setOpen(true)}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={SearchIcon} strokeWidth={2} /> Search Menu
-              </div>
-              <div className="flex gap-0.5">
-                <Kbd>⌘</Kbd>
-                <Kbd>K</Kbd>
-              </div>
+          <DropdownMenuItem
+            className="justify-between"
+            onSelect={() => setOpen(true)}
+          >
+            <div className="flex items-center gap-2">
+              <HugeiconsIcon icon={SearchIcon} strokeWidth={2} /> Search
+            </div>
+            <div className="flex gap-0.5">
+              <Kbd>⌘</Kbd>
+              <Kbd>K</Kbd>
             </div>
           </DropdownMenuItem>
+          <div className="flex items-center justify-between px-2 py-1.5 text-muted-foreground text-sm">
+            <div className="flex items-center gap-2">
+              <HugeiconsIcon icon={PaintBoardIcon} size={16} strokeWidth={2} />
+              Theme
+            </div>
+            <ThemeSwitcher small />
+          </div>
           <DropdownMenuItem asChild>
             <Link
               className="flex items-center gap-2"
@@ -82,7 +94,7 @@ export default function UserDropdown() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onSelect={signOut}>
           <HugeiconsIcon icon={Logout02Icon} strokeWidth={2} />
           Log out
         </DropdownMenuItem>

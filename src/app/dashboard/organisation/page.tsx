@@ -1,3 +1,5 @@
+'use client';
+
 import AvatarUploader from '@/components/avatar-uploader';
 import { Card } from '@/components/ui/card';
 import {

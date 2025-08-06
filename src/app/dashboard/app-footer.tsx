@@ -1,4 +1,4 @@
-import ThemeSwitcher from '../../components/theme-switcher';
+import { ThemeSwitcher } from '@/components/ui/kibo-ui/theme-switcher';
 import { SidebarTrigger } from '../../components/ui/sidebar';
 import AddButton from './add-button';
 

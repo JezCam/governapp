@@ -85,7 +85,7 @@ async function getCroppedImg(
 }
 
 export default function AvatarUploader({
-  imageUrl,
+  imageUrl = null,
   onChange,
   label = 'Avatar',
   rounded,

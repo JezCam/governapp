@@ -1,33 +1,45 @@
 'use client';
 
 import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
 
+const light = (
+  <div className="flex size-full items-center justify-center bg-gray-100">
+    <div className="flex h-full w-20 flex-col gap-2 bg-white p-2">
+      <div className="h-2 w-8 rounded-xs bg-gray-200" />
+      <div className="h-1 w-12 rounded-xs bg-gray-200" />
+      <div className="h-4 w-full rounded-xs bg-gray-200" />
+      <div className="h-1 w-12 rounded-xs bg-gray-200" />
+    </div>
+  </div>
+);
+
+const dark = (
+  <div className="flex size-full items-center justify-center bg-gray-900">
+    <div className="flex h-full w-20 flex-col gap-2 bg-gray-800 p-2">
+      <div className="h-2 w-8 rounded-xs bg-gray-700" />
+      <div className="h-1 w-12 rounded-xs bg-gray-700" />
+      <div className="h-4 w-full rounded-xs bg-gray-700" />
+      <div className="h-1 w-12 rounded-xs bg-gray-700" />
+    </div>
+  </div>
+);
+
 export default function RadioThemeSwitcher() {
+  const [mounted, setMounted] = useState(false);
+
   const { theme, setTheme } = useTheme();
 
-  const light = (
-    <div className="flex size-full items-center justify-center bg-gray-100">
-      <div className="flex h-full w-20 flex-col gap-2 bg-white p-2">
-        <div className="h-2 w-8 rounded-xs bg-gray-200" />
-        <div className="h-1 w-12 rounded-xs bg-gray-200" />
-        <div className="h-4 w-full rounded-xs bg-gray-200" />
-        <div className="h-1 w-12 rounded-xs bg-gray-200" />
-      </div>
-    </div>
-  );
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  const dark = (
-    <div className="flex size-full items-center justify-center bg-gray-900">
-      <div className="flex h-full w-20 flex-col gap-2 bg-gray-800 p-2">
-        <div className="h-2 w-8 rounded-xs bg-gray-700" />
-        <div className="h-1 w-12 rounded-xs bg-gray-700" />
-        <div className="h-4 w-full rounded-xs bg-gray-700" />
-        <div className="h-1 w-12 rounded-xs bg-gray-700" />
-      </div>
-    </div>
-  );
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="flex gap-3">

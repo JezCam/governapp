@@ -11,7 +11,7 @@ export default function Kbd({
   return (
     <kbd
       className={cn(
-        `pointer-events-none flex aspect-square h-5 select-none items-center justify-center gap-1 rounded border border-b-2 bg-background px-1 font-medium font-sans text-[0.7rem] text-muted-foreground transition-all [&_svg:not([class*='size-'])]:size-3`,
+        `pointer-events-none flex aspect-square h-5 select-none items-center justify-center gap-1 rounded border border-b-2 bg-background px-1 font-medium font-sans text-[0.7rem] text-muted-foreground transition-all group-hover:text-foreground [&_svg:not([class*='size-'])]:size-3`,
         className
       )}
     >
