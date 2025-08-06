@@ -4,15 +4,18 @@ import {
   nextjsMiddlewareRedirect,
 } from '@convex-dev/auth/nextjs/server';
 
-const isLandingPage = createRouteMatcher(['/']);
+const isRootPage = createRouteMatcher(['/']);
 const isProtectedRoute = createRouteMatcher([
   '/onboarding/(.*)',
   '/dashboard/(.*)?',
 ]);
 
 export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
-  if (isLandingPage(request) && (await convexAuth.isAuthenticated())) {
-    return nextjsMiddlewareRedirect(request, '/dashboard');
+  if (isRootPage(request)) {
+    if (await convexAuth.isAuthenticated()) {
+      return nextjsMiddlewareRedirect(request, '/dashboard');
+    }
+    return nextjsMiddlewareRedirect(request, '/home');
   }
   if (isProtectedRoute(request) && !(await convexAuth.isAuthenticated())) {
     return nextjsMiddlewareRedirect(request, '/');

@@ -11,6 +11,7 @@ import {
 } from '@hugeicons-pro/core-stroke-rounded';
 import { useQuery } from 'convex/react';
 import { ChevronDown } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useContext, useState } from 'react';
 import { SearchMenuContext } from '@/app/dashboard/layout';
@@ -116,10 +117,25 @@ export default function UserDropdown() {
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={signOut}>
-            <HugeiconsIcon icon={Logout02Icon} strokeWidth={2} />
-            Log out
-          </DropdownMenuItem>
+          <DropdownMenuGroup>
+            <DropdownMenuItem asChild>
+              <Link className="flex items-center gap-2" href={'/home'}>
+                <div className="flex size-4 items-center justify-center">
+                  <Image
+                    alt="GovernApp logomark"
+                    height={14}
+                    src="/logomark.svg"
+                    width={14}
+                  />
+                </div>
+                Home Page
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={signOut}>
+              <HugeiconsIcon icon={Logout02Icon} strokeWidth={2} />
+              Log out
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
