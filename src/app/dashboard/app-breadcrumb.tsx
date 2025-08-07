@@ -12,7 +12,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '../../components/ui/breadcrumb';
+} from '@/components/ui/breadcrumb';
 
 export default function AppBreadcrumb() {
   const pathname = usePathname();

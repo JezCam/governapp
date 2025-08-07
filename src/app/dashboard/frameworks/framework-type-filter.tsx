@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import type { DataTableFilterProps } from '@/components/data-table/types';
 import {
   Select,
   SelectContent,
@@ -10,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { DataTableFilterProps } from '../../../components/data-table/types';
 
 export default function FrameworkTypeFilter(props: DataTableFilterProps) {
   const [value, setValue] = useState<string>(props.value || '');

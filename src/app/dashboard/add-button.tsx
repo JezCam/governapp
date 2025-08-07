@@ -9,18 +9,18 @@ import {
 } from '@hugeicons-pro/core-stroke-rounded';
 import { DialogClose, DialogContent } from '@radix-ui/react-dialog';
 import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import AddOrganisationDialog from '../../components/dialogs/add-organisation-dialog';
-import AddTeamMemberDialog from '../../components/dialogs/add-team-member-dialog';
-import NewAssessmentDialog from '../../components/dialogs/new-assessment-dialog';
-import { Button } from '../../components/ui/button';
+import AddOrganisationDialog from '@/components/dialogs/add-organisation-dialog';
+import AddTeamMemberDialog from '@/components/dialogs/add-team-member-dialog';
+import NewAssessmentDialog from '@/components/dialogs/new-assessment-dialog';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogOverlay,
   DialogPortal,
   DialogTitle,
   DialogTrigger,
-} from '../../components/ui/dialog';
+} from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 
 export default function AddButton() {
   const [open, setOpen] = useState(false);

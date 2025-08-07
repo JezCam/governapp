@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useContext } from 'react';
 import { SearchMenuContext } from '@/app/dashboard/layout';
-import { pages } from '../app/dashboard/nav-main';
+import { pages } from '../app/dashboard/(sidebar)/nav-main';
 import { Button } from './ui/button';
 import {
   CommandDialog,
@@ -74,7 +74,7 @@ export default function SearchButton() {
               </CommandItem>
             ))}
           </CommandGroup>
-          <CommandSeparator />
+          <CommandSeparator className="my-2" />
           <CommandGroup heading="Settings">
             <CommandItem
               key={'theme'}

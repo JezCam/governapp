@@ -1,17 +1,17 @@
 'use client';
 
-import { HugeiconsIcon } from '@hugeicons/react';
-import { MoreVerticalIcon } from '@hugeicons-pro/core-stroke-rounded';
+// import { HugeiconsIcon } from '@hugeicons/react';
+// import { MoreVerticalIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
 import { useState } from 'react';
 import { DataTable } from '@/components/data-table/data-table';
 import AddTeamMemberDialog from '@/components/dialogs/add-team-member-dialog';
 import UserLabel from '@/components/labels/user-label';
 import SortButton from '@/components/sort-button';
-import TeamMemberPopoverDropdown from '@/components/team-member-popover-dropdown';
+// import TeamMemberPopoverDropdown from '@/components/team-member-popover-dropdown';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+// import { Button } from '@/components/ui/button';
+// import { DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { type TeamMember, teamMembers } from '@/dummy-data/team';
 
 export const columns: ColumnDef<TeamMember>[] = [
@@ -42,18 +42,19 @@ export const columns: ColumnDef<TeamMember>[] = [
     header: ({ column }) => <SortButton column={column}>Permission</SortButton>,
     cell: ({ row }) => <Badge variant={row.getValue('permission')} />,
   },
-  {
-    id: 'menu',
-    cell: ({ row }) => (
-      <TeamMemberPopoverDropdown user={row.original}>
-        <DropdownMenuTrigger asChild>
-          <Button className="float-right size-8" size="icon" variant="outline">
-            <HugeiconsIcon icon={MoreVerticalIcon} />
-          </Button>
-        </DropdownMenuTrigger>
-      </TeamMemberPopoverDropdown>
-    ),
-  },
+  // {
+  //   id: 'menu',
+  //   cell: ({ row }) => (
+  //     <TeamMemberPopoverDropdown user={row.original}>
+  //       <DropdownMenuTrigger asChild>
+  //         <Button className="float-right size-8" size="icon" variant="outline">
+  //           <HugeiconsIcon icon={MoreVerticalIcon} />
+  //         </Button>
+  //       </DropdownMenuTrigger>
+  //     </TeamMemberPopoverDropdown>
+  //   ),
+  // },
+  // TODO: Implement this
 ];
 
 export default function TeamMembersTable() {

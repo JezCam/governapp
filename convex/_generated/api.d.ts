@@ -15,9 +15,14 @@ import type {
 } from "convex/server";
 import type * as auth from "../auth.js";
 import type * as http from "../http.js";
-import type * as services_user from "../services/user.js";
+import type * as schemas_organisationSchemas from "../schemas/organisationSchemas.js";
+import type * as services_memberships from "../services/memberships.js";
+import type * as services_organisation from "../services/organisation.js";
+import type * as services_users from "../services/users.js";
 import type * as utils_files from "../utils/files.js";
-import type * as utils_helpers from "../utils/helpers.js";
+import type * as utils_memberships from "../utils/memberships.js";
+import type * as utils_organisation from "../utils/organisation.js";
+import type * as utils_users from "../utils/users.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -30,9 +35,14 @@ import type * as utils_helpers from "../utils/helpers.js";
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   http: typeof http;
-  "services/user": typeof services_user;
+  "schemas/organisationSchemas": typeof schemas_organisationSchemas;
+  "services/memberships": typeof services_memberships;
+  "services/organisation": typeof services_organisation;
+  "services/users": typeof services_users;
   "utils/files": typeof utils_files;
-  "utils/helpers": typeof utils_helpers;
+  "utils/memberships": typeof utils_memberships;
+  "utils/organisation": typeof utils_organisation;
+  "utils/users": typeof utils_users;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

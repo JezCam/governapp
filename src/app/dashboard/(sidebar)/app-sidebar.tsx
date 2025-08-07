@@ -3,8 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import SearchButton from '../../components/search-button';
-import { ScrollArea } from '../../components/ui/scroll-area';
+import SearchButton from '@/components/search-button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +12,7 @@ import {
   SidebarHeader,
   SidebarRail,
   SidebarSeparator,
-} from '../../components/ui/sidebar';
+} from '@/components/ui/sidebar';
 import { NavMain } from './nav-main';
 import NavTeam from './nav-team';
 import OrganisationSwitcher from './organisation-switcher';

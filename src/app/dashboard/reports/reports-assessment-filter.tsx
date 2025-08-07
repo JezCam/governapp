@@ -1,3 +1,4 @@
+import type { DataTableFilterProps } from '@/components/data-table/types';
 import {
   Select,
   SelectContent,
@@ -8,7 +9,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { assessmentReportsRows } from '@/dummy-data/reports';
-import type { DataTableFilterProps } from '../../../components/data-table/types';
 
 export default function ActionsAssessmentFilter({
   value,

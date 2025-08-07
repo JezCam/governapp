@@ -2,14 +2,14 @@
 
 import { AudioWaveform, Command, GalleryVerticalEnd, Plus } from 'lucide-react';
 import { useState } from 'react';
+import AddOrganisationDialog from '@/components/dialogs/add-organisation-dialog';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import UnfoldClose from '@/components/unfold-close';
 import { cn } from '@/lib/utils';
-import AddOrganisationDialog from '../../components/dialogs/add-organisation-dialog';
-import UnfoldClose from '../../components/unfold-close';
 
 const organisations = [
   {
@@ -31,6 +31,7 @@ export default function OrganisationSwitcher({
   setOpen,
 }: {
   open: boolean;
+  // biome-ignore lint/nursery/noShadow: <explanation>
   setOpen: (open: boolean) => void;
 }) {
   const [addOrganisationOpen, setAddOrganisationOpen] = useState(false);

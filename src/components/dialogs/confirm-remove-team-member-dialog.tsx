@@ -3,6 +3,7 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import type { DataModel } from '../../../convex/_generated/dataModel';
 import { LoadingButton } from '../loading-button';
 import { Button } from '../ui/button';
 import {
@@ -12,16 +13,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
-
-// import UserAvatar from '../user-avatar';
-
-type User = {
-  name: string;
-  imageUrl?: string;
-};
+import UserAvatar from '../user-avatar';
 
 export default function ConfirmRemoveTeamMemberDialog(
-  props: DialogProps & { user: User }
+  props: DialogProps & { user: DataModel['users']['document'] }
 ) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,8 +39,8 @@ export default function ConfirmRemoveTeamMemberDialog(
           <DialogDescription className="flex flex-wrap items-center gap-1">
             Are you sure you want to remove{' '}
             <span className="!h-0 flex items-center gap-1 font-medium text-foreground">
-              {/* <UserAvatar className="inline-block size-6" user={props.user} /> */}
-              {props.user.name}
+              <UserAvatar className="inline-block size-6" user={props.user} />
+              {`${props.user.firstName} ${props.user.lastName}`}
             </span>
             from your team?
           </DialogDescription>

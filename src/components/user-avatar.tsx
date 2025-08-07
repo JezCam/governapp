@@ -9,20 +9,20 @@ export default function UserAvatar({
   user,
   className,
 }: {
-  user?: DataModel['users']['document'];
+  user?: DataModel['users']['document'] | null;
   className?: string;
 }) {
+  if (user === undefined) {
+    return (
+      <Skeleton className={cn('h-6 w-6 rounded-full border', className)} />
+    );
+  }
   if (user === null) {
     return (
       <HugeiconsIcon
         className={cn('size-6 text-muted-foreground', className)}
         icon={DashedLineCircleIcon}
       />
-    );
-  }
-  if (user === undefined) {
-    return (
-      <Skeleton className={cn('h-6 w-6 rounded-full border', className)} />
     );
   }
   return (

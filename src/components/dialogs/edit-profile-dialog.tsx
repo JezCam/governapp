@@ -1,4 +1,5 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
+import type { DataModel } from '../../../convex/_generated/dataModel';
 import UserDetailsForm from '../forms/user-details-form';
 import {
   Dialog,
@@ -8,13 +9,8 @@ import {
   DialogTitle,
 } from '../ui/dialog';
 
-type User = {
-  name: string;
-  imageUrl?: string;
-};
-
 export default function EditTeamMemberDialog(
-  props: DialogProps & { user: User }
+  props: DialogProps & { user: DataModel['users']['document'] }
 ) {
   return (
     <Dialog onOpenChange={props.onOpenChange} open={props.open}>

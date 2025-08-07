@@ -1,9 +1,11 @@
 import { authTables } from '@convex-dev/auth/server';
 import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
+import { organisationTables } from './schemas/organisationSchemas';
 
 const schema = defineSchema({
   ...authTables,
+  ...organisationTables,
   users: defineTable({
     name: v.optional(v.string()),
     firstName: v.optional(v.string()),
@@ -14,6 +16,8 @@ const schema = defineSchema({
     phone: v.optional(v.string()),
     phoneVerificationTime: v.optional(v.number()),
     isAnonymous: v.optional(v.boolean()),
+
+    activeOrganisationId: v.optional(v.id('organisations')),
     // other "users" fields...
   }).index('email', ['email']),
   // Your other tables...

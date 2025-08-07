@@ -36,7 +36,7 @@ export default function UserDropdown() {
   const { signOut } = useAuthActions();
   const { setOpen } = useContext(SearchMenuContext);
 
-  const user = useQuery(api.services.user.getCurrent);
+  const user = useQuery(api.services.users.getCurrent);
 
   return (
     <div>

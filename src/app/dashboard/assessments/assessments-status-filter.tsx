@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import type { DataTableFilterProps } from '@/components/data-table/types';
+import StatusLabel from '@/components/labels/status-label';
 import {
   Select,
   SelectContent,
@@ -11,8 +13,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { assessmentStatuses } from '@/dummy-data/assessments';
-import type { DataTableFilterProps } from '../../../components/data-table/types';
-import StatusLabel from '../../../components/labels/status-label';
 
 export default function AssessmentsStatusFilter(props: DataTableFilterProps) {
   const [value, setValue] = useState<string>(props.value || '');

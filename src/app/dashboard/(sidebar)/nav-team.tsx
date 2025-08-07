@@ -5,30 +5,37 @@ import {
   PlusSignCircleIcon,
   UserGroupIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
+import { useQuery } from 'convex/react';
 import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import AddTeamMemberDialogContent from '@/components/dialogs/add-team-member-dialog';
 import TeamMemberPopover from '@/components/team-member-popover';
-import { teamMembers } from '@/dummy-data/team';
-import AddTeamMemberDialogContent from '../../components/dialogs/add-team-member-dialog';
-import { Badge } from '../../components/ui/badge';
+import { Badge } from '@/components/ui/badge';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '../../components/ui/collapsible';
+} from '@/components/ui/collapsible';
 import {
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '../../components/ui/sidebar';
-// import UserAvatar from '../../components/user-avatar';
+} from '@/components/ui/sidebar';
+import UserAvatar from '@/components/user-avatar';
+import { api } from '../../../../convex/_generated/api';
 
 export default function NavTeam() {
+  const memberships = useQuery(
+    api.services.memberships.listInActiveOrganisationWithUsers
+  );
+
   const [_open, setOpen] = useState(true);
   const { open } = useSidebar();
   const [addTeamMemberOpen, setAddTeamMemberOpen] = useState(false);
+
+  // TODO: Add skeletons for memberships = undefined
 
   return (
     <SidebarGroup>
@@ -50,31 +57,33 @@ export default function NavTeam() {
                     />
                   </div>
                   Team Members
-                  <Badge variant="blue">{teamMembers.length}</Badge>
+                  <Badge variant="blue">{memberships?.length}</Badge>
                 </div>
                 <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
               </SidebarMenuButton>
             </CollapsibleTrigger>
             <CollapsibleContent className="[&>ul]:m-0 [&>ul]:border-none [&>ul]:p-1">
               <SidebarMenu className="gap-0">
-                {teamMembers.map((member) => (
-                  <SidebarMenuItem key={member.userId}>
-                    <TeamMemberPopover member={member}>
-                      <SidebarMenuButton
-                        className="h-fit gap-2.5 p-1.75 group-data-[collapsible=icon]:rounded-full"
-                        tooltip={member.name}
-                      >
-                        {/* <UserAvatar
-                          className="size-7 border-background"
-                          user={member}
-                        /> */}
-                        <span className="truncate font-medium">
-                          {member.name}
-                        </span>
-                      </SidebarMenuButton>
-                    </TeamMemberPopover>
-                  </SidebarMenuItem>
-                ))}
+                {memberships?.map((membership) => {
+                  const user = membership.user;
+                  const name = `${user.firstName} ${user.lastName}`;
+                  return (
+                    <SidebarMenuItem key={user._id}>
+                      <TeamMemberPopover membership={membership}>
+                        <SidebarMenuButton
+                          className="h-fit gap-2.5 p-1.75 group-data-[collapsible=icon]:rounded-full"
+                          tooltip={name}
+                        >
+                          <UserAvatar
+                            className="size-7 border-background"
+                            user={user}
+                          />
+                          <span className="truncate font-medium">{name}</span>
+                        </SidebarMenuButton>
+                      </TeamMemberPopover>
+                    </SidebarMenuItem>
+                  );
+                })}
                 <AddTeamMemberDialogContent
                   onOpenChange={setAddTeamMemberOpen}
                   open={addTeamMemberOpen}

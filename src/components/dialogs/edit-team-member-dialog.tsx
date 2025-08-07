@@ -1,4 +1,5 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
+import type { DataModel } from '../../../convex/_generated/dataModel';
 import EditTeamMemberDetailsForm from '../forms/edit-team-member-form';
 import {
   Dialog,
@@ -7,16 +8,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
-
-// import UserAvatar from '../user-avatar';
-
-type User = {
-  name: string;
-  imageUrl?: string;
-};
+import UserAvatar from '../user-avatar';
 
 export default function EditTeamMemberDialog(
-  props: DialogProps & { user: User }
+  props: DialogProps & { user: DataModel['users']['document'] }
 ) {
   return (
     <Dialog onOpenChange={props.onOpenChange} open={props.open}>
@@ -26,8 +21,8 @@ export default function EditTeamMemberDialog(
           <DialogDescription className="flex items-center gap-1">
             Edit the details of
             <span className="!h-0 flex items-center gap-1 font-medium">
-              {/* <UserAvatar className="inline-block size-6" user={props.user} /> */}
-              {props.user.name}
+              <UserAvatar className="inline-block size-6" user={props.user} />
+              {`${props.user.firstName} ${props.user.lastName}`}
             </span>
           </DialogDescription>
         </DialogHeader>

@@ -8,6 +8,7 @@ import {
 } from '@hugeicons-pro/core-stroke-rounded';
 import Link from 'next/link';
 import { type ReactNode, useState } from 'react';
+import type { DataModel } from '../../convex/_generated/dataModel';
 import ConfirmRemoveTeamMemberDialog from './dialogs/confirm-remove-team-member-dialog';
 import EditTeamMemberDialog from './dialogs/edit-team-member-dialog';
 import {
@@ -17,17 +18,11 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 
-type User = {
-  name: string;
-  userId: string;
-  imageUrl?: string;
-};
-
 export default function TeamMemberPopoverDropdown({
   user,
   children,
 }: {
-  user: User;
+  user: DataModel['users']['document'];
   children: ReactNode;
 }) {
   const [editTeamMemberOpen, setEditTeamMemberOpen] = useState(false);
@@ -53,7 +48,7 @@ export default function TeamMemberPopoverDropdown({
         side="right"
       >
         <DropdownMenuItem asChild className="gap-2 p-2">
-          <Link href={`/dashboard/actions?assignee=${user.userId}`}>
+          <Link href={`/dashboard/actions?assignee=${user._id}`}>
             <HugeiconsIcon icon={ZapIcon} strokeWidth={2} />
             View assigned actions
           </Link>
