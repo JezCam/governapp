@@ -1,9 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail01Icon } from '@hugeicons-pro/core-stroke-rounded';
+import { useAction } from 'convex/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
+import { api } from '../../../convex/_generated/api';
 import {
   Form,
   FormControl,
@@ -49,6 +51,8 @@ const formSchema = z.object({
 });
 
 export default function AddTeamMemberForm(props: FormProps) {
+  const createInvitation = useAction(api.services.invitations.create);
+
   const [isLoading, setIsLoading] = useState(false);
   const [hasOtherRole, setHasOtherRole] = useState(false);
 
@@ -61,7 +65,7 @@ export default function AddTeamMemberForm(props: FormProps) {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof formSchema>) {
     if (values.role === 'other' && !values.otherRole.length) {
       form.setError('otherRole', {
         type: 'manual',
@@ -69,18 +73,21 @@ export default function AddTeamMemberForm(props: FormProps) {
       });
       return;
     }
-
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     setIsLoading(true);
-    console.log('Form submitted:', values);
-    // sleep for 1 second to simulate a network request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    createInvitation({
+      inviteeEmail: values.inviteeEmail,
+      role: values.role === 'other' ? values.otherRole : values.role,
+      isAdmin: values.permission === 'admin',
+    })
+      .then(() => {
+        toast.success('Invitation sent successfully!');
+        props.onSuccess?.();
+      })
+      .catch((error) => {
+        console.error('Error sending invitation:', error);
+        toast.error('Failed to send invitation. Please try again.');
+      });
     setIsLoading(false);
-    toast.error('Not yet implemented', {
-      description: 'This feature is not yet implemented.',
-    });
-    props.onSuccess?.();
   }
 
   return (

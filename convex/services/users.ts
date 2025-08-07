@@ -2,7 +2,12 @@ import { v } from 'convex/values';
 import { api, internal } from '../_generated/api';
 import { action, mutation, query } from '../_generated/server';
 import { getMembershipsInActiveOrganisation } from '../utils/memberships';
-import { getCurrentUser, getCurrentUserId, getUserById } from '../utils/users';
+import {
+  getCurrentUser,
+  getCurrentUserId,
+  getUserByEmail,
+  getUserById,
+} from '../utils/users';
 
 // Query
 
@@ -16,6 +21,14 @@ export const getCurrentId = query({
 export const getCurrent = query({
   handler: async (ctx) => {
     return await getCurrentUser(ctx);
+  },
+});
+
+export const getByEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    const user = await getUserByEmail(ctx, args.email);
+    return user;
   },
 });
 

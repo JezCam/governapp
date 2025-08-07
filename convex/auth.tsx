@@ -14,7 +14,6 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       maxAge: 60 * 15, // 15 minutes
       async sendVerificationRequest(params) {
         const { identifier: to, url } = params;
-        const { host } = new URL(url);
         const res = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
@@ -22,9 +21,9 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'onboarding@resend.dev',
+            from: 'GovernApp <onboarding@resend.dev>',
             to,
-            subject: `Sign in to ${host}`,
+            subject: 'Sign in to GovernApp',
             html: await render(<MagicLinkEmail magicLink={url} />),
           }),
         });

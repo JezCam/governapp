@@ -16,6 +16,7 @@ import type {
 import type * as auth from "../auth.js";
 import type * as http from "../http.js";
 import type * as schemas_organisationSchemas from "../schemas/organisationSchemas.js";
+import type * as services_invitations from "../services/invitations.js";
 import type * as services_memberships from "../services/memberships.js";
 import type * as services_organisation from "../services/organisation.js";
 import type * as services_users from "../services/users.js";
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   http: typeof http;
   "schemas/organisationSchemas": typeof schemas_organisationSchemas;
+  "services/invitations": typeof services_invitations;
   "services/memberships": typeof services_memberships;
   "services/organisation": typeof services_organisation;
   "services/users": typeof services_users;

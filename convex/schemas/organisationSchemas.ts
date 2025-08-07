@@ -32,7 +32,7 @@ export const organisationTables = {
     isAdmin: v.boolean(),
   }),
   invitations: defineTable({
-    inviterUserId: v.id('users'),
+    invitedByUserId: v.id('users'),
     inviteeEmail: v.string(),
     organisationId: v.id('organisations'),
     organisationName: v.string(),
