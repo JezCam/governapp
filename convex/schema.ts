@@ -18,6 +18,7 @@ const schema = defineSchema({
     isAnonymous: v.optional(v.boolean()),
 
     activeOrganisationId: v.optional(v.id('organisations')),
+    imageUrl: v.optional(v.string()),
     // other "users" fields...
   }).index('email', ['email']),
   // Your other tables...

@@ -42,6 +42,11 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         throw new Error(`User with ID ${args.userId} not found.`);
       }
 
+      // If no imageUrl, but now we have one from oAuth, update it
+      if (!user.imageUrl && user.imageUrl) {
+        await ctx.db.patch(args.userId, { imageUrl: user.imageUrl });
+      }
+
       // If no name, but now we have one from oAuth, update it
       if (!(user.firstName || user.lastName) && user.name) {
         const names = user.name.split(' ');

@@ -27,7 +27,7 @@ export default function UserAvatar({
   }
   return (
     <Avatar className={cn('size-6 border', className)}>
-      <AvatarImage src={user.image} />
+      <AvatarImage src={user.imageUrl} />
       <AvatarFallback className="flex size-full items-center justify-center bg-accent text-foreground">
         {user.firstName?.[0]}
       </AvatarFallback>

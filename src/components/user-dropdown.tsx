@@ -5,7 +5,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Logout02Icon,
   PaintBoardIcon,
-  PlusSignCircleIcon,
+  PlusSignSquareIcon,
   SearchIcon,
   Settings01Icon,
 } from '@hugeicons-pro/core-stroke-rounded';
@@ -77,7 +77,7 @@ export default function UserDropdown() {
         >
           <DropdownMenuGroup>
             <DropdownMenuItem onSelect={() => setAddOrganisationOpen(true)}>
-              <HugeiconsIcon icon={PlusSignCircleIcon} strokeWidth={2} />
+              <HugeiconsIcon icon={PlusSignSquareIcon} strokeWidth={2} />
               Add organisation
             </DropdownMenuItem>
           </DropdownMenuGroup>
@@ -128,7 +128,7 @@ export default function UserDropdown() {
                     width={14}
                   />
                 </div>
-                Home Page
+                GovernApp Website
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={signOut}>

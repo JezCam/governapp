@@ -300,7 +300,7 @@ export const DialogStackContent = ({
     // biome-ignore lint/a11y/useKeyWithClickEvents: "This is a clickable dialog"
     <div
       className={cn(
-        'flex h-auto w-full flex-col gap-8 rounded-lg border bg-background p-6 shadow-lg transition-all duration-300',
+        'flex h-auto w-full flex-col gap-8 rounded-2xl border bg-background p-6 shadow-lg transition-all duration-300',
         className
       )}
       onClick={handleClick}

@@ -22,7 +22,7 @@ export const getCurrent = query({
 export const getImage = query({
   handler: async (ctx) => {
     const user = await getCurrentUser(ctx);
-    const imageUrl = user.image || null;
+    const imageUrl = user.imageUrl || null;
     return imageUrl;
   },
 });
@@ -47,7 +47,7 @@ export const update = mutation({
     name: v.optional(v.string()),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
-    image: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
     email: v.optional(v.string()),
     phone: v.optional(v.string()),
   },
@@ -57,7 +57,7 @@ export const update = mutation({
       ...(args.name ? { name: args.name } : {}),
       ...(args.firstName ? { firstName: args.firstName } : {}),
       ...(args.lastName ? { lastName: args.lastName } : {}),
-      ...(args.image ? { image: args.image } : {}),
+      ...(args.imageUrl ? { imageUrl: args.imageUrl } : {}),
       ...(args.email ? { email: args.email } : {}),
       ...(args.phone ? { phone: args.phone } : {}),
     };
@@ -74,7 +74,7 @@ export const updateImage = action({
       args
     );
     await ctx.runMutation(api.services.users.update, {
-      image: imageUrl,
+      imageUrl,
     });
   },
 });
