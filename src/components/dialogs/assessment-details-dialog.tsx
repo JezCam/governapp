@@ -3,7 +3,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import type { Assessment, UserAssessment } from '@/dummy-data/assessments';
 import { DataTable } from '../data-table/data-table';
 import FrameworkLabel from '../labels/framework-label';
-import UserLabel from '../labels/user-label';
+// import UserLabel from '../labels/user-label'; TODO: Implement
 import { Badge } from '../ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Label } from '../ui/label';
@@ -11,15 +11,15 @@ import { Progress } from '../ui/progress';
 import { Separator } from '../ui/separator';
 
 const participantsTableColumns: ColumnDef<UserAssessment>[] = [
-  {
-    size: 60,
-    maxSize: 60,
-    accessorKey: 'user',
-    header: 'Name',
-    cell: ({ row }) => {
-      return <UserLabel user={row.original.user} />;
-    },
-  },
+  // {
+  //   size: 60,
+  //   maxSize: 60,
+  //   accessorKey: 'user',
+  //   header: 'Name',
+  //   cell: ({ row }) => {
+  //     return <UserLabel user={row.original.user} />;
+  //   },
+  // },
   {
     size: 40,
     maxSize: 40,

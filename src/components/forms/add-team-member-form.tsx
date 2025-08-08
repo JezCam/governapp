@@ -84,8 +84,41 @@ export default function AddTeamMemberForm(props: FormProps) {
         props.onSuccess?.();
       })
       .catch((error) => {
-        console.error('Error sending invitation:', error);
-        toast.error('Failed to send invitation. Please try again.');
+        switch (error.data) {
+          case 'not_authenticated':
+            toast.error('Failed to send invitation', {
+              description: 'You must be logged in to invite members',
+            });
+            break;
+          case 'self_invitation':
+            toast.error('Failed to send invitation', {
+              description: 'You cannot invite yourself',
+            });
+            form.setError('inviteeEmail', {
+              type: 'manual',
+              message: 'You cannot invite yourself',
+            });
+            break;
+          case 'no_active_organisation':
+            toast.error('Failed to send invitation', {
+              description: 'No active organisation found',
+            });
+            break;
+          case 'email_already_exists':
+            toast.error('Failed to send invitation', {
+              description: 'An invitation has already been sent to this email',
+            });
+            form.setError('inviteeEmail', {
+              type: 'manual',
+              message: 'An invitation has already been sent to this email',
+            });
+            break;
+          default:
+            console.error('Unexpected error:', error);
+            toast.error('Failed to send invitation', {
+              description: 'An unexpected error occurred',
+            });
+        }
       });
     setIsLoading(false);
   }

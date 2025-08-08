@@ -1,15 +1,15 @@
-import type * as SheetPrimitive from "@radix-ui/react-dialog";
-import { CornerDownLeft } from "lucide-react";
-import UserLabel from "@/components/labels/user-label";
-import { LoadingButton } from "@/components/loading-button";
+import type * as SheetPrimitive from '@radix-ui/react-dialog';
+import { CornerDownLeft } from 'lucide-react';
+// import UserLabel from "@/components/labels/user-label"; TODO: Implement
+import { LoadingButton } from '@/components/loading-button';
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
-import { Textarea } from "@/components/ui/textarea";
-import { teamMembers } from "@/dummy-data/team";
+} from '@/components/ui/sheet';
+import { Textarea } from '@/components/ui/textarea';
+import { teamMembers } from '@/dummy-data/team';
 
 export default function ProgressUpdatesSheet(
   props: React.ComponentProps<typeof SheetPrimitive.Root>
@@ -25,7 +25,7 @@ export default function ProgressUpdatesSheet(
             {teamMembers.map((teamMember) => (
               <div className="flex flex-col gap-1" key={teamMember.userId}>
                 <div className="flex items-center gap-2">
-                  <UserLabel user={teamMember} />
+                  {/* <UserLabel user={teamMember} /> */}
                   <span className="text-muted-foreground text-sm">
                     • 2d ago
                   </span>

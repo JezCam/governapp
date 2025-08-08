@@ -11,7 +11,7 @@ import { assessmentStatuses } from '@/dummy-data/assessments';
 import { teamMembers } from '@/dummy-data/team';
 import DatePicker from '../date-picker';
 import StatusLabel from '../labels/status-label';
-import UserLabel from '../labels/user-label';
+// import UserLabel from '../labels/user-label'; TODO: Implement
 import {
   Form,
   FormControl,
@@ -145,7 +145,7 @@ export default function EditActionForm(props: FormProps) {
                       key={teamMember.userId}
                       value={teamMember.userId}
                     >
-                      <UserLabel user={teamMember} />
+                      {/* <UserLabel user={teamMember} /> */}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -206,8 +206,8 @@ export default function AvatarUploader({
 
   return (
     <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
-      <div className={cn('flex h-20 items-center gap-4', className)}>
-        <div className="flex aspect-square h-full items-center justify-center overflow-hidden rounded-full border bg-accent text-muted-foreground">
+      <div className={cn('flex h-20 w-fit items-center gap-4', className)}>
+        <div className="flex aspect-square h-full shrink-0 items-center justify-center overflow-hidden rounded-full border bg-accent text-muted-foreground">
           {imageUrl === undefined && (
             <Loader2 className="size-5 animate-spin" />
           )}

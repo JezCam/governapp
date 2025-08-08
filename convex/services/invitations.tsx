@@ -1,12 +1,31 @@
 import { render } from '@react-email/components';
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import { Resend } from 'resend';
 import InvitationEmail from '@/emails/invitation';
 import { api, internal } from '../_generated/api';
-import { action, internalMutation } from '../_generated/server';
+import { action, internalMutation, internalQuery } from '../_generated/server';
 import '../polyfills';
 
 // Query
+
+export const getByEmailAndOrganisation = internalQuery({
+  args: {
+    email: v.string(),
+    organisationId: v.id('organisations'),
+  },
+  handler: async (ctx, args) => {
+    const invitation = await ctx.db
+      .query('invitations')
+      .withIndex('by_organisation_email', (q) =>
+        q
+          .eq('organisationId', args.organisationId)
+          .eq('inviteeEmail', args.email)
+      )
+      .first();
+
+    return invitation;
+  },
+});
 
 // Mutate
 
@@ -44,19 +63,30 @@ export const create = action({
   handler: async (ctx, args) => {
     const invitedByUser = await ctx.runQuery(api.services.users.getCurrent);
     if (!invitedByUser) {
-      throw new Error('User not authenticated');
+      throw new ConvexError('not_authenticated');
+    }
+
+    if (invitedByUser.email === args.inviteeEmail) {
+      throw new ConvexError('self_invitation');
     }
 
     const activeOrganisation = await ctx.runQuery(
       api.services.organisation.getActive
     );
     if (!activeOrganisation) {
-      throw new Error('No active organisation found');
+      throw new ConvexError('no_active_organisation');
     }
 
-    const activeOrganisationName = activeOrganisation.name;
-    if (!activeOrganisationName) {
-      throw new Error('Organisation is missing a name');
+    const existingInvitation = await ctx.runQuery(
+      internal.services.invitations.getByEmailAndOrganisation,
+      {
+        email: args.inviteeEmail,
+        organisationId: activeOrganisation._id,
+      }
+    );
+
+    if (existingInvitation) {
+      throw new ConvexError('email_already_exists');
     }
 
     const invitationId = await ctx.runMutation(
@@ -65,15 +95,13 @@ export const create = action({
         ...args,
         invitedByUserId: invitedByUser._id,
         organisationId: activeOrganisation._id,
-        organisationName: activeOrganisationName,
+        organisationName: activeOrganisation.name,
       }
     );
 
     const inviteeUser = await ctx.runQuery(api.services.users.getByEmail, {
       email: args.inviteeEmail,
     });
-
-    console.log(inviteeUser);
 
     // Send the email
     try {
@@ -94,8 +122,8 @@ export const create = action({
                 : undefined
             }
             inviteLink={`${process.env.SITE_URL}/invitation/${invitationId}`}
-            organisationImageUrl={activeOrganisation.image}
-            organisationName={activeOrganisationName}
+            organisationImageUrl={activeOrganisation.imageUrl}
+            organisationName={activeOrganisation.name}
           />
         ),
       });

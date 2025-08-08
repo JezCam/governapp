@@ -20,8 +20,8 @@ export const turnoverRanges = [
 export const organisationTables = {
   organisations: defineTable({
     abnOrAcn: v.string(),
-    image: v.optional(v.string()),
-    name: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    name: v.string(),
     type: v.optional(v.union(...types.map(v.literal))),
     turnoverRange: v.union(...turnoverRanges.map(v.literal)),
   }),
@@ -43,5 +43,5 @@ export const organisationTables = {
     ),
     role: v.string(),
     isAdmin: v.boolean(),
-  }),
+  }).index('by_organisation_email', ['organisationId', 'inviteeEmail']),
 };

@@ -7,8 +7,8 @@ import {
 } from '@hugeicons-pro/core-stroke-rounded';
 import { useQuery } from 'convex/react';
 import { type ReactNode, useState } from 'react';
+import type { Membership, User } from '@/types/convex';
 import { api } from '../../convex/_generated/api';
-import type { DataModel } from '../../convex/_generated/dataModel';
 import EditProfileDialog from './dialogs/edit-profile-dialog';
 import TeamMemberPopoverDropdown from './team-member-popover-dropdown';
 import { Badge } from './ui/badge';
@@ -20,8 +20,8 @@ export default function TeamMemberPopover({
   membership,
   children,
 }: {
-  membership: DataModel['memberships']['document'] & {
-    user: DataModel['users']['document'];
+  membership: Membership & {
+    user: User;
   };
   children: ReactNode;
 }) {

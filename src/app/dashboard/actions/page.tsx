@@ -8,7 +8,7 @@ import DueDateLabel from '@/app/dashboard/actions/due-date';
 import EditActionDialog from '@/components/dialogs/edit-action-dialog';
 import ExpandChevron from '@/components/expand-chevron';
 import FrameworkLabel from '@/components/labels/framework-label';
-import UserLabel from '@/components/labels/user-label';
+// import UserLabel from '@/components/labels/user-label'; TODO: Implement
 import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -171,10 +171,10 @@ const getActionsColumns = (
         return;
       }
       if (row.original.type === 'action') {
-        const assignee = row.original.assignee;
+        // const assignee = row.original.assignee;
         return (
           <div className="flex h-7 items-center">
-            <UserLabel user={assignee} />
+            {/* <UserLabel user={assignee} /> */}
           </div>
         );
       }

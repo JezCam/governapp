@@ -24,7 +24,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { cn } from '@/lib/utils';
-import UserLabel from './labels/user-label';
+// import UserLabel from './labels/user-label'; TODO: Implement
 
 export interface UserOption {
   id: string;
@@ -574,7 +574,7 @@ const UserMultiSelect = ({
                               }}
                               value={option.name}
                             >
-                              <UserLabel user={option} />
+                              {/* <UserLabel user={option} /> */}
                             </CommandItem>
                           );
                         })}

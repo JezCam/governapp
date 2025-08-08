@@ -1,5 +1,6 @@
 'use client';
 
+import { useAction, useMutation, useQuery } from 'convex/react';
 import AvatarUploader from '@/components/avatar-uploader';
 import { Card } from '@/components/ui/card';
 import {
@@ -10,14 +11,40 @@ import {
   TableHead,
   TableRow,
 } from '@/components/ui/table';
+import { api } from '../../../../convex/_generated/api';
 import PendingInvitationsTable from './pending-invitations-table';
 import TeamMembersTable from './team-members-table';
 
 export default function Organisation() {
+  const activeOrganisation = useQuery(api.services.organisation.getActive);
+  const updateOrganisationImage = useAction(
+    api.services.organisation.updateImageForActive
+  );
+  const removeOrganisationImage = useMutation(
+    api.services.organisation.removeImageForActive
+  );
+
+  const handleImageChange = async (
+    data: { bytes: ArrayBuffer; type: string } | null
+  ) => {
+    if (!data) {
+      await removeOrganisationImage();
+      return;
+    }
+    updateOrganisationImage({
+      bytes: data.bytes,
+      type: data.type,
+    });
+  };
+
+  if (!activeOrganisation) {
+    return null; // TODO: Implement a loading state or error handling
+  }
+
   return (
     <div className="flex h-fit flex-col gap-4 overflow-auto p-4">
       {/* Organisation Header */}
-      <Card className="relative grid h-min w-full shrink-0 grid-cols-2 flex-row items-start justify-end overflow-hidden rounded-xl bg-transparent p-2 pb-4 shadow-none">
+      <Card className="relative flex w-full shrink-0 flex-row items-start justify-end overflow-hidden rounded-xl bg-transparent p-2 pb-4 shadow-none">
         <div
           className="-z-1 absolute inset-0 bg-[url('/pattern-light.svg')] bg-primary stroke-current text-foreground dark:bg-[url('/pattern-dark.svg')]"
           style={{
@@ -30,21 +57,18 @@ export default function Organisation() {
             maskSize: '100% 100%',
           }}
         />
-        <div className="flex h-full flex-col gap-6">
-          <div className="relative h-full w-full">
-            <AvatarUploader
-              className="absolute inset-0 h-full [&>div]:rounded-sm"
-              label="Organisation Image"
-              onChange={async (_data) => {
-                await console.log(_data);
-              }}
-            />
-          </div>
+        <div className="flex w-fit shrink-0 flex-col gap-6 self-stretch">
+          <AvatarUploader
+            className="h-full [&>div]:rounded-sm"
+            imageUrl={activeOrganisation.imageUrl}
+            label="Organisation Image"
+            onChange={handleImageChange}
+          />
           <h1
             className="font-extrabold text-4xl"
             style={{ fontFamily: 'var(--font-m-plus-rounded-1c' }}
           >
-            Acme Incorporated
+            {activeOrganisation.name}
           </h1>
         </div>
         <Table className="float-right w-fit border-separate border-spacing-0 ">
@@ -58,7 +82,7 @@ export default function Organisation() {
                 Entity Name
               </TableHead>
               <TableCell className="rounded-tr-md border bg-background/60 dark:bg-background/40">
-                Acme Incorporated
+                {activeOrganisation.name}
               </TableCell>
             </TableRow>
             <TableRow>
@@ -66,7 +90,7 @@ export default function Organisation() {
                 Entity Type
               </TableHead>
               <TableCell className="border border-t-0 bg-background/60 dark:bg-background/40">
-                Australian Private Company
+                {activeOrganisation.type}
               </TableCell>
             </TableRow>
             <TableRow>
@@ -74,7 +98,7 @@ export default function Organisation() {
                 Organisation Identifier (ABN or ACN)
               </TableHead>
               <TableCell className="border border-t-0 bg-background/60 dark:bg-background/40">
-                32 617 116 677
+                {activeOrganisation.abnOrAcn}
               </TableCell>
             </TableRow>
             <TableRow>
@@ -82,7 +106,7 @@ export default function Organisation() {
                 Turnover Range
               </TableHead>
               <TableCell className="rounded-br-md border border-t-0 bg-background/60 dark:bg-background/40">
-                $0 - $50,000
+                {activeOrganisation.turnoverRange}
               </TableCell>
             </TableRow>
           </TableBody>

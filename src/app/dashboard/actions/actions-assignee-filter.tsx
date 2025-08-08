@@ -1,7 +1,7 @@
 'use client';
 
 import type { DataTableFilterProps } from '@/components/data-table/types';
-import UserLabel from '@/components/labels/user-label';
+// import UserLabel from '@/components/labels/user-label';
 import {
   Select,
   SelectContent,
@@ -31,7 +31,7 @@ export default function ActionsAssigneeFilter({
               key={teamMember.userId}
               value={teamMember.userId}
             >
-              <UserLabel user={teamMember} />
+              {/* <UserLabel user={teamMember} /> */}
             </SelectItem>
           ))}
         </SelectGroup>
