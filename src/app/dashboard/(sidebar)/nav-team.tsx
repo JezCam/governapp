@@ -8,6 +8,7 @@ import {
 import { useQuery } from 'convex/react';
 import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import UserAvatar from '@/components/avatars/user-avatar';
 import AddTeamMemberDialogContent from '@/components/dialogs/add-team-member-dialog';
 import TeamMemberPopover from '@/components/team-member-popover';
 import { Badge } from '@/components/ui/badge';
@@ -23,7 +24,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import UserAvatar from '@/components/user-avatar';
 import { api } from '../../../../convex/_generated/api';
 
 export default function NavTeam() {

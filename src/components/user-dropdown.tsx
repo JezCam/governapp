@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { useContext, useState } from 'react';
 import { SearchMenuContext } from '@/app/dashboard/layout';
 import { api } from '../../convex/_generated/api';
+import UserAvatar from './avatars/user-avatar';
 import AddOrganisationDialog from './dialogs/add-organisation-dialog';
 import { Button } from './ui/button';
 import {
@@ -29,7 +30,6 @@ import {
 import Kbd from './ui/kbd';
 import { ThemeSwitcher } from './ui/kibo-ui/theme-switcher';
 import { Skeleton } from './ui/skeleton';
-import UserAvatar from './user-avatar';
 
 export default function UserDropdown() {
   const [addOrganisationOpen, setAddOrganisationOpen] = useState(false);
@@ -93,7 +93,7 @@ export default function UserDropdown() {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem
-              className="justify-between"
+              className="group/kbd justify-between"
               onSelect={() => setOpen(true)}
             >
               <div className="flex items-center gap-2">

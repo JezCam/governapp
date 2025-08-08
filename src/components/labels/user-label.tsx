@@ -2,7 +2,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { DashedLineCircleIcon } from '@hugeicons-pro/core-stroke-rounded';
 import { cn } from '@/lib/utils';
 import type { User } from '@/types/convex';
-import UserAvatar from '../user-avatar';
+import UserAvatar from '../avatars/user-avatar';
 
 export default function UserLabel({
   user,

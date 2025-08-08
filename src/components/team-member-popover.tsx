@@ -9,12 +9,12 @@ import { useQuery } from 'convex/react';
 import { type ReactNode, useState } from 'react';
 import type { Membership, User } from '@/types/convex';
 import { api } from '../../convex/_generated/api';
+import UserAvatar from './avatars/user-avatar';
 import EditProfileDialog from './dialogs/edit-profile-dialog';
 import TeamMemberPopoverDropdown from './team-member-popover-dropdown';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import UserAvatar from './user-avatar';
 
 export default function TeamMemberPopover({
   membership,

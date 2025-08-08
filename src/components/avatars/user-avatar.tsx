@@ -1,9 +1,9 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { DashedLineCircleIcon } from '@hugeicons-pro/core-stroke-rounded';
 import { cn } from '@/lib/utils';
-import type { DataModel } from '../../convex/_generated/dataModel';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Skeleton } from './ui/skeleton';
+import type { DataModel } from '../../../convex/_generated/dataModel';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Skeleton } from '../ui/skeleton';
 
 export default function UserAvatar({
   user,

@@ -25,8 +25,8 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { useFileUpload } from '@/hooks/use-file-upload';
 import { cn } from '@/lib/utils';
-import { LoadingButton } from './loading-button';
-import { Label } from './ui/label';
+import { LoadingButton } from '../loading-button';
+import { Label } from '../ui/label';
 
 // Define type for pixel crop area
 type Area = { x: number; y: number; width: number; height: number };

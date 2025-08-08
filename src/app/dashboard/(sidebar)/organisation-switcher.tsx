@@ -1,7 +1,9 @@
 'use client';
 
-import { AudioWaveform, Command, GalleryVerticalEnd, Plus } from 'lucide-react';
+import { useQuery } from 'convex/react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
+import OrganisationAvatar from '@/components/avatars/organisation-avatar';
 import AddOrganisationDialog from '@/components/dialogs/add-organisation-dialog';
 import {
   SidebarMenu,
@@ -10,21 +12,7 @@ import {
 } from '@/components/ui/sidebar';
 import UnfoldClose from '@/components/unfold-close';
 import { cn } from '@/lib/utils';
-
-const organisations = [
-  {
-    id: 1,
-    name: 'Acme Corp.',
-    logo: AudioWaveform,
-    plan: 'Startup',
-  },
-  {
-    id: 2,
-    name: 'Evil Corp.',
-    logo: Command,
-    plan: 'Free',
-  },
-];
+import { api } from '../../../../convex/_generated/api';
 
 export default function OrganisationSwitcher({
   open,
@@ -34,7 +22,23 @@ export default function OrganisationSwitcher({
   // biome-ignore lint/nursery/noShadow: <explanation>
   setOpen: (open: boolean) => void;
 }) {
+  const activeOrganisation = useQuery(api.services.organisations.getActive);
+  const memberships = useQuery(
+    api.services.memberships.listForCurrentUserWithOrganisation
+  );
+
+  const membershipsWithoutActive = memberships?.filter(
+    (membership) => membership.organisation._id !== activeOrganisation?._id
+  );
+
   const [addOrganisationOpen, setAddOrganisationOpen] = useState(false);
+
+  if (
+    membershipsWithoutActive === undefined ||
+    activeOrganisation === undefined
+  ) {
+    return null; // TODO: Add skeletons for memberships = undefined
+  }
 
   return (
     <>
@@ -57,40 +61,45 @@ export default function OrganisationSwitcher({
               setAddOrganisationOpen(true);
             }}
             size="lg"
+            tooltip="Add Organisation"
           >
-            <div className="bg flex size-8 shrink-0 items-center justify-center rounded-sm border border-primary shadow-sm transition-all group-data-[collapsible=icon]:rounded-md">
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-sm border border-primary transition-all group-data-[collapsible=icon]:rounded-md">
               <Plus className="size-4 text-primary" strokeWidth={2} />
             </div>
             Add Organisation
           </SidebarMenuButton>
-          {organisations.map((organisation) => (
+          {membershipsWithoutActive.map((membership) => (
             <SidebarMenuButton
               className="group h-12 rounded-md border border-transparent transition-all data-[state=open]:bg-transparent group-data-[collapsible=icon]:rounded-2xl"
-              key={organisation.id}
+              key={membership.organisation._id}
               size="lg"
+              tooltip={membership.organisation.name}
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-sm border border-sidebar-border bg-sidebar-primary text-sidebar-primary-foreground shadow-sm transition-all group-data-[collapsible=icon]:rounded-md">
-                <organisation.logo className="size-4 shrink-0" />
-              </div>
+              <div className="size-8 rounded-sm border border-sidebar-border bg-sidebar-primary text-sidebar-primary-foreground shadow-sm transition-all group-data-[collapsible=icon]:rounded-md" />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">
-                  {organisation.name}
+                  {membership.organisation.name}
                 </span>
               </div>
             </SidebarMenuButton>
           ))}
         </SidebarMenuItem>
+        {/* Active organisation */}
         <SidebarMenuItem className="flex items-center justify-between">
           <SidebarMenuButton
             className="group h-12 rounded-md border border-transparent transition-all data-[state=open]:bg-transparent group-data-[collapsible=icon]:rounded-2xl"
             onClick={() => setOpen(!open)}
             size="lg"
+            tooltip={activeOrganisation.name}
           >
-            <div className="flex aspect-square size-8 items-center justify-center rounded-sm border border-sidebar-border bg-sidebar-primary text-sidebar-primary-foreground shadow-sm transition-all group-data-[collapsible=icon]:rounded-md">
-              <GalleryVerticalEnd className="size-4" />
-            </div>
+            <OrganisationAvatar
+              className="size-8 rounded-sm border-white bg-sidebar-primary text-sidebar-primary-foreground shadow-sm transition-all group-data-[collapsible=icon]:rounded-md"
+              organisation={activeOrganisation}
+            />
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">Acme Incorporated</span>
+              <span className="truncate font-medium">
+                {activeOrganisation.name}
+              </span>
             </div>
             <UnfoldClose className="ml-auto" open={open} />
           </SidebarMenuButton>

@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import { render } from '@react-email/components';
 import { ConvexError, v } from 'convex/values';
 import { Resend } from 'resend';
@@ -166,7 +167,7 @@ export const create = action({
     }
 
     const activeOrganisation = await ctx.runQuery(
-      api.services.organisation.getActive
+      api.services.organisations.getActive
     );
     if (!activeOrganisation) {
       throw new ConvexError('no_active_organisation');

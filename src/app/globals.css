@@ -185,7 +185,4 @@
   strong {
     @apply font-semibold text-foreground;
   }
-  a {
-    @apply !text-primary;
-  }
 }

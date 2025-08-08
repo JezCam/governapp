@@ -56,13 +56,13 @@ export const updateImageForActive = action({
   },
   handler: async (ctx, args) => {
     const activeOrganisation = await ctx.runQuery(
-      api.services.organisation.getActive
+      api.services.organisations.getActive
     );
     const imageUrl = await ctx.runAction(
       internal.utils.files.uploadImage,
       args
     );
-    await ctx.runMutation(internal.services.organisation.updateById, {
+    await ctx.runMutation(internal.services.organisations.updateById, {
       organisationId: activeOrganisation._id,
       imageUrl,
     });

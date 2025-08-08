@@ -1,7 +1,7 @@
 'use client';
 
-import { useAction, useMutation, useQuery } from 'convex/react';
-import AvatarUploader from '@/components/avatar-uploader';
+import { useQuery } from 'convex/react';
+import OrganisationImageUploader from '@/components/avatars/organisation-image-uploader';
 import { Card } from '@/components/ui/card';
 import {
   Table,
@@ -16,26 +16,7 @@ import PendingInvitationsTable from './pending-invitations-table';
 import TeamMembersTable from './team-members-table';
 
 export default function Organisation() {
-  const activeOrganisation = useQuery(api.services.organisation.getActive);
-  const updateOrganisationImage = useAction(
-    api.services.organisation.updateImageForActive
-  );
-  const removeOrganisationImage = useMutation(
-    api.services.organisation.removeImageForActive
-  );
-
-  const handleImageChange = async (
-    data: { bytes: ArrayBuffer; type: string } | null
-  ) => {
-    if (!data) {
-      await removeOrganisationImage();
-      return;
-    }
-    updateOrganisationImage({
-      bytes: data.bytes,
-      type: data.type,
-    });
-  };
+  const activeOrganisation = useQuery(api.services.organisations.getActive);
 
   if (!activeOrganisation) {
     return null; // TODO: Implement a loading state or error handling
@@ -58,11 +39,9 @@ export default function Organisation() {
           }}
         />
         <div className="flex w-fit shrink-0 flex-col gap-6 self-stretch">
-          <AvatarUploader
+          <OrganisationImageUploader
             className="h-full [&>div]:rounded-sm"
             imageUrl={activeOrganisation.imageUrl}
-            label="Organisation Image"
-            onChange={handleImageChange}
           />
           <h1
             className="font-extrabold text-4xl"

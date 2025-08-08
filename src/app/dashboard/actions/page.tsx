@@ -273,7 +273,6 @@ export default function Actions() {
         }}
         open={!!editAction}
       />
-
       <Suspense>
         <ActionsDataTable
           columns={actionsColumns}

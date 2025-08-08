@@ -4,6 +4,7 @@ import type { DialogProps } from '@radix-ui/react-dialog';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import type { DataModel } from '../../../convex/_generated/dataModel';
+import UserAvatar from '../avatars/user-avatar';
 import { LoadingButton } from '../loading-button';
 import { Button } from '../ui/button';
 import {
@@ -13,7 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
-import UserAvatar from '../user-avatar';
 
 export default function ConfirmRemoveTeamMemberDialog(
   props: DialogProps & { user: DataModel['users']['document'] }

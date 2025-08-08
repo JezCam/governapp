@@ -1,10 +1,10 @@
+import { ConvexError } from 'convex/values';
 import { query } from '../_generated/server';
 import {
-  getMembershipsByUserId,
+  getMembershipsForCurrentUser,
   getMembershipsInActiveOrganisation,
   getMembershipsInActiveOrganisationWithUsers,
 } from '../utils/memberships';
-import { getCurrentUserId } from '../utils/users';
 
 // Query
 
@@ -25,9 +25,34 @@ export const listInActiveOrganisationWithUsers = query({
 
 export const listForCurrentUser = query({
   handler: async (ctx) => {
-    const userId = await getCurrentUserId(ctx);
-    const memberships = getMembershipsByUserId(ctx, userId);
-    return memberships;
+    return await getMembershipsForCurrentUser(ctx);
+  },
+});
+
+export const listForCurrentUserWithOrganisation = query({
+  handler: async (ctx) => {
+    const memberships = await getMembershipsForCurrentUser(ctx);
+    const membershipsWithOrganisation = await Promise.all(
+      memberships.map(async (membership) => {
+        const organisation = await ctx.db.get(membership.organisationId);
+        if (organisation === null) {
+          return null;
+        }
+        return {
+          ...membership,
+          organisation,
+        };
+      })
+    );
+
+    const filteredMemberships = membershipsWithOrganisation.filter(
+      (m) => m !== null
+    );
+    if (filteredMemberships.length === 0) {
+      throw new ConvexError('no_memberships_with_organisations_for_user');
+    }
+
+    return filteredMemberships;
   },
 });
 

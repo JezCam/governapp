@@ -1,11 +1,15 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from 'convex/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import validator from 'validator';
 import { z } from 'zod';
+import { api } from '../../../convex/_generated/api';
+import UserImageUploader from '../avatars/user-image-uploader';
 import {
   Form,
   FormControl,
@@ -15,7 +19,6 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
-import UserImageUploader from '../user-image-uploader';
 import FormButtons from './form-buttons';
 import type { FormProps } from './types';
 
@@ -29,6 +32,8 @@ const formSchema = z.object({
 });
 
 export default function UserDetailsForm(props: FormProps) {
+  const currentUser = useQuery(api.services.users.getCurrent);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,10 +59,14 @@ export default function UserDetailsForm(props: FormProps) {
     props.onSuccess?.();
   }
 
+  if (currentUser === undefined) {
+    return null; // TODO Add skeletons for current user
+  }
+
   return (
     <div className="flex w-full flex-col gap-6">
       {/* Avatar Uploader */}
-      <UserImageUploader />
+      <UserImageUploader imageUrl={currentUser.imageUrl} />
       <Form {...form}>
         <form
           className="flex flex-col items-start gap-4"

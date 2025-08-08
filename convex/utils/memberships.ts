@@ -2,6 +2,7 @@ import { ConvexError } from 'convex/values';
 import type { Id } from '../_generated/dataModel';
 import type { MutationCtx, QueryCtx } from '../_generated/server';
 import { getActiveOrganisationId } from './organisation';
+import { getCurrentUserId } from './users';
 
 export async function getMembershipsByOrganisationId(
   ctx: QueryCtx | MutationCtx,
@@ -23,9 +24,11 @@ export async function getMembershipsInActiveOrganisation(
     ctx,
     activeOrganisationId
   );
+
   if (memberships.length === 0) {
     throw new ConvexError('no_memberships_in_organisation');
   }
+
   return memberships;
 }
 
@@ -45,10 +48,12 @@ export async function getMembershipsInActiveOrganisationWithUsers(
       };
     })
   );
+
   const filteredMemberships = membershipsWithUsers.filter((m) => m !== null);
   if (filteredMemberships.length === 0) {
     throw new ConvexError('no_memberships_with_users_in_organisation');
   }
+
   return filteredMemberships;
 }
 
@@ -61,6 +66,18 @@ export async function getMembershipsByUserId(
     .filter((q) => q.eq(q.field('userId'), userId))
     .collect();
 
+  if (memberships.length === 0) {
+    throw new ConvexError('no_memberships_for_user');
+  }
+
+  return memberships;
+}
+
+export async function getMembershipsForCurrentUser(
+  ctx: QueryCtx | MutationCtx
+) {
+  const userId = await getCurrentUserId(ctx);
+  const memberships = await getMembershipsByUserId(ctx, userId);
   return memberships;
 }
 
@@ -77,5 +94,6 @@ export async function createMembership(
     role,
     isAdmin,
   });
+
   return membership;
 }

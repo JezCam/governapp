@@ -1,5 +1,6 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
 import type { DataModel } from '../../../convex/_generated/dataModel';
+import UserAvatar from '../avatars/user-avatar';
 import EditTeamMemberDetailsForm from '../forms/edit-team-member-form';
 import {
   Dialog,
@@ -8,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
-import UserAvatar from '../user-avatar';
 
 export default function EditTeamMemberDialog(
   props: DialogProps & { user: DataModel['users']['document'] }
