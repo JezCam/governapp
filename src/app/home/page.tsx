@@ -1,18 +1,10 @@
-'use client';
-
 import Image from 'next/image';
-import { useState } from 'react';
-import SignInDialog from '@/components/dialogs/sign-in-dialog';
-import { Button } from '@/components/ui/button';
 import Header from './header';
 
 export default function Home() {
-  const [signInOpen, setSignInOpen] = useState(false);
-
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      <SignInDialog onOpenChange={setSignInOpen} open={signInOpen} />
-      <Header onClickSignIn={() => setSignInOpen(true)} />
+      <Header />
       <div className="relative flex size-full items-center justify-center">
         <div
           className="-z-1 absolute inset-0 bg-[url('/pattern-light.svg')] bg-primary stroke-current text-foreground dark:bg-[url('/pattern-dark.svg')]"
@@ -35,14 +27,6 @@ export default function Home() {
             <br />
             So We Fixed it
           </h1>
-          <div className="flex gap-2">
-            <Button onClick={() => setSignInOpen(true)} size="lg">
-              Primary Action
-            </Button>
-            <Button size="lg" variant="outline">
-              Secondary Action
-            </Button>
-          </div>
           <div className="relative aspect-video w-full overflow-hidden rounded-t-xl border shadow-xl">
             <Image
               alt="hero"

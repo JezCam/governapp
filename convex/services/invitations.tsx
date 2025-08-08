@@ -3,10 +3,58 @@ import { ConvexError, v } from 'convex/values';
 import { Resend } from 'resend';
 import InvitationEmail from '@/emails/invitation';
 import { api, internal } from '../_generated/api';
-import { action, internalMutation, internalQuery } from '../_generated/server';
+import {
+  action,
+  internalMutation,
+  internalQuery,
+  mutation,
+  query,
+} from '../_generated/server';
 import '../polyfills';
+import { getInvitationById } from '../utils/invitations';
+import { createMembership } from '../utils/memberships';
+import { getCurrentUser, getUserByEmail } from '../utils/users';
 
 // Query
+
+export const getById = query({
+  args: { id: v.id('invitations') },
+  handler: async (ctx, args) => {
+    // Get the invitation
+    const invitation = await getInvitationById(ctx, args.id);
+    if (!invitation) {
+      throw new Error(`Invitation with ID ${args.id} not found.`);
+    }
+
+    // Get the invited by user
+    const invitedByUser = await ctx.db.get(invitation.invitedByUserId);
+    if (!invitedByUser) {
+      throw new Error(`User with ID ${invitation.invitedByUserId} not found.`);
+    }
+
+    // Get the organisation
+    const organisation = await ctx.db.get(invitation.organisationId);
+    if (!organisation) {
+      throw new Error(
+        `Organisation with ID ${invitation.organisationId} not found.`
+      );
+    }
+
+    // Get the invitees user
+    const inviteeUser = await getUserByEmail(ctx, invitation.inviteeEmail);
+    if (!inviteeUser) {
+      throw new Error(`User with email ${invitation.inviteeEmail} not found.`);
+    }
+
+    return {
+      ...invitation,
+      invitedByEmail: invitedByUser.email,
+      invitedByName: `${invitedByUser.firstName} ${invitedByUser.lastName}`,
+      inviteeUser,
+      organisationName: organisation.name,
+    };
+  },
+});
 
 export const getByEmailAndOrganisation = internalQuery({
   args: {
@@ -53,6 +101,53 @@ export const deleteInvitation = internalMutation({
     await ctx.db.delete(args.invitationId);
   },
 });
+
+export const acceptInvitationById = mutation({
+  args: { invitationId: v.id('invitations') },
+  handler: async (ctx, args) => {
+    const invitation = await getInvitationById(ctx, args.invitationId);
+    if (!invitation) {
+      throw new ConvexError('invitation_not_found');
+    }
+
+    const currentUser = await getCurrentUser(ctx);
+    if (currentUser.email !== invitation.inviteeEmail) {
+      throw new ConvexError('invitee_email_mismatch');
+    }
+
+    // Create a new membership
+    await createMembership(
+      ctx,
+      currentUser._id,
+      invitation.organisationId,
+      invitation.role,
+      invitation.isAdmin
+    );
+
+    // Update the invitation status to accepted
+    await ctx.db.patch(invitation._id, { status: 'accepted' });
+  },
+});
+
+export const declineInvitationById = mutation({
+  args: { invitationId: v.id('invitations') },
+  handler: async (ctx, args) => {
+    const invitation = await getInvitationById(ctx, args.invitationId);
+    if (!invitation) {
+      throw new ConvexError('invitation_not_found');
+    }
+
+    const currentUser = await getCurrentUser(ctx);
+    if (currentUser.email !== invitation.inviteeEmail) {
+      throw new ConvexError('invitee_email_mismatch');
+    }
+
+    // Update the invitation status to declined
+    await ctx.db.patch(invitation._id, { status: 'declined' });
+  },
+});
+
+// Action
 
 export const create = action({
   args: {

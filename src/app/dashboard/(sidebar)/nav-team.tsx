@@ -35,7 +35,9 @@ export default function NavTeam() {
   const { open } = useSidebar();
   const [addTeamMemberOpen, setAddTeamMemberOpen] = useState(false);
 
-  // TODO: Add skeletons for memberships = undefined
+  if (memberships === undefined) {
+    return null; // TODO: Add skeletons for memberships = undefined
+  }
 
   return (
     <SidebarGroup>
@@ -57,7 +59,7 @@ export default function NavTeam() {
                     />
                   </div>
                   Team Members
-                  <Badge variant="blue">{memberships?.length}</Badge>
+                  <Badge variant="blue">{memberships.length}</Badge>
                 </div>
                 <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
               </SidebarMenuButton>

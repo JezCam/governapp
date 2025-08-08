@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail01Icon } from '@hugeicons-pro/core-stroke-rounded';
 import { useAction } from 'convex/react';

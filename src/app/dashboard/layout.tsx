@@ -12,7 +12,6 @@ import AppSidebar from '@/app/dashboard/(sidebar)/app-sidebar';
 import AppFooter from '@/app/dashboard/app-footer';
 import AppHeader from '@/app/dashboard/app-header';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { Toaster } from '@/components/ui/sonner';
 
 export const SearchMenuContext = createContext<{
   open: boolean;
@@ -43,7 +42,6 @@ export default function Layout({ children }: { children: ReactNode }) {
     <SearchMenuContext value={{ open, setOpen }}>
       <SidebarProvider>
         <AppSidebar />
-        <Toaster position="top-center" richColors />
         <main className="flex h-screen w-screen flex-1 flex-col overflow-hidden">
           <AppHeader />
           <div className="flex flex-1 justify-center overflow-auto border-t border-b">

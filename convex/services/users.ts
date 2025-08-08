@@ -1,4 +1,4 @@
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import { api, internal } from '../_generated/api';
 import { action, mutation, query } from '../_generated/server';
 import { getMembershipsInActiveOrganisation } from '../utils/memberships';
@@ -6,7 +6,6 @@ import {
   getCurrentUser,
   getCurrentUserId,
   getUserByEmail,
-  getUserById,
 } from '../utils/users';
 
 // Query
@@ -32,9 +31,12 @@ export const getByEmail = query({
   },
 });
 
-export const getImage = query({
+export const getImageForCurrent = query({
   handler: async (ctx) => {
     const user = await getCurrentUser(ctx);
+    if (!user) {
+      throw new ConvexError('not_authenticated');
+    }
     const imageUrl = user.imageUrl || null;
     return imageUrl;
   },
@@ -44,9 +46,12 @@ export const listInActiveOrganisation = query({
   handler: async (ctx) => {
     const activeOrganisationMemberships =
       await getMembershipsInActiveOrganisation(ctx);
+    if (!activeOrganisationMemberships) {
+      throw new ConvexError('no_active_organisation');
+    }
     const users = await Promise.all(
       activeOrganisationMemberships.map(
-        async (membership) => await getUserById(ctx, membership.userId)
+        async (membership) => await ctx.db.get(membership.userId)
       )
     );
     return users;
@@ -78,7 +83,15 @@ export const update = mutation({
   },
 });
 
-// mutation function to update user image
+export const removeImage = mutation({
+  handler: async (ctx) => {
+    const user = await getCurrentUser(ctx);
+    await ctx.db.patch(user._id, { image: undefined });
+  },
+});
+
+// Action
+
 export const updateImage = action({
   args: { bytes: v.bytes(), type: v.string() },
   handler: async (ctx, args) => {
@@ -89,13 +102,5 @@ export const updateImage = action({
     await ctx.runMutation(api.services.users.update, {
       imageUrl,
     });
-  },
-});
-
-// mutation function to remove user image
-export const removeImage = mutation({
-  handler: async (ctx) => {
-    const user = await getCurrentUser(ctx);
-    await ctx.db.patch(user._id, { image: undefined });
   },
 });

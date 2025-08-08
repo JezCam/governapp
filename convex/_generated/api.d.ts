@@ -21,6 +21,7 @@ import type * as services_memberships from "../services/memberships.js";
 import type * as services_organisation from "../services/organisation.js";
 import type * as services_users from "../services/users.js";
 import type * as utils_files from "../utils/files.js";
+import type * as utils_invitations from "../utils/invitations.js";
 import type * as utils_memberships from "../utils/memberships.js";
 import type * as utils_organisation from "../utils/organisation.js";
 import type * as utils_users from "../utils/users.js";
@@ -42,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   "services/organisation": typeof services_organisation;
   "services/users": typeof services_users;
   "utils/files": typeof utils_files;
+  "utils/invitations": typeof utils_invitations;
   "utils/memberships": typeof utils_memberships;
   "utils/organisation": typeof utils_organisation;
   "utils/users": typeof utils_users;

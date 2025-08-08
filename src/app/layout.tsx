@@ -3,6 +3,7 @@ import { Inter, M_PLUS_Rounded_1c } from 'next/font/google';
 import './globals.css';
 import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server';
 import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from '@/components/ui/sonner';
 import { ConvexClientProvider } from './convex-client-provider';
 
 const mPlusRounded1c = M_PLUS_Rounded_1c({
@@ -49,6 +50,7 @@ export default function RootLayout({
               enableSystem
             >
               {children}
+              <Toaster position="top-center" richColors />
             </ThemeProvider>
           </ConvexClientProvider>
         </body>

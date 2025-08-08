@@ -12,13 +12,14 @@ const isProtectedRoute = createRouteMatcher([
 
 export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
   if (isRootPage(request)) {
+    console.log('Root page request:', request.url);
     if (await convexAuth.isAuthenticated()) {
       return nextjsMiddlewareRedirect(request, '/dashboard');
     }
     return nextjsMiddlewareRedirect(request, '/home');
   }
   if (isProtectedRoute(request) && !(await convexAuth.isAuthenticated())) {
-    return nextjsMiddlewareRedirect(request, '/');
+    return nextjsMiddlewareRedirect(request, '/home');
   }
 });
 

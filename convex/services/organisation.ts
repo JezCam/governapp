@@ -40,7 +40,15 @@ export const setActive = mutation({
   },
 });
 
-// mutation function to update organisation image
+export const removeImageForActive = mutation({
+  handler: async (ctx) => {
+    const activeOrganisation = await getActiveOrganisation(ctx);
+    await ctx.db.patch(activeOrganisation._id, { imageUrl: undefined });
+  },
+});
+
+// Action
+
 export const updateImageForActive = action({
   args: {
     bytes: v.bytes(),
@@ -58,12 +66,5 @@ export const updateImageForActive = action({
       organisationId: activeOrganisation._id,
       imageUrl,
     });
-  },
-});
-
-export const removeImageForActive = mutation({
-  handler: async (ctx) => {
-    const activeOrganisation = await getActiveOrganisation(ctx);
-    await ctx.db.patch(activeOrganisation._id, { imageUrl: undefined });
   },
 });

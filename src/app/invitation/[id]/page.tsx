@@ -1,61 +1,74 @@
-import { ArrowRight } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { teamMembers } from '@/dummy-data/team';
-import AcceptInvitationButton from './accept-invitation-button';
+'use client';
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const invitedByEmail = 'lee@example.com';
+import { Authenticated, Unauthenticated, useQuery } from 'convex/react';
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import SignInButton from '@/components/sign-in-button';
+import UserAvatar from '@/components/user-avatar';
+import { api } from '../../../../convex/_generated/api';
+import type { Id } from '../../../../convex/_generated/dataModel';
+import InvitationActions from './invitation-actions';
+
+export default function InvitationClient() {
+  const params = useParams();
+
+  const invitation = useQuery(api.services.invitations.getById, {
+    id: params.id as Id<'invitations'>,
+  });
+
+  if (invitation === undefined) {
+    return null; // TODO: Implement a loading state
+  }
+
+  if (invitation === null) {
+    return <div>Invitation not found</div>; // TODO: Implement a not found page
+  }
+
+  if (invitation.status === 'accepted') {
+    return <strong>This invitation has been accepted</strong>;
+  }
+
+  if (invitation.status === 'declined') {
+    return <strong>This invitation has been declined</strong>;
+  }
 
   return (
-    <div className="relative flex min-h-screen min-w-screen items-center justify-center bg-background">
-      <Image
-        alt="GovernApp logo"
-        className="absolute top-8 left-8"
-        height={32}
-        src="/logomark.svg"
-        width={32}
-      />
-      <div className="flex w-full max-w-sm flex-col items-center gap-12">
-        <div className="flex flex-col gap-2 text-center">
-          <h1
-            className="text-center text-2xl"
-            style={{
-              fontFamily: 'var(--font-m-plus-rounded-1c)',
-            }}
+    <div className="flex w-full max-w-xl flex-col items-center gap-12">
+      <div className="flex flex-col gap-4 text-center">
+        <h1
+          className="text-center text-2xl"
+          style={{
+            fontFamily: 'var(--font-m-plus-rounded-1c)',
+          }}
+        >
+          Join <strong>{invitation.organisationName}</strong> on{' '}
+          <strong>GovernApp</strong>
+        </h1>
+        <p className="text text-muted-foreground">
+          <strong>{invitation.invitedByName}</strong> (
+          <Link
+            className="text-blue-600 no-underline"
+            href={`mailto:${invitation.invitedByEmail}`}
           >
-            Join <strong>Enigma</strong> on <strong>GovernApp</strong>
-          </h1>
-          <p className="text text-muted-foreground">
-            <strong>Lee</strong> (
-            <Link
-              className="text-blue-600 no-underline"
-              href={`mailto:${invitedByEmail}`}
-            >
-              {invitedByEmail}
-            </Link>
-            ) has invited ({id}) you to the <strong>Enigma</strong> team on{' '}
-            <strong>GovernApp</strong>
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Image
-            alt="avatar"
-            className="rounded-full"
-            height={64}
-            src={teamMembers[0].imageUrl}
-            width={64}
-          />
-          <ArrowRight className="text-muted-foreground" />
-          <div className="h-16 w-16 rounded-full bg-accent" />
-        </div>
-        <AcceptInvitationButton />
+            {invitation.invitedByEmail}
+          </Link>
+          ) has invited you to the{' '}
+          <strong>{invitation.organisationName}</strong> team on{' '}
+          <strong>GovernApp</strong>
+        </p>
       </div>
+      <div className="flex items-center gap-2">
+        <UserAvatar className="size-16" user={invitation.inviteeUser} />
+        <ArrowRight className="text-muted-foreground" />
+        <div className="h-16 w-16 rounded-full bg-accent" />
+      </div>
+      <Authenticated>
+        <InvitationActions invitationId={invitation._id} />
+      </Authenticated>
+      <Unauthenticated>
+        <SignInButton redirectTo={`/invitation/${invitation._id}`} />
+      </Unauthenticated>
     </div>
   );
 }

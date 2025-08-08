@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import { useAuthActions } from '@convex-dev/auth/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
@@ -24,7 +25,7 @@ const formSchema = z.object({
     .email({ message: 'Invalid email address' }),
 });
 
-export default function SignInForm() {
+export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
   const { signIn } = useAuthActions();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -49,12 +50,13 @@ export default function SignInForm() {
     });
     signIn('magic-link', {
       email: values.email,
+      redirectTo: redirectTo ? redirectTo : '/dashboard',
     });
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <GoogleSignInButton />
+      <GoogleSignInButton redirectTo={redirectTo} />
       <div className="grid grid-cols-[1fr_min-content_1fr] items-center gap-2 overflow-hidden text-muted-foreground text-sm">
         <Separator />
         or

@@ -182,4 +182,10 @@
   body {
     @apply bg-background text-foreground;
   }
+  strong {
+    @apply font-semibold text-foreground;
+  }
+  a {
+    @apply !text-primary;
+  }
 }

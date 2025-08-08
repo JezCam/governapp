@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { LoadingButton } from './loading-button';
 
-export function GoogleSignInButton() {
+export function GoogleSignInButton({ redirectTo }: { redirectTo?: string }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const { signIn } = useAuthActions();
@@ -14,7 +14,9 @@ export function GoogleSignInButton() {
       isLoading={isLoading}
       onClick={() => {
         setIsLoading(true);
-        signIn('google');
+        signIn('google', {
+          redirectTo: redirectTo ? redirectTo : '/dashboard',
+        });
       }}
       variant="outline"
     >

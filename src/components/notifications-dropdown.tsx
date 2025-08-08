@@ -53,8 +53,7 @@ const notifications: Notification[] = [
     },
     message: (
       <span>
-        Assessment completed by{' '}
-        <span className="font-medium">Jeremy Cameron</span>
+        Assessment completed by <strong>Jeremy Cameron</strong>
       </span>
     ),
     date: 'today',
@@ -68,8 +67,7 @@ const notifications: Notification[] = [
     },
     message: (
       <span>
-        <span className="font-medium">Jeremy Cameron</span> commented on your
-        assessment
+        <strong>Jeremy Cameron</strong> commented on your assessment
       </span>
     ),
     date: 'yesterday',
@@ -83,8 +81,7 @@ const notifications: Notification[] = [
     },
     message: (
       <span>
-        <span className="font-medium">Jeremy Cameron</span> assigned you a new
-        task
+        <strong>Jeremy Cameron</strong> assigned you a new task
       </span>
     ),
     date: '3d',

@@ -33,9 +33,8 @@ export const organisationTables = {
   }),
   invitations: defineTable({
     invitedByUserId: v.id('users'),
-    inviteeEmail: v.string(),
     organisationId: v.id('organisations'),
-    organisationName: v.string(),
+    inviteeEmail: v.string(),
     status: v.union(
       v.literal('pending'),
       v.literal('accepted'),

@@ -80,6 +80,15 @@ export default function UserDropdown() {
               <HugeiconsIcon icon={PlusSignSquareIcon} strokeWidth={2} />
               Add organisation
             </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link
+                className="flex items-center gap-2"
+                href={'/dashboard/settings'}
+              >
+                <HugeiconsIcon icon={Settings01Icon} strokeWidth={2} />
+                Settings
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
@@ -106,15 +115,6 @@ export default function UserDropdown() {
               </div>
               <ThemeSwitcher small />
             </div>
-            <DropdownMenuItem asChild>
-              <Link
-                className="flex items-center gap-2"
-                href={'/dashboard/settings'}
-              >
-                <HugeiconsIcon icon={Settings01Icon} strokeWidth={2} />
-                Settings
-              </Link>
-            </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
