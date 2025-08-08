@@ -3,7 +3,6 @@ import { useAuthActions } from '@convex-dev/auth/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 import z from 'zod';
 import { GoogleSignInButton } from '../google-sign-in-button';
 import { LoadingButton } from '../loading-button';
@@ -37,21 +36,13 @@ export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log('Form submitted:', values);
-    // sleep for 1 second to simulate a network request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    toast.error('Not yet implemented', {
-      description: 'This feature is not yet implemented.',
-    });
     signIn('magic-link', {
       email: values.email,
       redirectTo: redirectTo ? redirectTo : '/dashboard',
     });
+    // TODO: handle success and error states
   }
 
   return (
