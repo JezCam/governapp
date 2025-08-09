@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { useAuthActions } from '@convex-dev/auth/react';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { useAuthActions } from "@convex-dev/auth/react";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Logout02Icon,
   PaintBoardIcon,
   PlusSignSquareIcon,
   SearchIcon,
   Settings01Icon,
-} from '@hugeicons-pro/core-stroke-rounded';
-import { useQuery } from 'convex/react';
-import { ChevronDown } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useContext, useState } from 'react';
-import { SearchMenuContext } from '@/app/dashboard/layout';
-import { api } from '../../convex/_generated/api';
-import UserAvatar from './avatars/user-avatar';
-import AddOrganisationDialog from './dialogs/add-organisation-dialog';
-import { Button } from './ui/button';
+} from "@hugeicons-pro/core-stroke-rounded";
+import { useQuery } from "convex/react";
+import { ChevronDown } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useContext, useState } from "react";
+import { SearchMenuContext } from "@/app/dashboard/layout";
+import { api } from "../../convex/_generated/api";
+import UserAvatar from "./avatars/user-avatar";
+import AddOrganisationDialog from "./dialogs/add-organisation-dialog";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,10 +26,10 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
-import Kbd from './ui/kbd';
-import { ThemeSwitcher } from './ui/kibo-ui/theme-switcher';
-import { Skeleton } from './ui/skeleton';
+} from "./ui/dropdown-menu";
+import Kbd from "./ui/kbd";
+import { ThemeSwitcher } from "./ui/kibo-ui/theme-switcher";
+import { Skeleton } from "./ui/skeleton";
 
 export default function UserDropdown() {
   const [addOrganisationOpen, setAddOrganisationOpen] = useState(false);
@@ -39,23 +39,20 @@ export default function UserDropdown() {
   const user = useQuery(api.services.users.getCurrent);
 
   return (
-    <div>
+    <div className="flex h-full items-center border-l px-2">
       <AddOrganisationDialog
         onOpenChange={setAddOrganisationOpen}
         open={addOrganisationOpen}
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            className="!p-2 h-12 w-[256px] items-center"
-            variant="outline"
-          >
+          <Button className="!p-2 h-12 w-[256px] items-center" variant="ghost">
             <UserAvatar className="size-8" user={user} />
             <div className="grid h-8 flex-1 text-left text-sm leading-tight">
               {user ? (
                 <>
                   <span className="truncate font-medium">{`${user.firstName} ${user.lastName}`}</span>
-                  <span className="truncate font-normal text-xs">
+                  <span className="truncate font-normal text-muted-foreground text-xs">
                     {user.email}
                   </span>
                 </>
@@ -73,7 +70,7 @@ export default function UserDropdown() {
           align="end"
           className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
           side="bottom"
-          sideOffset={4}
+          sideOffset={16}
         >
           <DropdownMenuGroup>
             <DropdownMenuItem onSelect={() => setAddOrganisationOpen(true)}>
@@ -83,7 +80,7 @@ export default function UserDropdown() {
             <DropdownMenuItem asChild>
               <Link
                 className="flex items-center gap-2"
-                href={'/dashboard/settings'}
+                href={"/dashboard/settings"}
               >
                 <HugeiconsIcon icon={Settings01Icon} strokeWidth={2} />
                 Settings
@@ -119,7 +116,7 @@ export default function UserDropdown() {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
-              <Link className="flex items-center gap-2" href={'/home'}>
+              <Link className="flex items-center gap-2" href={"/home"}>
                 <div className="flex size-4 items-center justify-center">
                   <Image
                     alt="GovernApp logomark"
