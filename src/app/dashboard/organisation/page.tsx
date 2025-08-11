@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useQuery } from "convex/react";
-import OrganisationImageUploader from "@/components/avatars/organisation-image-uploader";
-import { Card } from "@/components/ui/card";
+import { useQuery } from 'convex/react';
+import OrganisationImageUploader from '@/components/avatars/organisation-image-uploader';
+import { Card } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -10,10 +10,10 @@ import {
   TableCell,
   TableHead,
   TableRow,
-} from "@/components/ui/table";
-import { api } from "../../../../convex/_generated/api";
-import PendingInvitationsTable from "./pending-invitations-table";
-import TeamMembersTable from "./team-members-table";
+} from '@/components/ui/table';
+import { api } from '../../../../convex/_generated/api';
+import PendingInvitationsTable from './pending-invitations-table';
+import TeamMembersTable from './team-members-table';
 
 export default function Organisation() {
   const activeOrganisation = useQuery(api.services.organisations.getActive);
@@ -29,13 +29,13 @@ export default function Organisation() {
         <div
           className="-z-1 absolute inset-0 bg-[url('/pattern-light.svg')] bg-primary stroke-current text-foreground dark:bg-[url('/pattern-dark.svg')]"
           style={{
-            backgroundColor: "var(--color-accent)",
-            backgroundRepeat: "repeat",
-            backgroundSize: "100px",
+            backgroundColor: 'var(--color-accent)',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '100px',
             maskImage:
-              "linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))",
-            maskRepeat: "no-repeat",
-            maskSize: "100% 100%",
+              'linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))',
+            maskRepeat: 'no-repeat',
+            maskSize: '100% 100%',
           }}
         />
         <div className="flex w-fit shrink-0 flex-col gap-6 self-stretch">
@@ -44,8 +44,8 @@ export default function Organisation() {
             imageUrl={activeOrganisation.imageUrl}
           />
           <h1
-            className="ml-1 font-extrabold text-4xl"
-            style={{ fontFamily: "var(--font-m-plus-rounded-1c" }}
+            className="ml-1 font-extrabold text-3xl"
+            style={{ fontFamily: 'var(--font-m-plus-rounded-1c' }}
           >
             {activeOrganisation.name}
           </h1>

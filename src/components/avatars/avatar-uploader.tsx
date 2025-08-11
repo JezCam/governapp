@@ -93,9 +93,7 @@ export default function AvatarUploader({
   className,
 }: {
   imageUrl?: string | null;
-  onChange: (
-    data: { bytes: ArrayBuffer; type: string } | null
-  ) => Promise<void>;
+  onChange: (image: File | null) => Promise<void>;
   label?: string;
   rounded?: boolean;
   className?: string;
@@ -146,7 +144,7 @@ export default function AvatarUploader({
     try {
       setIsUpdateLoading(true);
 
-      // 1. Get the cropped image blob using the helper
+      // Get the cropped image blob using the helper
       const croppedBlob = await getCroppedImg(previewUrl, croppedAreaPixels);
 
       if (!croppedBlob) {
@@ -155,19 +153,18 @@ export default function AvatarUploader({
         return;
       }
 
-      const data = {
-        bytes: await croppedBlob.arrayBuffer(),
-        type: croppedBlob.type,
-      };
-
-      // 4. Set the final avatar state to the NEW URL
-      onChange(data).then(() => {
+      // Convert Blob to File
+      const croppedFile = new File([croppedBlob], 'avatar.jpg', {
+        type: 'image/jpeg',
+        lastModified: Date.now(),
+      });
+      onChange(croppedFile).then(() => {
         setIsUpdateLoading(false);
       });
 
       URL.revokeObjectURL(previewUrl); // Clean up the preview URL
 
-      // 5. Close the dialog (don't remove the file yet)
+      // Close the dialog (don't remove the file yet)
       setIsDialogOpen(false);
     } catch (error) {
       console.error('Error during apply:', error);
@@ -185,12 +182,12 @@ export default function AvatarUploader({
     }
     onChange(null)
       .then(() => {
-        setIsRemoveLoading(false);
+        toast('Removed image successfully');
       })
       .catch(() => {
         toast.error('Failed to remove image, please try again.');
-        setIsRemoveLoading(false);
       });
+    setIsRemoveLoading(false);
   };
 
   // Effect to open dialog when a *new* file is ready

@@ -1,6 +1,8 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 'use client';
 
-import { useAction, useMutation } from 'convex/react';
+import { useMutation } from 'convex/react';
+import { toast } from 'sonner';
 import { api } from '../../../convex/_generated/api';
 import AvatarUploader from './avatar-uploader';
 
@@ -11,21 +13,40 @@ export default function OrganisationImageUploader({
   imageUrl?: string;
   className?: string;
 }) {
-  const updateOrganisationImage = useAction(
+  const generateUploadUrl = useMutation(api.services.files.generateUploadUrl);
+  const updateOrganisationImage = useMutation(
     api.services.organisations.updateImageForActive
   );
-  const removeOrganisationImage = useMutation(
-    api.services.organisations.removeImageForActive
+  const updateOrganisation = useMutation(
+    api.services.organisations.updateActive
   );
 
-  const handleImageChange = async (
-    data: { bytes: ArrayBuffer; type: string } | null
-  ) => {
-    if (!data) {
-      await removeOrganisationImage();
+  const handleImageChange = async (image: File | null) => {
+    if (image === null) {
+      await updateOrganisation({ imageUrl: null });
       return;
     }
-    updateOrganisationImage(data);
+    const uploadUrl = await generateUploadUrl();
+    try {
+      const response = await fetch(uploadUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': image.type,
+        },
+        body: image,
+      });
+
+      const { storageId } = await response.json();
+
+      updateOrganisationImage({
+        storageId,
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to upload image', {
+        description: 'There was an error uploading your organisation image.',
+      });
+    }
   };
 
   return (

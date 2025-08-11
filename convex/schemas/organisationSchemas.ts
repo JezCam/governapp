@@ -19,18 +19,19 @@ export const turnoverRanges = [
 
 export const organisationTables = {
   organisations: defineTable({
+    createdByUserId: v.id('users'),
     abnOrAcn: v.string(),
     imageUrl: v.optional(v.string()),
     name: v.string(),
     type: v.optional(v.union(...types.map(v.literal))),
     turnoverRange: v.union(...turnoverRanges.map(v.literal)),
-  }),
+  }).index('by_abnOrAcn', ['abnOrAcn']),
   memberships: defineTable({
     organisationId: v.id('organisations'),
     userId: v.id('users'),
     role: v.string(),
     isAdmin: v.boolean(),
-  }),
+  }).index('by_organisation_user', ['organisationId', 'userId']),
   invitations: defineTable({
     invitedByUserId: v.id('users'),
     organisationId: v.id('organisations'),

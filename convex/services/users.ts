@@ -1,11 +1,11 @@
 import { ConvexError, v } from 'convex/values';
-import { api, internal } from '../_generated/api';
-import { action, mutation, query } from '../_generated/server';
+import { mutation, query } from '../_generated/server';
 import { getMembershipsInActiveOrganisation } from '../utils/memberships';
 import {
   getCurrentUser,
   getCurrentUserId,
   getUserByEmail,
+  updateCurrentUser,
 } from '../utils/users';
 
 // Query
@@ -60,47 +60,44 @@ export const listInActiveOrganisation = query({
 
 // Mutate
 
-export const update = mutation({
+export const updateCurrent = mutation({
   args: {
-    name: v.optional(v.string()),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
-    imageUrl: v.optional(v.string()),
+    imageUrl: v.optional(v.union(v.string(), v.null())),
     email: v.optional(v.string()),
     phone: v.optional(v.string()),
+    activeOrganisationId: v.optional(v.id('organisations')),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUser(ctx);
-    const updates = {
-      ...(args.name ? { name: args.name } : {}),
+    await updateCurrentUser(ctx, {
       ...(args.firstName ? { firstName: args.firstName } : {}),
       ...(args.lastName ? { lastName: args.lastName } : {}),
       ...(args.imageUrl ? { imageUrl: args.imageUrl } : {}),
       ...(args.email ? { email: args.email } : {}),
       ...(args.phone ? { phone: args.phone } : {}),
-    };
-    await ctx.db.patch(user._id, updates);
+      ...(args.activeOrganisationId
+        ? { activeOrganisationId: args.activeOrganisationId }
+        : {}),
+      // Remove imageUrl if it's null
+      ...(args.imageUrl === null ? { imageUrl: undefined } : {}),
+    });
   },
 });
 
-export const removeImage = mutation({
-  handler: async (ctx) => {
-    const user = await getCurrentUser(ctx);
-    await ctx.db.patch(user._id, { image: undefined });
+export const updateImageForCurrent = mutation({
+  args: {
+    storageId: v.id('_storage'),
   },
-});
-
-// Action
-
-export const updateImage = action({
-  args: { bytes: v.bytes(), type: v.string() },
   handler: async (ctx, args) => {
-    const imageUrl = await ctx.runAction(
-      internal.utils.files.uploadImage,
-      args
-    );
-    await ctx.runMutation(api.services.users.update, {
+    const imageUrl = await ctx.storage.getUrl(args.storageId);
+    if (!imageUrl) {
+      throw new ConvexError('image_not_found');
+    }
+    await updateCurrentUser(ctx, {
       imageUrl,
     });
   },
 });
+
+// Action

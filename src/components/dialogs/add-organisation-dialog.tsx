@@ -1,8 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import OrganisationConfirmForm from "../forms/organisation-confirm-form";
-import OrganisationDetailsForm from "../forms/organisation-details-form";
+import { useState } from 'react';
+import type {
+  OrganisationTurnoverRange,
+  OrganisationType,
+} from '@/types/convex';
+import OrganisationConfirmForm from '../forms/organisation-confirm-form';
+import OrganisationDetailsForm from '../forms/organisation-details-form';
 import {
   DialogStack,
   DialogStackBody,
@@ -10,9 +14,19 @@ import {
   DialogStackHeader,
   type DialogStackProps,
   DialogStackTitle,
-} from "../ui/kibo-ui/dialog-stack";
+} from '../ui/kibo-ui/dialog-stack';
+
+export type OrganisationFormData = {
+  name: string;
+  type: OrganisationType;
+  abnOrAcn: string;
+  turnoverRange: OrganisationTurnoverRange;
+  role: string;
+};
 
 export default function AddOrganisationDialog({ ...props }: DialogStackProps) {
+  const [organisationData, setOrganisationData] =
+    useState<OrganisationFormData>();
   const [index, setIndex] = useState<number>(0);
 
   return (
@@ -37,7 +51,12 @@ export default function AddOrganisationDialog({ ...props }: DialogStackProps) {
               Enter Your Organisation&apos;s Details
             </DialogStackTitle>
           </DialogStackHeader>
-          <OrganisationDetailsForm onSuccess={() => setIndex(1)} />
+          <OrganisationDetailsForm
+            onSuccess={(data) => {
+              setOrganisationData(data);
+              setIndex(1);
+            }}
+          />
         </DialogStackContent>
 
         {/* Organisation Confirm */}
@@ -47,13 +66,19 @@ export default function AddOrganisationDialog({ ...props }: DialogStackProps) {
               Confirm Your Organisation&apos;s Details
             </DialogStackTitle>
           </DialogStackHeader>
-          <OrganisationConfirmForm
-            formButtonProps={{ onPrevious: () => setIndex(0) }}
-            onSuccess={() => {
-              setIndex(0);
-              props.onOpenChange?.(false);
-            }}
-          />
+          {organisationData && (
+            <OrganisationConfirmForm
+              formButtonProps={{
+                onPrevious: () => setIndex(0),
+                submitText: 'Create Organisation',
+              }}
+              onSuccess={() => {
+                setIndex(0);
+                props.onOpenChange?.(false);
+              }}
+              organisationData={organisationData}
+            />
+          )}
         </DialogStackContent>
       </DialogStackBody>
     </DialogStack>

@@ -4,13 +4,7 @@ import { ConvexError, v } from 'convex/values';
 import { Resend } from 'resend';
 import InvitationEmail from '@/emails/invitation';
 import { api, internal } from '../_generated/api';
-import {
-  action,
-  internalMutation,
-  internalQuery,
-  mutation,
-  query,
-} from '../_generated/server';
+import { internalQuery, mutation, query } from '../_generated/server';
 import '../polyfills';
 import { getInvitationById } from '../utils/invitations';
 import { createMembership } from '../utils/memberships';
@@ -78,31 +72,6 @@ export const getByEmailAndOrganisation = internalQuery({
 
 // Mutate
 
-export const createInvitation = internalMutation({
-  args: {
-    invitedByUserId: v.id('users'),
-    inviteeEmail: v.string(),
-    organisationId: v.id('organisations'),
-    organisationName: v.string(),
-    role: v.string(),
-    isAdmin: v.boolean(),
-  },
-  handler: async (ctx, args) => {
-    const invitationId = await ctx.db.insert('invitations', {
-      ...args,
-      status: 'pending',
-    });
-    return invitationId;
-  },
-});
-
-export const deleteInvitation = internalMutation({
-  args: { invitationId: v.id('invitations') },
-  handler: async (ctx, args) => {
-    await ctx.db.delete(args.invitationId);
-  },
-});
-
 export const acceptInvitationById = mutation({
   args: { invitationId: v.id('invitations') },
   handler: async (ctx, args) => {
@@ -148,24 +117,22 @@ export const declineInvitationById = mutation({
   },
 });
 
-// Action
-
-export const create = action({
+export const create = mutation({
   args: {
     inviteeEmail: v.string(),
     role: v.string(),
     isAdmin: v.boolean(),
   },
   handler: async (ctx, args) => {
-    const invitedByUser = await ctx.runQuery(api.services.users.getCurrent);
-    if (!invitedByUser) {
-      throw new ConvexError('not_authenticated');
-    }
+    // Authenticate user
+    const invitedByUser = await getCurrentUser(ctx);
 
+    // Check if the invitee is trying to invite themselves
     if (invitedByUser.email === args.inviteeEmail) {
       throw new ConvexError('self_invitation');
     }
 
+    // Get the active organisation
     const activeOrganisation = await ctx.runQuery(
       api.services.organisations.getActive
     );
@@ -173,6 +140,28 @@ export const create = action({
       throw new ConvexError('no_active_organisation');
     }
 
+    // Get the invitee user by email
+    const inviteeUser = await ctx.runQuery(api.services.users.getByEmail, {
+      email: args.inviteeEmail,
+    });
+
+    // Check if the invitee already has an active membership in the organisation
+    if (inviteeUser) {
+      const existingMembership = await ctx.db
+        .query('memberships')
+        .withIndex('by_organisation_user', (q) =>
+          q
+            .eq('organisationId', activeOrganisation._id)
+            .eq('userId', inviteeUser._id)
+        )
+        .first();
+
+      if (existingMembership) {
+        throw new ConvexError('user_already_member');
+      }
+    }
+
+    // Check if there's already an invitation for this email and organisation
     const existingInvitation = await ctx.runQuery(
       internal.services.invitations.getByEmailAndOrganisation,
       {
@@ -182,21 +171,15 @@ export const create = action({
     );
 
     if (existingInvitation) {
-      throw new ConvexError('email_already_exists');
+      throw new ConvexError('invitation_already_exists');
     }
 
-    const invitationId = await ctx.runMutation(
-      internal.services.invitations.createInvitation,
-      {
-        ...args,
-        invitedByUserId: invitedByUser._id,
-        organisationId: activeOrganisation._id,
-        organisationName: activeOrganisation.name,
-      }
-    );
-
-    const inviteeUser = await ctx.runQuery(api.services.users.getByEmail, {
-      email: args.inviteeEmail,
+    // Create the invitation
+    const invitationId = await ctx.db.insert('invitations', {
+      ...args,
+      invitedByUserId: invitedByUser._id,
+      organisationId: activeOrganisation._id,
+      status: 'pending',
     });
 
     // Send the email
@@ -227,9 +210,7 @@ export const create = action({
       console.error('Error sending invitation email:', error);
 
       // Delete the invitation if the email fails to send
-      await ctx.runMutation(internal.services.invitations.deleteInvitation, {
-        invitationId,
-      });
+      await ctx.db.delete(invitationId);
 
       throw new Error('Failed to send invitation email');
     }

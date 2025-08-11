@@ -1,9 +1,14 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useAction } from 'convex/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
+import { api } from '../../../convex/_generated/api';
+import type { OrganisationFormData } from '../dialogs/add-organisation-dialog';
 import {
   Form,
   FormControl,
@@ -21,7 +26,11 @@ import {
   SelectValue,
 } from '../ui/select';
 import FormButtons from './form-buttons';
-import type { FormProps } from './types';
+import type { FormButtonProps } from './types';
+
+// Regex patterns for ABN and ACN formatting
+const ABN_REGEX = /(\d{2})(\d{3})(\d{3})(\d{3})/;
+const ACN_REGEX = /(\d{3})(\d{3})(\d{3})/;
 
 const turnoverRanges = [
   '$0 - $50,000',
@@ -66,10 +75,17 @@ const formSchema = z.object({
   abnOrAcn: z.union([acnSchema, abnSchema]),
   turnoverRange: z.enum(turnoverRanges),
   role: z.string({ message: 'Please select a role' }),
-  otherRole: z.string().optional(),
+  otherRole: z.string(),
 });
 
-export default function OrganisationDetailsForm(props: FormProps) {
+export default function OrganisationDetailsForm(props: {
+  formButtonProps?: FormButtonProps;
+  onSuccess: (data: OrganisationFormData) => void;
+}) {
+  const getOrganisationNameAndTypeByAbnOrAcn = useAction(
+    api.services.organisations.getOrganisationNameAndTypeByAbnOrAcn
+  );
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasOtherRole, setHasOtherRole] = useState(false);
 
@@ -89,15 +105,53 @@ export default function OrganisationDetailsForm(props: FormProps) {
       });
       return;
     }
-
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     setIsLoading(true);
-    console.log('Form submitted:', values);
-    // sleep for 1 second to simulate a network request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Format the ABN or ACN
+    const isAbn = values.abnOrAcn.length === 11;
+    const formattedAbnOrAcn = isAbn
+      ? values.abnOrAcn.replace(ABN_REGEX, '$1 $2 $3 $4')
+      : values.abnOrAcn.replace(ACN_REGEX, '$1 $2 $3');
+
+    try {
+      const { name, type } = await getOrganisationNameAndTypeByAbnOrAcn({
+        abnOrAcn: formattedAbnOrAcn,
+        isAbn,
+      });
+
+      props.onSuccess({
+        name,
+        type,
+        abnOrAcn: formattedAbnOrAcn,
+        turnoverRange: values.turnoverRange,
+        role: values.role === 'other' ? values.otherRole : values.role,
+      });
+    } catch (error) {
+      const errorWithData = error as { data?: string };
+      switch (errorWithData.data) {
+        case 'not_authenticated':
+          toast.error('Failed to create organisation', {
+            description: 'You must be logged in to create an organisation',
+          });
+          break;
+        case 'abn_or_acn_already_exists':
+          toast.error('Failed to create organisation', {
+            description: 'An organisation with this ABN or ACN already exists',
+          });
+          form.setError('abnOrAcn', {
+            type: 'manual',
+            message: 'An organisation with this ABN or ACN already exists',
+          });
+          break;
+        default:
+          console.error('Unexpected error:', error);
+          toast.error('Failed to create organisation', {
+            description: 'An unexpected error occurred',
+          });
+          break;
+      }
+    }
+
     setIsLoading(false);
-    props.onSuccess?.();
   }
 
   return (

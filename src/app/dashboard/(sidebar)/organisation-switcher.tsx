@@ -1,10 +1,13 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 'use client';
 
-import { useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import OrganisationAvatar from '@/components/avatars/organisation-avatar';
 import AddOrganisationDialog from '@/components/dialogs/add-organisation-dialog';
+import { LoadingButton } from '@/components/loading-button';
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -26,12 +29,14 @@ export default function OrganisationSwitcher({
   const memberships = useQuery(
     api.services.memberships.listForCurrentUserWithOrganisation
   );
+  const updateCurrentUser = useMutation(api.services.users.updateCurrent);
 
   const membershipsWithoutActive = memberships?.filter(
     (membership) => membership.organisation._id !== activeOrganisation?._id
   );
 
   const [addOrganisationOpen, setAddOrganisationOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   if (
     membershipsWithoutActive === undefined ||
@@ -70,17 +75,41 @@ export default function OrganisationSwitcher({
           </SidebarMenuButton>
           {membershipsWithoutActive.map((membership) => (
             <SidebarMenuButton
+              asChild
               className="group h-12 rounded-md border border-transparent transition-all data-[state=open]:bg-transparent group-data-[collapsible=icon]:rounded-2xl"
               key={membership.organisation._id}
+              onClick={() => {
+                setIsLoading(true);
+                updateCurrentUser({
+                  activeOrganisationId: membership.organisation._id,
+                })
+                  .then(() => {
+                    toast.success(
+                      `Switched to ${membership.organisation.name}`
+                    );
+                    setIsLoading(false);
+                    setOpen(false);
+                  })
+                  .catch((error) => {
+                    console.error('Error switching organisation:', error);
+                    toast.error('Failed to switch organisation');
+                    setIsLoading(false);
+                  });
+              }}
               size="lg"
               tooltip={membership.organisation.name}
             >
-              <div className="size-8 rounded-sm border border-sidebar-border bg-sidebar-primary text-sidebar-primary-foreground shadow-sm transition-all group-data-[collapsible=icon]:rounded-md" />
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">
-                  {membership.organisation.name}
-                </span>
-              </div>
+              <LoadingButton isLoading={isLoading} variant="ghost">
+                <OrganisationAvatar
+                  className="size-8 border-white transition-[border-radius] group-data-[collapsible=icon]:rounded-md"
+                  organisation={membership.organisation}
+                />
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">
+                    {membership.organisation.name}
+                  </span>
+                </div>
+              </LoadingButton>
             </SidebarMenuButton>
           ))}
         </SidebarMenuItem>
@@ -93,7 +122,7 @@ export default function OrganisationSwitcher({
             tooltip={activeOrganisation.name}
           >
             <OrganisationAvatar
-              className="size-8 rounded-sm border-white bg-sidebar-primary text-sidebar-primary-foreground shadow-sm transition-all group-data-[collapsible=icon]:rounded-md"
+              className="size-8 border-white transition-[border-radius] group-data-[collapsible=icon]:rounded-md"
               organisation={activeOrganisation}
             />
             <div className="grid flex-1 text-left text-sm leading-tight">

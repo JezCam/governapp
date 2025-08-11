@@ -1,15 +1,25 @@
-import { v } from 'convex/values';
-import { api, internal } from '../_generated/api';
+import { ConvexError, v } from 'convex/values';
+import { internal } from '../_generated/api';
+import { action, internalQuery, mutation, query } from '../_generated/server';
+import { turnoverRanges, types } from '../schemas/organisationSchemas';
 import {
-  action,
-  internalMutation,
-  mutation,
-  query,
-} from '../_generated/server';
-import { getActiveOrganisation } from '../utils/organisation';
+  AbrSeachByAbnOrAcn,
+  createOrganisationAndMembership,
+  getActiveOrganisation,
+  getActiveOrganisationId,
+  getOrganisationById,
+  updateOrganisationById,
+} from '../utils/organisations';
 import { getCurrentUserId } from '../utils/users';
 
 // Query
+
+export const getById = query({
+  args: { organisationId: v.id('organisations') },
+  handler: async (ctx, args) => {
+    return await getOrganisationById(ctx, args.organisationId);
+  },
+});
 
 export const getActive = query({
   handler: async (ctx) => {
@@ -17,18 +27,47 @@ export const getActive = query({
   },
 });
 
+export const getByAbnOrAcn = internalQuery({
+  args: { abnOrAcn: v.string() },
+  handler: async (ctx, args) => {
+    const existingOrg = await ctx.db
+      .query('organisations')
+      .withIndex('by_abnOrAcn', (q) => q.eq('abnOrAcn', args.abnOrAcn))
+      .first();
+    return existingOrg;
+  },
+});
+
 // Mutate
 
-export const updateById = internalMutation({
+export const updateActive = mutation({
   args: {
-    organisationId: v.id('organisations'),
-    imageUrl: v.optional(v.string()),
+    imageUrl: v.union(v.string(), v.null()),
   },
   handler: async (ctx, args) => {
-    const updates = {
-      ...(args.imageUrl ? { imageUrl: args.imageUrl } : {}),
-    };
-    await ctx.db.patch(args.organisationId, updates);
+    const activeOrganisationId = await getActiveOrganisationId(ctx);
+
+    await updateOrganisationById(ctx, activeOrganisationId, {
+      imageUrl: args.imageUrl || undefined,
+    });
+  },
+});
+
+export const updateImageForActive = mutation({
+  args: {
+    storageId: v.id('_storage'),
+  },
+  handler: async (ctx, args) => {
+    const activeOrganisationId = await getActiveOrganisationId(ctx);
+
+    const imageUrl = await ctx.storage.getUrl(args.storageId);
+    if (!imageUrl) {
+      throw new ConvexError('image_not_found');
+    }
+
+    await updateOrganisationById(ctx, activeOrganisationId, {
+      imageUrl,
+    });
   },
 });
 
@@ -40,31 +79,56 @@ export const setActive = mutation({
   },
 });
 
-export const removeImageForActive = mutation({
-  handler: async (ctx) => {
-    const activeOrganisation = await getActiveOrganisation(ctx);
-    await ctx.db.patch(activeOrganisation._id, { imageUrl: undefined });
+export const create = mutation({
+  args: {
+    turnoverRange: v.union(...turnoverRanges.map(v.literal)),
+    abnOrAcn: v.string(),
+    name: v.string(),
+    type: v.union(...types.map(v.literal)),
+    role: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Check if the user is authenticated
+    const currentUserId = await getCurrentUserId(ctx);
+    // Create the organisation and membership
+    const organisationId = await createOrganisationAndMembership(ctx, {
+      createdByUserId: currentUserId,
+      abnOrAcn: args.abnOrAcn,
+      name: args.name,
+      type: args.type,
+      turnoverRange: args.turnoverRange,
+      role: args.role,
+    });
+    // Set the active organisation for the user
+    await ctx.db.patch(currentUserId, {
+      activeOrganisationId: organisationId,
+    });
+    // Return the created organisation
+    const organisation = await getOrganisationById(ctx, organisationId);
+    return organisation;
   },
 });
 
 // Action
 
-export const updateImageForActive = action({
+export const getOrganisationNameAndTypeByAbnOrAcn = action({
   args: {
-    bytes: v.bytes(),
-    type: v.string(),
+    abnOrAcn: v.string(),
+    isAbn: v.boolean(),
   },
   handler: async (ctx, args) => {
-    const activeOrganisation = await ctx.runQuery(
-      api.services.organisations.getActive
+    // Check if existing organisation with the same ABN or ACN
+    const existingOrg = await ctx.runQuery(
+      internal.services.organisations.getByAbnOrAcn,
+      { abnOrAcn: args.abnOrAcn }
     );
-    const imageUrl = await ctx.runAction(
-      internal.utils.files.uploadImage,
-      args
-    );
-    await ctx.runMutation(internal.services.organisations.updateById, {
-      organisationId: activeOrganisation._id,
-      imageUrl,
-    });
+    if (existingOrg) {
+      throw new ConvexError('abn_or_acn_already_exists');
+    }
+
+    // Get Organisation Name and Type from ABRXML API
+    const { name, type } = await AbrSeachByAbnOrAcn(args.abnOrAcn, args.isAbn);
+
+    return { name, type };
   },
 });

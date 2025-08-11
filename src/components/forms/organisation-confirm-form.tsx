@@ -1,13 +1,17 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { InformationCircleIcon } from '@hugeicons-pro/core-stroke-rounded';
+import { useMutation } from 'convex/react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { api } from '../../../convex/_generated/api';
+import type { OrganisationFormData } from '../dialogs/add-organisation-dialog';
 import { Alert, AlertTitle } from '../ui/alert';
 import {
   Form,
@@ -42,28 +46,39 @@ const formSchema = z.object({
   }),
 });
 
-export default function OrganisationConfirmForm(props: FormProps) {
+export default function OrganisationConfirmForm(
+  props: FormProps & { organisationData: OrganisationFormData }
+) {
+  const createOrganisation = useMutation(api.services.organisations.create);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
+      name: props.organisationData.name,
+      type: props.organisationData.type,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log('Form submitted:', values);
-    // sleep for 1 second to simulate a network request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    createOrganisation({
+      name: values.name,
+      type: values.type,
+      abnOrAcn: props.organisationData.abnOrAcn,
+      turnoverRange: props.organisationData.turnoverRange,
+      role: props.organisationData.role,
+    })
+      .then(() => {
+        toast.success('Organisation created successfully');
+        props.onSuccess?.();
+      })
+      .catch((error) => {
+        console.error('Error creating organisation:', error);
+        toast.error('Failed to create organisation');
+      });
     setIsLoading(false);
-    toast.error('Not yet implemented', {
-      description: 'This feature is not yet implemented.',
-    });
-    props.onSuccess?.();
   }
 
   return (

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import OrganisationConfirmForm from '@/components/forms/organisation-confirm-form';
+// import OrganisationConfirmForm from '@/components/forms/organisation-confirm-form';
 import OrganisationDetailsForm from '@/components/forms/organisation-details-form';
 
 export default function Page() {
@@ -25,13 +25,14 @@ export default function Page() {
             Confirm the details of your organisation below
           </p>
         </div>
-        <OrganisationConfirmForm
+        {/* <OrganisationConfirmForm
           formButtonProps={{
             onPrevious: () => setStep('details'),
             submitText: 'Complete',
           }}
           onSuccess={() => router.replace('/dashboard')}
-        />
+          TODO: Implement this in onboarding
+        /> */}
       </div>
     );
   }

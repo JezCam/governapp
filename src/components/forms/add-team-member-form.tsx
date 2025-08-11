@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail01Icon } from '@hugeicons-pro/core-stroke-rounded';
-import { useAction } from 'convex/react';
+import { useMutation } from 'convex/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -52,7 +52,7 @@ const formSchema = z.object({
 });
 
 export default function AddTeamMemberForm(props: FormProps) {
-  const createInvitation = useAction(api.services.invitations.create);
+  const createInvitation = useMutation(api.services.invitations.create);
 
   const [isLoading, setIsLoading] = useState(false);
   const [hasOtherRole, setHasOtherRole] = useState(false);
@@ -105,7 +105,16 @@ export default function AddTeamMemberForm(props: FormProps) {
               description: 'No active organisation found',
             });
             break;
-          case 'email_already_exists':
+          case 'use_already_member':
+            toast.error('Failed to send invitation', {
+              description: 'This user is already a member of the organisation',
+            });
+            form.setError('inviteeEmail', {
+              type: 'manual',
+              message: 'This user is already a member of the organisation',
+            });
+            break;
+          case 'invitation_already_exists':
             toast.error('Failed to send invitation', {
               description: 'An invitation has already been sent to this email',
             });

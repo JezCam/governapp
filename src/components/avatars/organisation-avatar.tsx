@@ -26,7 +26,7 @@ export default function OrganisationAvatar({
   return (
     <Avatar className={cn('size-6 rounded-sm border', className)}>
       <AvatarImage src={organisation.imageUrl} />
-      <AvatarFallback className="flex size-full items-center justify-center bg-accent text-foreground">
+      <AvatarFallback className="flex size-full items-center justify-center rounded-none bg-accent text-foreground">
         {organisation.name[0]}
       </AvatarFallback>
     </Avatar>
