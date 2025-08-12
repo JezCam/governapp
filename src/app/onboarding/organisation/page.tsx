@@ -1,13 +1,24 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 'use client';
 
+import { useMutation } from 'convex/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-// import OrganisationConfirmForm from '@/components/forms/organisation-confirm-form';
+import { toast } from 'sonner';
+import type { OrganisationFormData } from '@/components/dialogs/add-organisation-dialog';
+import OrganisationConfirmForm from '@/components/forms/organisation-confirm-form';
 import OrganisationDetailsForm from '@/components/forms/organisation-details-form';
+import { api } from '../../../../convex/_generated/api';
 
 export default function Page() {
-  const [step, setStep] = useState<'details' | 'confirm'>('details');
+  const updateCurrentUser = useMutation(api.services.users.updateCurrent);
   const router = useRouter();
+
+  const [organisationData, setOrganisationData] =
+    useState<OrganisationFormData>();
+  const [step, setStep] = useState<'details' | 'confirm'>('details');
+  const [previousLoading, setPreviousLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   if (step === 'confirm') {
     return (
@@ -25,14 +36,43 @@ export default function Page() {
             Confirm the details of your organisation below
           </p>
         </div>
-        {/* <OrganisationConfirmForm
-          formButtonProps={{
-            onPrevious: () => setStep('details'),
-            submitText: 'Complete',
-          }}
-          onSuccess={() => router.replace('/dashboard')}
-          TODO: Implement this in onboarding
-        /> */}
+        {organisationData && (
+          <OrganisationConfirmForm
+            formButtonProps={{
+              onPrevious: () => {
+                setStep('details');
+                setOrganisationData(undefined);
+              },
+              onSubmit: () => setIsLoading(true),
+              submitLoading: isLoading,
+              submitText: 'Complete',
+            }}
+            onSuccess={() => {
+              updateCurrentUser({
+                onboardingStep: 2,
+              })
+                .then(() => {
+                  router.replace('/dashboard');
+                })
+                .catch((error) => {
+                  switch (error.data) {
+                    case 'not_authenticated':
+                      toast.error(
+                        'You must be logged in to complete onboarding'
+                      );
+                      break;
+                    default:
+                      console.error('Unexpected error:', error);
+                      toast.error('Failed to complete onboarding', {
+                        description: 'An unexpected error occurred',
+                      });
+                      break;
+                  }
+                });
+            }}
+            organisationData={organisationData}
+          />
+        )}
       </div>
     );
   }
@@ -53,10 +93,36 @@ export default function Page() {
       </div>
       <OrganisationDetailsForm
         formButtonProps={{
-          onPrevious: () => router.replace('/onboarding/profile'),
+          previousLoading,
+          onPrevious: () => {
+            setPreviousLoading(true);
+            // Update the user's onboarding step to the previous step
+            updateCurrentUser({
+              onboardingStep: 0,
+            })
+              .then(() => {
+                router.refresh();
+              })
+              .catch((error) => {
+                switch (error.data) {
+                  case 'not_authenticated':
+                    toast.error('You must be logged in');
+                    break;
+                  default:
+                    console.error('Unexpected error:', error);
+                    toast.error('Failed to complete onboarding', {
+                      description: 'An unexpected error occurred',
+                    });
+                    break;
+                }
+              });
+          },
           submitText: 'Continue',
         }}
-        onSuccess={() => setStep('confirm')}
+        onSuccess={(data) => {
+          setOrganisationData(data);
+          setStep('confirm');
+        }}
       />
     </div>
   );

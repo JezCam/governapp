@@ -7,6 +7,7 @@ import { fetchMutation, fetchQuery } from 'convex/nextjs';
 import { api } from '../convex/_generated/api';
 
 const isRootPage = createRouteMatcher(['/']);
+const isDashboardPage = createRouteMatcher(['/dashboard/(.*)?']);
 
 const onboardingSteps = ['profile', 'organisation'];
 
@@ -18,7 +19,7 @@ export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
     return nextjsMiddlewareRedirect(request, '/home');
   }
 
-  // User is authenticated
+  // User is authenticated from here on
 
   // If the user is on the root page, redirect them to the dashboard
   if (isRootPage(request)) {
@@ -49,9 +50,13 @@ export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
   }
 
   // Check if the user has completed onboarding
-  // Onboarding step will equal the length of the onboarding steps array when complete
-  if (onboardingStep === onboardingSteps.length) {
-    // Redirect to the dashboard if the user is authenticated and onboarding is complete
+  const onboardingComplete = onboardingStep === onboardingSteps.length;
+
+  if (onboardingComplete) {
+    if (isDashboardPage(request)) {
+      return;
+    }
+    // If the user is not on the dashboard, redirect them to the dashboard
     return nextjsMiddlewareRedirect(request, '/dashboard');
   }
 

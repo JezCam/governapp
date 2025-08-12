@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -73,11 +74,11 @@ export default function DeleteAccountForm(props: FormProps) {
           )}
         />
         <FormButtons
-          isLoading={isLoading}
-          onPrevious={props.formButtonProps?.onPrevious}
           previousText="Cancel"
           submitDestructive
+          submitLoading={isLoading}
           submitText="Delete Account"
+          {...props.formButtonProps}
         />
       </form>
     </Form>

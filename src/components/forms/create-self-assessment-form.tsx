@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -119,9 +120,9 @@ export default function CreateSelfAssessmentForm(props: FormProps) {
           )}
         />
         <FormButtons
-          isLoading={isLoading}
-          onPrevious={props.formButtonProps?.onPrevious}
+          submitLoading={isLoading}
           submitText="Create"
+          {...props.formButtonProps}
         />
       </form>
     </Form>

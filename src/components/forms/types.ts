@@ -3,10 +3,12 @@ import type { HugeiconsIconProps } from '@hugeicons/react';
 export type FormButtonProps = {
   onPrevious?: () => void;
   previousText?: string;
+  previousLoading?: boolean;
+  onSubmit?: () => void;
   submitText?: string;
   submitIcon?: HugeiconsIconProps['icon'];
   submitDestructive?: boolean;
-  isLoading?: boolean;
+  submitLoading?: boolean;
   className?: string;
 };
 

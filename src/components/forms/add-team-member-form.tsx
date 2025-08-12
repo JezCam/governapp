@@ -237,9 +237,10 @@ export default function AddTeamMemberForm(props: FormProps) {
           )}
         </div>
         <FormButtons
-          isLoading={isLoading}
           submitIcon={Mail01Icon}
+          submitLoading={isLoading}
           submitText="Invite"
+          {...props.formButtonProps}
         />
       </form>
     </Form>

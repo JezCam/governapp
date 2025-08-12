@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -164,9 +165,9 @@ export default function EditInvitationForm(props: FormProps) {
           )}
         </div>
         <FormButtons
-          {...props.formButtonProps}
-          isLoading={isLoading}
+          submitLoading={isLoading}
           submitText="Save"
+          {...props.formButtonProps}
         />
       </form>
     </Form>

@@ -156,10 +156,10 @@ export default function EditActionForm(props: FormProps) {
           )}
         />
         <FormButtons
-          {...props.formButtonProps}
           className="mt-2"
-          isLoading={isLoading}
+          submitLoading={isLoading}
           submitText="Update"
+          {...props.formButtonProps}
         />
       </form>
     </Form>

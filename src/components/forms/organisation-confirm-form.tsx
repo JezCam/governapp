@@ -77,8 +77,8 @@ export default function OrganisationConfirmForm(
       .catch((error) => {
         console.error('Error creating organisation:', error);
         toast.error('Failed to create organisation');
-      });
-    setIsLoading(false);
+      })
+      .finally(() => setIsLoading(false));
   }
 
   return (
@@ -137,7 +137,7 @@ export default function OrganisationConfirmForm(
             </Link>
           </AlertTitle>
         </Alert>
-        <FormButtons {...props.formButtonProps} isLoading={isLoading} />
+        <FormButtons submitLoading={isLoading} {...props.formButtonProps} />
       </form>
     </Form>
   );

@@ -2,12 +2,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from 'convex/react';
+import { useMutation } from 'convex/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import validator from 'validator';
 import { z } from 'zod';
+import type { User } from '@/types/convex';
 import { api } from '../../../convex/_generated/api';
 import UserImageUploader from '../avatars/user-image-uploader';
 import {
@@ -31,42 +32,51 @@ const formSchema = z.object({
     .refine(validator.isMobilePhone, 'Please enter a valid mobile number'),
 });
 
-export default function UserDetailsForm(props: FormProps) {
-  const currentUser = useQuery(api.services.users.getCurrent);
+export default function UserDetailsForm(props: FormProps & { user: User }) {
+  const updateCurrentUser = useMutation(api.services.users.updateCurrent);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      mobileNumber: '',
+      firstName: props.user.firstName || '',
+      lastName: props.user.lastName || '',
+      mobileNumber: props.user.phone || '',
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log('Form submitted:', values);
-    // sleep for 1 second to simulate a network request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    toast.error('Not yet implemented', {
-      description: 'This feature is not yet implemented.',
-    });
-    props.onSuccess?.();
-  }
-
-  if (currentUser === undefined) {
-    return null; // TODO Add skeletons for current user
+    updateCurrentUser({
+      firstName: values.firstName,
+      lastName: values.lastName,
+      phone: values.mobileNumber,
+    })
+      .then(() => {
+        toast.success('Your details have been updated successfully');
+        props.onSuccess?.();
+      })
+      .catch((error) => {
+        switch (error.data) {
+          case 'not_authenticated':
+            toast.error('You must be logged in to update your details');
+            break;
+          default:
+            console.error('Unexpected error:', error);
+            toast.error('Failed to update your details', {
+              description: 'An unexpected error occurred',
+            });
+            break;
+        }
+      })
+      .finally(() => setIsLoading(false));
   }
 
   return (
     <div className="flex w-full flex-col gap-6">
       {/* Avatar Uploader */}
-      <UserImageUploader imageUrl={currentUser.imageUrl} />
+      <UserImageUploader imageUrl={props.user.imageUrl} />
       <Form {...form}>
         <form
           className="flex flex-col items-start gap-4"
@@ -113,8 +123,8 @@ export default function UserDetailsForm(props: FormProps) {
           />
           <FormButtons
             className="@xl:mt-5.5 h-fit @xl:max-w-fit"
+            submitLoading={isLoading}
             {...props.formButtonProps}
-            isLoading={isLoading}
           />
         </form>
       </Form>
