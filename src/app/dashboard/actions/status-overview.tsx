@@ -14,13 +14,13 @@ export default function StatusOverview({
     <div className="flex items-center gap-2">
       <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-gray-800/10 dark:bg-gray-100/10">
         <div
-          className="absolute h-full w-full flex-1 bg-amber-500 transition-all"
+          className="absolute h-full w-full flex-1 bg-amber-500 transition-transform"
           style={{
             transform: `translateX(-${100 - inProgressPercentage}%)`,
           }}
         />
         <div
-          className="absolute h-full w-full flex-1 bg-ga-green-500 transition-all"
+          className="absolute h-full w-full flex-1 bg-ga-green-500 transition-transform"
           style={{ transform: `translateX(-${100 - completedPercentage}%)` }}
         />
       </div>

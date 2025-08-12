@@ -45,7 +45,7 @@ export default function AddButton() {
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogTrigger asChild>
           <Button
-            className="data-[state=open]:-translate-y-7.25 size-12 rounded-full [anchor-name:--anchor] data-[state=open]:scale-150 [&>svg]:transition-all data-[state=open]:[&>svg]:rotate-45"
+            className="data-[state=open]:-translate-y-7.25 size-12 rounded-full [anchor-name:--anchor] data-[state=open]:scale-150 [&>svg]:transition-transform data-[state=open]:[&>svg]:rotate-45"
             size="icon"
           >
             <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} />
@@ -54,7 +54,7 @@ export default function AddButton() {
         <DialogPortal>
           <DialogOverlay className="z-49" />
           <DialogContent
-            className="data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-75 data-[state=open]:zoom-in-75 -translate-x-6 data-[state=open]:slide-in-from-bottom-30 data-[state=closed]:slide-out-to-bottom-30 -translate-y-27.25 absolute top-full left-[anchor(--anchor_left)] z-49 transition-all data-[state=closed]:animate-out data-[state=open]:animate-in"
+            className="data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-75 data-[state=open]:zoom-in-75 -translate-x-6 data-[state=open]:slide-in-from-bottom-30 data-[state=closed]:slide-out-to-bottom-30 -translate-y-27.25 absolute top-full left-[anchor(--anchor_left)] z-49 transition-[opacity,_transform] data-[state=closed]:animate-out data-[state=open]:animate-in"
             data-slot="dialog-content"
           >
             <DialogTitle />
@@ -114,8 +114,8 @@ export default function AddButton() {
                 Add New Team Member
               </Button>
               <DialogClose asChild>
-                <div className="peer-hover/1:-rotate-45 group relative size-24 rotate-45 cursor-pointer rounded-full bg-black/40 transition-all peer-hover/3:rotate-135 dark:bg-white/15">
-                  <div className="absolute inset-0 rounded-full bg-conic from-0% from-transparent via-75% via-transparent to-75% to-white opacity-0 transition-all group-peer-hover:opacity-100" />
+                <div className="peer-hover/1:-rotate-45 group relative size-24 rotate-45 cursor-pointer rounded-full bg-black/40 transition-transform peer-hover/3:rotate-135 dark:bg-white/15">
+                  <div className="absolute inset-0 rounded-full bg-conic from-0% from-transparent via-75% via-transparent to-75% to-white opacity-0 transition-opacity group-peer-hover:opacity-100" />
                 </div>
               </DialogClose>
             </div>

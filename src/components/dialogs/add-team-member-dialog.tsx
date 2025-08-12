@@ -27,12 +27,12 @@ export default function AddTeamMemberDialog({ ...props }: DialogProps) {
           <DialogTitle>Add New Team Member</DialogTitle>
           <DialogDescription className="flex items-center gap-1">
             Invite a new team member to
-            <span className="!h-0 flex items-center gap-1 font-medium">
+            <span className="flex items-center gap-1">
               <OrganisationAvatar
                 className="inline-block size-6"
                 organisation={activeOrganisation}
               />
-              {activeOrganisation.name}
+              <strong>{activeOrganisation.name}</strong>
             </span>
           </DialogDescription>
         </DialogHeader>

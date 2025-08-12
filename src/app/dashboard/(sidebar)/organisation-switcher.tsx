@@ -60,7 +60,7 @@ export default function OrganisationSwitcher({
       >
         <SidebarMenuItem className="h-fit w-full">
           <SidebarMenuButton
-            className="group h-12 whitespace-nowrap rounded-md border border-transparent font-medium transition-all data-[state=open]:bg-transparent group-data-[collapsible=icon]:rounded-2xl"
+            className="group h-12 whitespace-nowrap rounded-md border border-transparent font-medium transition-[background-color_border-radius] data-[state=open]:bg-transparent group-data-[collapsible=icon]:rounded-2xl"
             onClick={() => {
               setOpen(!open);
               setAddOrganisationOpen(true);
@@ -68,7 +68,7 @@ export default function OrganisationSwitcher({
             size="lg"
             tooltip="Add Organisation"
           >
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-sm border border-primary transition-all group-data-[collapsible=icon]:rounded-md">
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-sm border border-primary transition-[border-radius] group-data-[collapsible=icon]:rounded-md">
               <Plus className="size-4 text-primary" strokeWidth={2} />
             </div>
             Add Organisation
@@ -76,7 +76,7 @@ export default function OrganisationSwitcher({
           {membershipsWithoutActive.map((membership) => (
             <SidebarMenuButton
               asChild
-              className="group h-12 rounded-md border border-transparent transition-all data-[state=open]:bg-transparent group-data-[collapsible=icon]:rounded-2xl"
+              className="group h-12 rounded-md border border-transparent transition-[border-radius] data-[state=open]:bg-transparent group-data-[collapsible=icon]:rounded-2xl"
               key={membership.organisation._id}
               onClick={() => {
                 setIsLoading(true);
@@ -99,16 +99,18 @@ export default function OrganisationSwitcher({
               size="lg"
               tooltip={membership.organisation.name}
             >
-              <LoadingButton isLoading={isLoading} variant="ghost">
+              <LoadingButton
+                className="justify-start"
+                isLoading={isLoading}
+                variant="ghost"
+              >
                 <OrganisationAvatar
                   className="size-8 border-white transition-[border-radius] group-data-[collapsible=icon]:rounded-md"
                   organisation={membership.organisation}
                 />
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">
-                    {membership.organisation.name}
-                  </span>
-                </div>
+                <span className="truncate font-medium">
+                  {membership.organisation.name}
+                </span>
               </LoadingButton>
             </SidebarMenuButton>
           ))}
@@ -116,7 +118,7 @@ export default function OrganisationSwitcher({
         {/* Active organisation */}
         <SidebarMenuItem className="flex items-center justify-between">
           <SidebarMenuButton
-            className="group h-12 rounded-md border border-transparent transition-all data-[state=open]:bg-transparent group-data-[collapsible=icon]:rounded-2xl"
+            className="group h-12 rounded-md border border-transparent transition-[border-radius] group-data-[collapsible=icon]:rounded-2xl"
             onClick={() => setOpen(!open)}
             size="lg"
             tooltip={activeOrganisation.name}
@@ -125,11 +127,9 @@ export default function OrganisationSwitcher({
               className="size-8 border-white transition-[border-radius] group-data-[collapsible=icon]:rounded-md"
               organisation={activeOrganisation}
             />
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">
-                {activeOrganisation.name}
-              </span>
-            </div>
+            <span className="truncate font-medium">
+              {activeOrganisation.name}
+            </span>
             <UnfoldClose className="ml-auto" open={open} />
           </SidebarMenuButton>
         </SidebarMenuItem>

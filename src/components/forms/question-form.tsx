@@ -78,7 +78,7 @@ export default function QuestionForm() {
                         <FormItem key={option.id}>
                           <FormControl>
                             <FormLabel
-                              className="group flex w-full cursor-pointer items-center gap-4 rounded-md border bg-accent p-4 transition-all has-data-[state=checked]:border-ga-purple-200 has-data-[state=checked]:bg-ga-purple-100 dark:has-data-[state=checked]:border-ga-purple-800 dark:has-data-[state=checked]:bg-ga-purple-950"
+                              className="group flex w-full cursor-pointer items-center gap-4 rounded-md border bg-accent p-4 transition-colors has-data-[state=checked]:border-ga-purple-200 has-data-[state=checked]:bg-ga-purple-100 dark:has-data-[state=checked]:border-ga-purple-800 dark:has-data-[state=checked]:bg-ga-purple-950"
                               htmlFor={option.id}
                             >
                               <RadioGroupItem
@@ -86,7 +86,7 @@ export default function QuestionForm() {
                                 id={option.id}
                                 value={option.id}
                               />
-                              <span className="font-medium transition-all group-has-data-[state=checked]:text-primary">
+                              <span className="font-medium transition-colors group-has-data-[state=checked]:text-primary">
                                 {option.text}
                               </span>
                             </FormLabel>
@@ -111,7 +111,7 @@ export default function QuestionForm() {
                 Next
               </LoadingButton>
             </div>
-            {/* TODO User form button component */}
+            {/* TODO : User form button component */}
           </form>
         </Form>
       </div>

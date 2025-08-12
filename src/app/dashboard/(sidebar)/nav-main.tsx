@@ -47,7 +47,7 @@ export function NavMain() {
               <SidebarMenuButton
                 asChild
                 className={cn(
-                  'h-fit rounded-xl border border-transparent font-medium transition-all duration-200',
+                  'h-fit rounded-xl border border-transparent font-medium transition-all',
                   pathname === page.url
                     ? 'group-data-[collapsible=icon]:!border-transparent dark:!bg-ga-purple-800 border-sidebar-border bg-white hover:bg-white group-data-[collapsible=icon]:rounded-2xl group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:hover:bg-sidebar-accent dark:border-border'
                     : ''

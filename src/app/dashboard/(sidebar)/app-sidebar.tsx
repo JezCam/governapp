@@ -36,7 +36,7 @@ export default function AppSidebar() {
             />
           </div>
           <span
-            className="font-extrabold font-m-plus-rounded-1c text-ga-purple-800 text-lg transition-all group-data-[collapsible=icon]:opacity-0 dark:text-white"
+            className="font-extrabold font-m-plus-rounded-1c text-ga-purple-800 text-lg transition-opacity group-data-[collapsible=icon]:opacity-0 dark:text-white"
             style={{ fontFamily: 'var(--font-m-plus-rounded-1c' }}
           >
             GovernApp
@@ -49,7 +49,7 @@ export default function AppSidebar() {
       </SidebarHeader>
       <SidebarContent className="gap-0 border-sidebar-border border-y">
         <ScrollArea className="h-full [&_[data-slot=scroll-area-thumb]]:bg-sidebar-border">
-          <div className="w-63.75 transition-all duration-200 ease-linear group-data-[collapsible=icon]:w-16.5">
+          <div className="w-63.75 transition-[width] duration-200 ease-linear group-data-[collapsible=icon]:w-16.5">
             <NavMain />
             <SidebarSeparator className="mx-auto my-0 w-full" />
             <NavTeam />

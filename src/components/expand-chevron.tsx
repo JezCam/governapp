@@ -11,7 +11,7 @@ export default function ExpandChevron({
   return (
     <ChevronRight
       className={cn(
-        'text-muted-foreground transition-all',
+        'text-muted-foreground transition-transform',
         expanded ? 'rotate-90' : '',
         className
       )}

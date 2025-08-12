@@ -25,7 +25,7 @@ export default function Settings() {
           />
         ) : (
           <div />
-        ) /* TODO Add skeletons for current user */
+        ) /* TODO : Add skeletons for current user */
       }
       <h2 className="mt-4 font-bold text-lg">Theme</h2>
       <RadioThemeSwitcher />

@@ -145,7 +145,7 @@ export default function AddTeamMemberForm(props: FormProps) {
             name="inviteeEmail"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Member Email</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input placeholder="jane@example.com" {...field} />
                 </FormControl>
@@ -188,7 +188,7 @@ export default function AddTeamMemberForm(props: FormProps) {
             name="role"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Member Role</FormLabel>
+                <FormLabel>Role</FormLabel>
                 <Select
                   defaultValue={field.value}
                   onValueChange={(role) => {

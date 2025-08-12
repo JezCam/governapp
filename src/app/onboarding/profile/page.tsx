@@ -62,7 +62,7 @@ export default function Page() {
           user={user}
         />
       ) : (
-        <div /> // TODO Add skeletons for current user
+        <div /> // TODO : Add skeletons for current user
       )}
     </div>
   );

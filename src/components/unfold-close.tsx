@@ -12,13 +12,13 @@ export default function UnfoldClose({
     <div className={cn('flex flex-col', className)}>
       <ChevronUp
         className={cn(
-          'size-3 translate-y-0.5 stroke-3 transition-all',
+          'size-3 translate-y-0.5 stroke-3 transition-transform',
           open ? 'translate-y-[7.5px]' : ''
         )}
       />
       <ChevronDown
         className={cn(
-          '-translate-y-0.5 size-3 stroke-3 transition-all',
+          '-translate-y-0.5 size-3 stroke-3 transition-transform',
           open ? '-translate-y-[7.5px]' : ''
         )}
       />
