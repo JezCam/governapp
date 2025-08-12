@@ -68,6 +68,7 @@ export const updateCurrent = mutation({
     email: v.optional(v.string()),
     phone: v.optional(v.string()),
     activeOrganisationId: v.optional(v.id('organisations')),
+    onboardingStep: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     await updateCurrentUser(ctx, {
@@ -79,6 +80,9 @@ export const updateCurrent = mutation({
       ...(args.activeOrganisationId
         ? { activeOrganisationId: args.activeOrganisationId }
         : {}),
+      ...(args.onboardingStep !== undefined
+        ? { onboardingStep: args.onboardingStep }
+        : {}), // Ensure onboardingStep is updated if provided
       // Remove imageUrl if it's null
       ...(args.imageUrl === null ? { imageUrl: undefined } : {}),
     });

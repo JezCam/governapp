@@ -19,6 +19,8 @@ const schema = defineSchema({
 
     activeOrganisationId: v.optional(v.id('organisations')),
     imageUrl: v.optional(v.string()),
+    onboardingStep: v.optional(v.number()),
+
     // other "users" fields...
   }).index('email', ['email']),
   // Your other tables...

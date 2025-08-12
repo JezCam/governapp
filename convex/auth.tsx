@@ -58,6 +58,10 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       if (args.existingUserId) {
         return;
       }
+
+      await ctx.db.patch(args.userId, {
+        onboardingStep: 0, // Set onboarding to false for new users
+      });
     },
   },
 });
