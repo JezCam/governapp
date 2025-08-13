@@ -13,14 +13,15 @@ const isDashboardPage = createRouteMatcher(['/dashboard/(.*)?']);
 const onboardingSteps = ['profile', 'organisation'];
 
 export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
+  if (isHomePage(request)) {
+    // If the user is already on the home page, do not redirect
+    return;
+  }
+
   const authenticated = await convexAuth.isAuthenticated();
 
   // If the user is not authenticated, always go to the landing page
   if (!authenticated) {
-    if (isHomePage(request)) {
-      return; // If already on the home page, do nothing
-    }
-
     return nextjsMiddlewareRedirect(request, '/home');
   }
 
