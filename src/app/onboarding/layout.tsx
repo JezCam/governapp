@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         src="/logomark.svg"
         width={32}
       />
-      <div className="w-full max-w-sm">{children}</div>
+      <div className="w-full max-w-md">{children}</div>
     </div>
   );
 }

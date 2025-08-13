@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import type { DataModel } from '../../../convex/_generated/dataModel';
 import UserAvatar from '../avatars/user-avatar';
-import { LoadingButton } from '../loading-button';
+import LoadingButton from '../loading-button';
 import { Button } from '../ui/button';
 import {
   Dialog,

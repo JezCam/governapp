@@ -14,16 +14,16 @@ export default function OrganisationImageUploader({
   className?: string;
 }) {
   const generateUploadUrl = useMutation(api.services.files.generateUploadUrl);
-  const updateOrganisationImage = useMutation(
+  const updateActiveOrganisationImage = useMutation(
     api.services.organisations.updateImageForActive
   );
-  const updateOrganisation = useMutation(
+  const updateActiveOrganisation = useMutation(
     api.services.organisations.updateActive
   );
 
   const handleImageChange = async (image: File | null) => {
     if (image === null) {
-      await updateOrganisation({ imageUrl: null });
+      await updateActiveOrganisation({ imageUrl: null });
       return;
     }
     const uploadUrl = await generateUploadUrl();
@@ -38,7 +38,7 @@ export default function OrganisationImageUploader({
 
       const { storageId } = await response.json();
 
-      updateOrganisationImage({
+      updateActiveOrganisationImage({
         storageId,
       });
     } catch (error) {

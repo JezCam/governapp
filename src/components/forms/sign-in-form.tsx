@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { GoogleSignInButton } from '../google-sign-in-button';
-import { LoadingButton } from '../loading-button';
+import LoadingButton from '../loading-button';
 import {
   Form,
   FormControl,

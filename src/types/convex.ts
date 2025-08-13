@@ -9,3 +9,5 @@ export type Organisation = DataModel['organisations']['document'];
 export type OrganisationType = DataModel['organisations']['document']['type'];
 export type OrganisationTurnoverRange =
   DataModel['organisations']['document']['turnoverRange'];
+
+export type Invitation = DataModel['invitations']['document'];

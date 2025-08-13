@@ -1,6 +1,6 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
-import type { DataModel } from '../../../convex/_generated/dataModel';
-// import UserDetailsForm from '../forms/user-details-form';
+import type { User } from '@/types/convex';
+import UserDetailsForm from '../forms/user-details-form';
 import {
   Dialog,
   DialogContent,
@@ -9,9 +9,7 @@ import {
   DialogTitle,
 } from '../ui/dialog';
 
-export default function EditTeamMemberDialog(
-  props: DialogProps & { user: DataModel['users']['document'] }
-) {
+export default function EditProfileDialog(props: DialogProps & { user: User }) {
   return (
     <Dialog onOpenChange={props.onOpenChange} open={props.open}>
       <DialogContent>
@@ -21,7 +19,7 @@ export default function EditTeamMemberDialog(
             Edit your profile details
           </DialogDescription>
         </DialogHeader>
-        {/* <UserDetailsForm onSuccess={() => props.onOpenChange?.(false)} /> */}
+        <UserDetailsForm user={props.user} />
       </DialogContent>
     </Dialog>
   );

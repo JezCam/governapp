@@ -4,7 +4,7 @@ import { useMutation } from 'convex/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { LoadingButton } from '@/components/loading-button';
+import LoadingButton from '@/components/loading-button';
 import { api } from '../../../../convex/_generated/api';
 import type { Id } from '../../../../convex/_generated/dataModel';
 
@@ -45,7 +45,6 @@ export default function InvitationActions({
             toast.error('Failed to accept invitation');
         }
       });
-    setIsLoading(false);
   };
 
   const handleDeclineInvitation = () => {
@@ -68,8 +67,8 @@ export default function InvitationActions({
           default:
             toast.error('Failed to decline invitation');
         }
-      });
-    setIsLoading(false);
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (

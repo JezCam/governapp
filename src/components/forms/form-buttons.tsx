@@ -1,6 +1,6 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { cn } from '@/lib/utils';
-import { LoadingButton } from '../loading-button';
+import LoadingButton from '../loading-button';
 import type { FormButtonProps } from './types';
 
 export default function FormButtons(props: FormButtonProps) {

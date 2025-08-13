@@ -3,7 +3,7 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { LoadingButton } from '../loading-button';
+import LoadingButton from '../loading-button';
 import { Button } from '../ui/button';
 import {
   Dialog,

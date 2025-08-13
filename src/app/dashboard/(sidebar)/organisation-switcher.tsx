@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import OrganisationAvatar from '@/components/avatars/organisation-avatar';
 import AddOrganisationDialog from '@/components/dialogs/add-organisation-dialog';
-import { LoadingButton } from '@/components/loading-button';
+import LoadingButton from '@/components/loading-button';
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -105,7 +105,7 @@ export default function OrganisationSwitcher({
                 variant="ghost"
               >
                 <OrganisationAvatar
-                  className="size-8 border-white transition-[border-radius] group-data-[collapsible=icon]:rounded-md"
+                  className="size-8 border-white transition-[border-radius] group-data-[collapsible=icon]:rounded-md dark:border-black"
                   organisation={membership.organisation}
                 />
                 <span className="truncate font-medium">
@@ -115,6 +115,7 @@ export default function OrganisationSwitcher({
             </SidebarMenuButton>
           ))}
         </SidebarMenuItem>
+
         {/* Active organisation */}
         <SidebarMenuItem className="flex items-center justify-between">
           <SidebarMenuButton
@@ -124,7 +125,7 @@ export default function OrganisationSwitcher({
             tooltip={activeOrganisation.name}
           >
             <OrganisationAvatar
-              className="size-8 border-white transition-[border-radius] group-data-[collapsible=icon]:rounded-md"
+              className="size-8 border-white transition-[border-radius] group-data-[collapsible=icon]:rounded-md dark:border-black"
               organisation={activeOrganisation}
             />
             <span className="truncate font-medium">

@@ -6,7 +6,10 @@ import InvitationEmail from '@/emails/invitation';
 import { api, internal } from '../_generated/api';
 import { internalQuery, mutation, query } from '../_generated/server';
 import '../polyfills';
-import { getInvitationById } from '../utils/invitations';
+import {
+  getInvitationById,
+  listInvitationsByEmailAndStatus,
+} from '../utils/invitations';
 import { createMembership } from '../utils/memberships';
 import { getCurrentUser, getUserByEmail } from '../utils/users';
 
@@ -67,6 +70,45 @@ export const getByEmailAndOrganisation = internalQuery({
       .first();
 
     return invitation;
+  },
+});
+
+export const listPendingByCurrentUserWithOrganisationAndInvitedByUser = query({
+  handler: async (ctx) => {
+    const currentUser = await getCurrentUser(ctx);
+
+    const curreentUserEmail = currentUser.email;
+    if (!curreentUserEmail) {
+      throw new ConvexError('missing_email');
+    }
+
+    const invitations = await listInvitationsByEmailAndStatus(
+      ctx,
+      curreentUserEmail,
+      'pending'
+    );
+
+    const invitationsWithOrganisationAndInvitedByUser = await Promise.all(
+      invitations.map(async (invitation) => {
+        const organisation = await ctx.db.get(invitation.organisationId);
+        if (!organisation) {
+          return null;
+        }
+
+        const invitedByUser = await ctx.db.get(invitation.invitedByUserId);
+        if (!invitedByUser) {
+          return null;
+        }
+
+        return {
+          ...invitation,
+          organisation,
+          invitedByUser,
+        };
+      })
+    ).then((results) => results.filter((invitation) => invitation !== null));
+
+    return invitationsWithOrganisationAndInvitedByUser;
   },
 });
 

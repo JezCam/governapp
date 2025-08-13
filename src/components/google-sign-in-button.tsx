@@ -3,7 +3,7 @@
 import { useAuthActions } from '@convex-dev/auth/react';
 import Image from 'next/image';
 import { useState } from 'react';
-import { LoadingButton } from './loading-button';
+import LoadingButton from './loading-button';
 
 export function GoogleSignInButton({ redirectTo }: { redirectTo?: string }) {
   const [isLoading, setIsLoading] = useState(false);

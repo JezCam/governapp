@@ -18,14 +18,7 @@ export default function Page() {
   return (
     <div className="flex flex-col items-center gap-12">
       <div className="flex flex-col gap-2 text-center">
-        <h1
-          className="font-extrabold text-2xl"
-          style={{
-            fontFamily: 'var(--font-m-plus-rounded-1c)',
-          }}
-        >
-          Your Details
-        </h1>
+        <h1 className="font-extrabold text-2xl">Your Details</h1>
         <p className="text-muted-foreground">
           Enter your name, number and an optional avatar below
         </p>

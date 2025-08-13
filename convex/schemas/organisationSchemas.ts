@@ -43,5 +43,7 @@ export const organisationTables = {
     ),
     role: v.string(),
     isAdmin: v.boolean(),
-  }).index('by_organisation_email', ['organisationId', 'inviteeEmail']),
+  })
+    .index('by_inviteeEmail_status', ['inviteeEmail', 'status'])
+    .index('by_organisation_email', ['organisationId', 'inviteeEmail']),
 };

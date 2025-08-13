@@ -77,6 +77,7 @@ export default function OrganisationConfirmForm(
       .catch((error) => {
         console.error('Error creating organisation:', error);
         toast.error('Failed to create organisation');
+        props.onError?.();
       })
       .finally(() => setIsLoading(false));
   }

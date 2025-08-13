@@ -10,6 +10,7 @@ import {
   getOrganisationById,
   updateOrganisationById,
 } from '../utils/organisations';
+import { getStorageUrl } from '../utils/storage';
 import { getCurrentUserId } from '../utils/users';
 
 // Query
@@ -59,11 +60,7 @@ export const updateImageForActive = mutation({
   },
   handler: async (ctx, args) => {
     const activeOrganisationId = await getActiveOrganisationId(ctx);
-
-    const imageUrl = await ctx.storage.getUrl(args.storageId);
-    if (!imageUrl) {
-      throw new ConvexError('image_not_found');
-    }
+    const imageUrl = await getStorageUrl(ctx, args.storageId);
 
     await updateOrganisationById(ctx, activeOrganisationId, {
       imageUrl,

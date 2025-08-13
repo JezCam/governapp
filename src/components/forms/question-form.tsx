@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
-import { LoadingButton } from '@/components/loading-button';
 import {
   Form,
   FormControl,
@@ -16,6 +15,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import LoadingButton from '../loading-button';
 
 const responseOptions = [
   { text: 'Chair only.', id: '0' },

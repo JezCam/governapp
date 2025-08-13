@@ -43,16 +43,13 @@ export const listForCurrentUserWithOrganisation = query({
           organisation,
         };
       })
-    );
+    ).then((results) => results.filter((m) => m !== null));
 
-    const filteredMemberships = membershipsWithOrganisation.filter(
-      (m) => m !== null
-    );
-    if (filteredMemberships.length === 0) {
+    if (membershipsWithOrganisation.length === 0) {
       throw new ConvexError('no_memberships_with_organisations_for_user');
     }
 
-    return filteredMemberships;
+    return membershipsWithOrganisation;
   },
 });
 

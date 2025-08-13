@@ -1,6 +1,7 @@
 import { ConvexError, v } from 'convex/values';
 import { mutation, query } from '../_generated/server';
 import { getMembershipsInActiveOrganisation } from '../utils/memberships';
+import { getStorageUrl } from '../utils/storage';
 import {
   getCurrentUser,
   getCurrentUserId,
@@ -94,14 +95,10 @@ export const updateImageForCurrent = mutation({
     storageId: v.id('_storage'),
   },
   handler: async (ctx, args) => {
-    const imageUrl = await ctx.storage.getUrl(args.storageId);
-    if (!imageUrl) {
-      throw new ConvexError('image_not_found');
-    }
+    const imageUrl = await getStorageUrl(ctx, args.storageId);
+
     await updateCurrentUser(ctx, {
       imageUrl,
     });
   },
 });
-
-// Action

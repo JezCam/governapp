@@ -47,14 +47,13 @@ export async function getMembershipsInActiveOrganisationWithUsers(
         user,
       };
     })
-  );
+  ).then((results) => results.filter((m) => m !== null));
 
-  const filteredMemberships = membershipsWithUsers.filter((m) => m !== null);
-  if (filteredMemberships.length === 0) {
+  if (membershipsWithUsers.length === 0) {
     throw new ConvexError('no_memberships_with_users_in_organisation');
   }
 
-  return filteredMemberships;
+  return membershipsWithUsers;
 }
 
 export async function getMembershipsByUserId(

@@ -1,7 +1,7 @@
 import type * as SheetPrimitive from '@radix-ui/react-dialog';
 import { CornerDownLeft } from 'lucide-react';
+import LoadingButton from '@/components/loading-button';
 // import UserLabel from "@/components/labels/user-label"; TODO: Implement
-import { LoadingButton } from '@/components/loading-button';
 import {
   Sheet,
   SheetContent,

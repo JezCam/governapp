@@ -24,6 +24,7 @@ import type * as services_users from "../services/users.js";
 import type * as utils_invitations from "../utils/invitations.js";
 import type * as utils_memberships from "../utils/memberships.js";
 import type * as utils_organisations from "../utils/organisations.js";
+import type * as utils_storage from "../utils/storage.js";
 import type * as utils_users from "../utils/users.js";
 
 /**
@@ -46,6 +47,7 @@ declare const fullApi: ApiFromModules<{
   "utils/invitations": typeof utils_invitations;
   "utils/memberships": typeof utils_memberships;
   "utils/organisations": typeof utils_organisations;
+  "utils/storage": typeof utils_storage;
   "utils/users": typeof utils_users;
 }>;
 export declare const api: FilterApi<
