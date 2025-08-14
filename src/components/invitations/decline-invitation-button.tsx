@@ -6,8 +6,8 @@ import { toast } from 'sonner';
 import LoadingButton, {
   type LoadingButtonProps,
 } from '@/components/loading-button';
-import { api } from '../../../../convex/_generated/api';
-import type { Id } from '../../../../convex/_generated/dataModel';
+import { api } from '../../../convex/_generated/api';
+import type { Id } from '../../../convex/_generated/dataModel';
 
 export interface DeclineInvitationButtonProps
   extends Omit<LoadingButtonProps, 'onClick'> {

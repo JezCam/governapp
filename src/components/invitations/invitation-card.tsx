@@ -1,19 +1,19 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Cancel01Icon, Tick01Icon } from '@hugeicons-pro/core-stroke-rounded';
 import type { Invitation, Organisation, User } from '@/types/convex';
-import OrganisationAvatar from './avatars/organisation-avatar';
-import AcceptInvitationButton from './convex/invitations/accept-invitation-button';
-import DeclineInvitationButton from './convex/invitations/decline-invitation-button';
-import UserLabel from './labels/user-label';
-import { Button } from './ui/button';
-import { Card } from './ui/card';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import OrganisationAvatar from '../avatars/organisation-avatar';
+import UserLabel from '../labels/user-label';
+import { Button } from '../ui/button';
+import { Card } from '../ui/card';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from './ui/tooltip';
+} from '../ui/tooltip';
+import AcceptInvitationButton from './accept-invitation-button';
+import DeclineInvitationButton from './decline-invitation-button';
 
 export default function InvitationCard({
   invitation,

@@ -3,7 +3,7 @@ import SignInForm from '../forms/sign-in-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 
 export default function SignInDialog(
-  props: DialogProps & { redirectTo?: string }
+  props: DialogProps & { redirectTo?: string; defaultEmail?: string }
 ) {
   return (
     <Dialog onOpenChange={props.onOpenChange} open={props.open}>
@@ -11,7 +11,10 @@ export default function SignInDialog(
         <DialogHeader>
           <DialogTitle>Sign In</DialogTitle>
         </DialogHeader>
-        <SignInForm redirectTo={props.redirectTo} />
+        <SignInForm
+          defaultEmail={props.defaultEmail}
+          redirectTo={props.redirectTo}
+        />
       </DialogContent>
     </Dialog>
   );

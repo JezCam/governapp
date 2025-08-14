@@ -8,20 +8,26 @@ import { api } from '../convex/_generated/api';
 
 const isRootPage = createRouteMatcher(['/']);
 const isHomePage = createRouteMatcher(['/home']);
+const isInvitationPage = createRouteMatcher(['/invitation/(.*)']);
 const isDashboardPage = createRouteMatcher(['/dashboard/(.*)?']);
 
 const onboardingSteps = ['profile', 'organisation'];
 
 export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
   if (isHomePage(request)) {
-    // If the user is already on the home page, do not redirect
+    // If the user is on a public page, skip the middleware
     return;
   }
 
   const authenticated = await convexAuth.isAuthenticated();
 
-  // If the user is not authenticated, always go to the landing page
+  // If the user is not authenticated
   if (!authenticated) {
+    if (isInvitationPage(request)) {
+      // If the user is on an invitation page, allow it
+      return;
+    }
+
     return nextjsMiddlewareRedirect(request, '/home');
   }
 
@@ -59,7 +65,7 @@ export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
   const onboardingComplete = onboardingStep === onboardingSteps.length;
 
   if (onboardingComplete) {
-    if (isDashboardPage(request)) {
+    if (isDashboardPage(request) || isInvitationPage(request)) {
       return;
     }
     // If the user is not on the dashboard, redirect them to the dashboard

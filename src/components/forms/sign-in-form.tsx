@@ -24,7 +24,13 @@ const formSchema = z.object({
     .email({ message: 'Invalid email address' }),
 });
 
-export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
+export default function SignInForm({
+  redirectTo,
+  defaultEmail,
+}: {
+  redirectTo?: string;
+  defaultEmail?: string;
+}) {
   const { signIn } = useAuthActions();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +38,7 @@ export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      email: defaultEmail || '',
     },
   });
 
@@ -69,6 +75,19 @@ export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
                     placeholder="Enter your email"
                     {...field}
                     className="input"
+                    onChange={(e) => {
+                      if (e.target.value === defaultEmail) {
+                        form.clearErrors('email');
+                      }
+                      if (defaultEmail && e.target.value !== defaultEmail) {
+                        // Show warning because the email is set by default for situations like invitations
+                        form.setError('email', {
+                          type: 'manual',
+                          message: `This invitation is for ${defaultEmail}. Please use that email to sign in.`,
+                        });
+                      }
+                      field.onChange(e);
+                    }}
                   />
                 </FormControl>
                 <FormMessage />

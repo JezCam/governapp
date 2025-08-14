@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import type { OrganisationFormData } from '@/components/dialogs/add-organisation-dialog';
 import OrganisationConfirmForm from '@/components/forms/organisation-confirm-form';
 import OrganisationDetailsForm from '@/components/forms/organisation-details-form';
-import InvitationCard from '@/components/invitation-card';
+import InvitationCard from '@/components/invitations/invitation-card';
 import LoadingButton from '@/components/loading-button';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';

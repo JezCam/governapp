@@ -15,13 +15,13 @@ import { getCurrentUser, getUserByEmail } from '../utils/users';
 
 // Query
 
-export const getById = query({
+export const getByIdWithOrganisation = query({
   args: { id: v.id('invitations') },
   handler: async (ctx, args) => {
     // Get the invitation
     const invitation = await getInvitationById(ctx, args.id);
     if (!invitation) {
-      throw new Error(`Invitation with ID ${args.id} not found.`);
+      return null;
     }
 
     // Get the invited by user
@@ -40,16 +40,12 @@ export const getById = query({
 
     // Get the invitees user
     const inviteeUser = await getUserByEmail(ctx, invitation.inviteeEmail);
-    if (!inviteeUser) {
-      throw new Error(`User with email ${invitation.inviteeEmail} not found.`);
-    }
 
     return {
       ...invitation,
-      invitedByEmail: invitedByUser.email,
-      invitedByName: `${invitedByUser.firstName} ${invitedByUser.lastName}`,
+      invitedByUser,
       inviteeUser,
-      organisationName: organisation.name,
+      organisation,
     };
   },
 });
