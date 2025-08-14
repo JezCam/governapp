@@ -21,7 +21,7 @@ export const getByIdWithOrganisation = query({
     // Get the invitation
     const invitation = await getInvitationById(ctx, args.id);
     if (!invitation) {
-      return null;
+      throw new ConvexError('invitation_not_found');
     }
 
     // Get the invited by user
