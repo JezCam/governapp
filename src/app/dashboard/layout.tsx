@@ -8,10 +8,10 @@ import {
   useEffect,
   useState,
 } from 'react';
+import AppHeader from '@/app/dashboard/(header)/app-header';
 import AppSidebar from '@/app/dashboard/(sidebar)/app-sidebar';
-import AppFooter from '@/app/dashboard/app-footer';
-import AppHeader from '@/app/dashboard/app-header';
 import { SidebarProvider } from '@/components/ui/sidebar';
+import AppFooter from './(footer)/app-footer';
 
 export const SearchMenuContext = createContext<{
   open: boolean;

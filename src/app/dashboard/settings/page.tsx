@@ -4,10 +4,10 @@ import { useQuery } from 'convex/react';
 import { useState } from 'react';
 import ConfirmDeleteAccountDialog from '@/components/dialogs/confirm-delete-account-dialog';
 import UserDetailsForm from '@/components/forms/user-details-form';
-import RadioThemeSwitcher from '@/components/radio-theme-switcher';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { api } from '../../../../convex/_generated/api';
+import RadioThemeSwitcher from './radio-theme-switcher';
 
 export default function Settings() {
   const user = useQuery(api.services.users.getCurrent);

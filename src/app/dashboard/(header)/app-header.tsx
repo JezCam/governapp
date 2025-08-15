@@ -1,6 +1,6 @@
-import NotificationsDropdown from "@/components/notifications-dropdown";
-import UserDropdown from "@/components/user-dropdown";
-import AppBreadcrumb from "./app-breadcrumb";
+import AppBreadcrumb from './app-breadcrumb';
+import NotificationsDropdown from './notifications-dropdown';
+import UserDropdown from './user-dropdown';
 
 export default function AppHeader() {
   return (

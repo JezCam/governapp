@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import SearchButton from '@/components/search-button';
+import SearchButton from '@/app/dashboard/(sidebar)/search-button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Sidebar,

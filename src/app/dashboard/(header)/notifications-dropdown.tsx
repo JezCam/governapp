@@ -6,7 +6,7 @@ import {
   ZapIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
 import type { ReactNode } from 'react';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +15,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 
 // import UserAvatar from './user-avatar';
 

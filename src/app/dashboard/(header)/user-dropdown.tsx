@@ -15,10 +15,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useContext, useState } from 'react';
 import { SearchMenuContext } from '@/app/dashboard/layout';
-import { api } from '../../convex/_generated/api';
-import UserAvatar from './avatars/user-avatar';
-import AddOrganisationDialog from './dialogs/add-organisation-dialog';
-import { Button } from './ui/button';
+import UserAvatar from '@/components/avatars/user-avatar';
+import AddOrganisationDialog from '@/components/dialogs/add-organisation-dialog';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,10 +25,11 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
-import Kbd from './ui/kbd';
-import { ThemeSwitcher } from './ui/kibo-ui/theme-switcher';
-import { Skeleton } from './ui/skeleton';
+} from '@/components/ui/dropdown-menu';
+import Kbd from '@/components/ui/kbd';
+import { ThemeSwitcher } from '@/components/ui/kibo-ui/theme-switcher';
+import { Skeleton } from '@/components/ui/skeleton';
+import { api } from '../../../../convex/_generated/api';
 
 export default function UserDropdown() {
   const [addOrganisationOpen, setAddOrganisationOpen] = useState(false);

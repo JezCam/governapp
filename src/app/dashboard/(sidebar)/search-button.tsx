@@ -7,8 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useContext } from 'react';
 import { SearchMenuContext } from '@/app/dashboard/layout';
-import { pages } from '../app/dashboard/(sidebar)/nav-main';
-import { Button } from './ui/button';
+import { Button } from '../../../components/ui/button';
 import {
   CommandDialog,
   CommandEmpty,
@@ -17,9 +16,14 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from './ui/command';
-import Kbd from './ui/kbd';
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar';
+} from '../../../components/ui/command';
+import Kbd from '../../../components/ui/kbd';
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from '../../../components/ui/sidebar';
+import { pages } from './nav-main';
 
 export default function SearchButton() {
   const { open, setOpen } = useContext(SearchMenuContext);
