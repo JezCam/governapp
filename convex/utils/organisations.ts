@@ -3,6 +3,7 @@ import { XMLParser } from 'fast-xml-parser';
 import type { Id } from '../_generated/dataModel';
 import type { MutationCtx, QueryCtx } from '../_generated/server';
 import { type turnoverRanges, types } from '../schemas/organisationSchemas';
+import { getMembershipByUserIdAndOrganisationId } from './memberships';
 import { getCurrentUser } from './users';
 
 export async function getActiveOrganisationId(ctx: QueryCtx | MutationCtx) {
@@ -45,6 +46,20 @@ export async function updateOrganisationById(
   }>
 ) {
   await ctx.db.patch(organisationId, updates);
+}
+
+export async function isUserAdminOfOrganisation(
+  ctx: QueryCtx | MutationCtx,
+  userId: Id<'users'>,
+  organisationId: Id<'organisations'>
+) {
+  const membership = await getMembershipByUserIdAndOrganisationId(
+    ctx,
+    userId,
+    organisationId
+  );
+
+  return membership.isAdmin;
 }
 
 export async function createOrganisationAndMembership(

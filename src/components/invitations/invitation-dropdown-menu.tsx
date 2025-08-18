@@ -8,6 +8,7 @@ import {
 } from '@hugeicons-pro/core-stroke-rounded';
 import { type ReactNode, useState } from 'react';
 import { toast } from 'sonner';
+import type { Invitation } from '@/types/convex';
 import ConfirmRemoveInvitationDialog from '../dialogs/confirm-remove-invitation-dialog';
 import EditInvitationDialog from '../dialogs/edit-invitation-dialog';
 import { LoadingDropdownMenuItem } from '../loading-dropdown-menu-item';
@@ -17,12 +18,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-
-type Invitation = {
-  email: string;
-  role: string;
-  permission: 'admin' | 'member';
-};
 
 export default function InvitationDropdownMenu({
   children,

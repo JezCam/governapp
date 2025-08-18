@@ -3,18 +3,20 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { MoreVerticalIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
+import { useQuery } from 'convex/react';
 import { DataTable } from '@/components/data-table/data-table';
 import InvitationDropdownMenu from '@/components/invitations/invitation-dropdown-menu';
 import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { type Invitation, pendingInvitations } from '@/dummy-data/invitations';
+import type { Invitation } from '@/types/convex';
+import { api } from '../../../../convex/_generated/api';
 
 export const columns: ColumnDef<Invitation>[] = [
   {
     size: 33,
     maxSize: 33,
-    accessorKey: 'email',
+    accessorKey: 'inviteeEmail',
     header: ({ column }) => <SortButton column={column}>Email</SortButton>,
   },
   {
@@ -27,9 +29,12 @@ export const columns: ColumnDef<Invitation>[] = [
   {
     size: 33,
     maxSize: 33,
-    accessorKey: 'permission',
+    accessorKey: 'isAdmin',
     header: ({ column }) => <SortButton column={column}>Permission</SortButton>,
-    cell: ({ row }) => <Badge variant={row.getValue('permission')} />,
+    cell: ({ row }) => {
+      const isAdmin = row.original.isAdmin;
+      return <Badge variant={isAdmin ? 'admin' : 'member'} />;
+    },
   },
   {
     id: 'menu',
@@ -44,6 +49,14 @@ export const columns: ColumnDef<Invitation>[] = [
 ];
 
 export default function PendingInvitationsTable() {
+  const pendingInvitations = useQuery(
+    api.services.invitations.listPendingByActiveOrganisation
+  );
+
+  if (pendingInvitations === undefined) {
+    return <div>Loading...</div>; // TODO: Implement a loading state
+  }
+
   return (
     <DataTable
       className="h-fit"

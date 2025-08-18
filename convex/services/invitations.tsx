@@ -9,9 +9,18 @@ import '../polyfills';
 import {
   getInvitationById,
   listInvitationsByEmailAndStatus,
+  listInvitationsByOrganisationAndStatus,
 } from '../utils/invitations';
 import { createMembership } from '../utils/memberships';
-import { getCurrentUser, getUserByEmail } from '../utils/users';
+import {
+  getActiveOrganisationId,
+  isUserAdminOfOrganisation,
+} from '../utils/organisations';
+import {
+  getCurrentUser,
+  getCurrentUserId,
+  getUserByEmail,
+} from '../utils/users';
 
 // Query
 
@@ -108,6 +117,19 @@ export const listPendingByCurrentUserWithOrganisationAndInvitedByUser = query({
   },
 });
 
+export const listPendingByActiveOrganisation = query({
+  handler: async (ctx) => {
+    const activeOrganisationId = await getActiveOrganisationId(ctx);
+    const invitations = await listInvitationsByOrganisationAndStatus(
+      ctx,
+      activeOrganisationId,
+      'pending'
+    );
+
+    return invitations;
+  },
+});
+
 // Mutate
 
 export const acceptInvitationById = mutation({
@@ -152,6 +174,37 @@ export const declineInvitationById = mutation({
 
     // Update the invitation status to declined
     await ctx.db.patch(invitation._id, { status: 'declined' });
+  },
+});
+
+export const update = mutation({
+  args: {
+    invitationId: v.id('invitations'),
+    role: v.string(),
+    isAdmin: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    // Get invitation
+    const invitation = await getInvitationById(ctx, args.invitationId);
+
+    // Check if the current user is an admin of the organisation
+    const currentUserId = await getCurrentUserId(ctx);
+    const organisationId = invitation.organisationId;
+    const isAdmin = await isUserAdminOfOrganisation(
+      ctx,
+      currentUserId,
+      organisationId
+    );
+
+    if (!isAdmin) {
+      throw new ConvexError('not_admin_of_organisation');
+    }
+
+    // Update the invitation
+    await ctx.db.patch(invitation._id, {
+      role: args.role,
+      isAdmin: args.isAdmin,
+    });
   },
 });
 

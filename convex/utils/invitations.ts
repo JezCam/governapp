@@ -28,3 +28,18 @@ export async function listInvitationsByEmailAndStatus(
 
   return invitations;
 }
+
+export async function listInvitationsByOrganisationAndStatus(
+  ctx: QueryCtx | MutationCtx,
+  organisationId: Id<'organisations'>,
+  status: DataModel['invitations']['document']['status']
+) {
+  const invitations = await ctx.db
+    .query('invitations')
+    .withIndex('by_organisation_status', (q) =>
+      q.eq('organisationId', organisationId).eq('status', status)
+    )
+    .collect();
+
+  return invitations;
+}

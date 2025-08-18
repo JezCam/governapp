@@ -2,10 +2,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from 'convex/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
+import type { Invitation } from '@/types/convex';
+import { api } from '../../../convex/_generated/api';
 import {
   Form,
   FormControl,
@@ -46,18 +49,30 @@ const formSchema = z.object({
   permission: z.enum(['admin', 'member']),
 });
 
-export default function EditInvitationForm(props: FormProps) {
+export default function EditInvitationForm(
+  props: FormProps & { invitation: Invitation }
+) {
+  const editInvitation = useMutation(api.services.invitations.update);
+
   const [isLoading, setIsLoading] = useState(false);
-  const [hasOtherRole, setHasOtherRole] = useState(false);
+  const [hasOtherRole, setHasOtherRole] = useState(
+    !roles.includes(props.invitation.role)
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      otherRole: '',
+      role: roles.includes(props.invitation.role)
+        ? props.invitation.role
+        : 'other',
+      otherRole: roles.includes(props.invitation.role)
+        ? ''
+        : props.invitation.role,
+      permission: props.invitation.isAdmin ? 'admin' : 'member',
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof formSchema>) {
     if (values.role === 'other' && !values.otherRole.length) {
       form.setError('otherRole', {
         type: 'manual',
@@ -66,17 +81,33 @@ export default function EditInvitationForm(props: FormProps) {
       return;
     }
 
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     setIsLoading(true);
-    console.log('Form submitted:', values);
-    // sleep for 1 second to simulate a network request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    toast.error('Not yet implemented', {
-      description: 'This feature is not yet implemented.',
-    });
-    props.onSuccess?.();
+    editInvitation({
+      invitationId: props.invitation._id,
+      role: values.role === 'other' ? values.otherRole : values.role,
+      isAdmin: values.permission === 'admin',
+    })
+      .then(() => {
+        toast.success('Invitation updated successfully');
+        props.onSuccess?.();
+      })
+      .catch((error) => {
+        switch (error.data) {
+          case 'invitation_not_found':
+            toast.error('Invitation not found');
+            break;
+          case 'not_admin_of_organisation':
+            toast.error(
+              'You must be an admin of the organisation to edit invitations'
+            );
+            break;
+          default:
+            toast.error('Failed to update invitation');
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   return (

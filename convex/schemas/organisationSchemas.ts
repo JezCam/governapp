@@ -45,5 +45,6 @@ export const organisationTables = {
     isAdmin: v.boolean(),
   })
     .index('by_inviteeEmail_status', ['inviteeEmail', 'status'])
-    .index('by_organisation_email', ['organisationId', 'inviteeEmail']),
+    .index('by_organisation_email', ['organisationId', 'inviteeEmail'])
+    .index('by_organisation_status', ['organisationId', 'status']),
 };

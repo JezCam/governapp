@@ -1,4 +1,5 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
+import type { Invitation } from '@/types/convex';
 import EditInvitationForm from '../forms/edit-invitation-form';
 import {
   Dialog,
@@ -7,12 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
-
-type Invitation = {
-  email: string;
-  role: string;
-  permission: 'admin' | 'member';
-};
 
 export default function EditInvitationDialog(
   props: DialogProps & { invitation: Invitation }
@@ -23,11 +18,12 @@ export default function EditInvitationDialog(
         <DialogHeader>
           <DialogTitle>Edit Invitation</DialogTitle>
           <DialogDescription>
-            Edit the invitation to {props.invitation.email}
+            Edit the invitation to {props.invitation.inviteeEmail}
           </DialogDescription>
         </DialogHeader>
         <EditInvitationForm
           formButtonProps={{ onPrevious: () => props.onOpenChange?.(false) }}
+          invitation={props.invitation}
           onSuccess={() => props.onOpenChange?.(false)}
         />
       </DialogContent>

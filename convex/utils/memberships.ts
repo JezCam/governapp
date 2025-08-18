@@ -4,6 +4,25 @@ import type { MutationCtx, QueryCtx } from '../_generated/server';
 import { getActiveOrganisationId } from './organisations';
 import { getCurrentUserId } from './users';
 
+export async function getMembershipByUserIdAndOrganisationId(
+  ctx: QueryCtx | MutationCtx,
+  userId: Id<'users'>,
+  organisationId: Id<'organisations'>
+) {
+  const membership = await ctx.db
+    .query('memberships')
+    .withIndex('by_organisation_user', (q) =>
+      q.eq('organisationId', organisationId).eq('userId', userId)
+    )
+    .first();
+
+  if (!membership) {
+    throw new ConvexError('membership_not_found');
+  }
+
+  return membership;
+}
+
 export async function getMembershipsByOrganisationId(
   ctx: QueryCtx | MutationCtx,
   organisationId: Id<'organisations'>

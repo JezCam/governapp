@@ -3,6 +3,7 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import type { Invitation } from '@/types/convex';
 import LoadingButton from '../loading-button';
 import { Button } from '../ui/button';
 import {
@@ -12,12 +13,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
-
-type Invitation = {
-  email: string;
-  role: string;
-  permission: 'admin' | 'member';
-};
 
 export default function ConfirmRemoveInvitationDialog(
   props: DialogProps & { invitation: Invitation }
@@ -43,7 +38,7 @@ export default function ConfirmRemoveInvitationDialog(
           <DialogDescription className="flex flex-wrap items-center gap-1">
             Are you sure you want to remove the invitation to
             <span className="font-medium text-foreground">
-              {props.invitation.email}
+              {props.invitation.inviteeEmail}
             </span>
             ?
           </DialogDescription>
