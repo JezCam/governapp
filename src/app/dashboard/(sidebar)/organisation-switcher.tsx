@@ -84,9 +84,7 @@ export default function OrganisationSwitcher({
                   activeOrganisationId: membership.organisation._id,
                 })
                   .then(() => {
-                    toast.success(
-                      `Switched to ${membership.organisation.name}`
-                    );
+                    toast(`Switched to ${membership.organisation.name}`);
                     setIsLoading(false);
                     setOpen(false);
                   })

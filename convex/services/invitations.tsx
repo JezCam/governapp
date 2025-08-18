@@ -4,7 +4,7 @@ import { ConvexError, v } from 'convex/values';
 import { Resend } from 'resend';
 import InvitationEmail from '@/emails/invitation';
 import { api, internal } from '../_generated/api';
-import { internalQuery, mutation, query } from '../_generated/server';
+import { action, internalQuery, mutation, query } from '../_generated/server';
 import '../polyfills';
 import {
   getInvitationById,
@@ -13,6 +13,7 @@ import {
 } from '../utils/invitations';
 import { createMembership } from '../utils/memberships';
 import {
+  getActiveOrganisation,
   getActiveOrganisationId,
   isUserAdminOfOrganisation,
 } from '../utils/organisations';
@@ -208,6 +209,33 @@ export const update = mutation({
   },
 });
 
+export const deleteById = mutation({
+  args: { invitationId: v.id('invitations') },
+  handler: async (ctx, args) => {
+    // Get the invitation
+    const invitation = await getInvitationById(ctx, args.invitationId);
+    if (!invitation) {
+      throw new ConvexError('invitation_not_found');
+    }
+
+    // Check if the current user is an admin of the organisation
+    const currentUserId = await getCurrentUserId(ctx);
+    const organisationId = invitation.organisationId;
+    const isAdmin = await isUserAdminOfOrganisation(
+      ctx,
+      currentUserId,
+      organisationId
+    );
+
+    if (!isAdmin) {
+      throw new ConvexError('not_admin_of_organisation');
+    }
+
+    // Delete the invitation
+    await ctx.db.delete(invitation._id);
+  },
+});
+
 export const create = mutation({
   args: {
     inviteeEmail: v.string(),
@@ -224,11 +252,17 @@ export const create = mutation({
     }
 
     // Get the active organisation
-    const activeOrganisation = await ctx.runQuery(
-      api.services.organisations.getActive
+    const activeOrganisation = await getActiveOrganisation(ctx);
+
+    // Check if the user is an admin of the organisation
+    const isAdmin = await isUserAdminOfOrganisation(
+      ctx,
+      invitedByUser._id,
+      activeOrganisation._id
     );
-    if (!activeOrganisation) {
-      throw new ConvexError('no_active_organisation');
+
+    if (!isAdmin) {
+      throw new ConvexError('not_admin_of_organisation');
     }
 
     // Get the invitee user by email
@@ -266,20 +300,36 @@ export const create = mutation({
     }
 
     // Create the invitation
-    const invitationId = await ctx.db.insert('invitations', {
+    return await ctx.db.insert('invitations', {
       ...args,
       invitedByUserId: invitedByUser._id,
       organisationId: activeOrganisation._id,
       status: 'pending',
     });
+  },
+});
+
+export const email = action({
+  args: {
+    invitationId: v.id('invitations'),
+  },
+  handler: async (ctx, args) => {
+    const invitation = await ctx.runQuery(
+      api.services.invitations.getByIdWithOrganisation,
+      { id: args.invitationId }
+    );
+
+    const activeOrganisation = invitation.organisation;
+    const invitedByUser = invitation.invitedByUser;
+    const inviteeUser = invitation.inviteeUser;
 
     // Send the email
     try {
       const resend = new Resend(process.env.AUTH_RESEND_KEY);
 
       await resend.emails.send({
-        from: 'GovernApp <onboarding@resend.dev>',
-        to: args.inviteeEmail,
+        from: 'GovernApp <onboarding@jeremycameron.com>',
+        to: invitation.inviteeEmail,
         subject: `You're invited to join ${activeOrganisation.name} on GovernApp`,
         html: await render(
           <InvitationEmail
@@ -291,7 +341,7 @@ export const create = mutation({
                 ? `${inviteeUser.firstName} ${inviteeUser.lastName}`
                 : undefined
             }
-            inviteLink={`${process.env.SITE_URL}/invitation/${invitationId}`}
+            inviteLink={`${process.env.SITE_URL}/invitation/${args.invitationId}`}
             organisationImageUrl={activeOrganisation.imageUrl}
             organisationName={activeOrganisation.name}
           />
@@ -299,9 +349,6 @@ export const create = mutation({
       });
     } catch (error) {
       console.error('Error sending invitation email:', error);
-
-      // Delete the invitation if the email fails to send
-      await ctx.db.delete(invitationId);
 
       throw new Error('Failed to send invitation email');
     }

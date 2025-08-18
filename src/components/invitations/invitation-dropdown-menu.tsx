@@ -6,9 +6,11 @@ import {
   MailRemove01Icon,
   MailSend01Icon,
 } from '@hugeicons-pro/core-stroke-rounded';
+import { useAction } from 'convex/react';
 import { type ReactNode, useState } from 'react';
 import { toast } from 'sonner';
 import type { Invitation } from '@/types/convex';
+import { api } from '../../../convex/_generated/api';
 import ConfirmRemoveInvitationDialog from '../dialogs/confirm-remove-invitation-dialog';
 import EditInvitationDialog from '../dialogs/edit-invitation-dialog';
 import { LoadingDropdownMenuItem } from '../loading-dropdown-menu-item';
@@ -26,22 +28,25 @@ export default function InvitationDropdownMenu({
   children?: ReactNode;
   invitation: Invitation;
 }) {
+  const resendInvitationEmail = useAction(api.services.invitations.email);
+
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [editInvitationOpen, setEditInvitationOpen] = useState(false);
   const [confirmRemoveInvitationOpen, setConfirmRemoveTeamMemberOpen] =
     useState(false);
 
-  const handleResendInvitation = async (e: Event) => {
+  const handleResendInvitation = (e: Event) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate a network request
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsLoading(false);
-    toast.error('Not yet implemented', {
-      description: 'This feature is not yet implemented.',
-    });
-    setOpen(false);
+    resendInvitationEmail({ invitationId: invitation._id })
+      .then(() => {
+        toast.success('Invitation resent successfully');
+      })
+      .catch(() => {
+        toast.error('Failed to resend invitation');
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (

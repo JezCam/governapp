@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail01Icon } from '@hugeicons-pro/core-stroke-rounded';
-import { useMutation } from 'convex/react';
+import { useAction, useMutation } from 'convex/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -52,7 +52,9 @@ const formSchema = z.object({
 });
 
 export default function AddTeamMemberForm(props: FormProps) {
+  const deleteInvitation = useMutation(api.services.invitations.deleteById);
   const createInvitation = useMutation(api.services.invitations.create);
+  const sendInvitationEmail = useAction(api.services.invitations.email);
 
   const [isLoading, setIsLoading] = useState(false);
   const [hasOtherRole, setHasOtherRole] = useState(false);
@@ -80,9 +82,19 @@ export default function AddTeamMemberForm(props: FormProps) {
       role: values.role === 'other' ? values.otherRole : values.role,
       isAdmin: values.permission === 'admin',
     })
-      .then(() => {
-        toast.success('Invitation sent successfully!');
-        props.onSuccess?.();
+      .then((invitationId) => {
+        // Send the invitation email
+        sendInvitationEmail({
+          invitationId,
+        })
+          .then(() => {
+            toast.success('Invitation sent successfully');
+            props.onSuccess?.();
+          })
+          .catch(() => {
+            deleteInvitation({ invitationId });
+            toast.error('Failed to send invitation email');
+          });
       })
       .catch((error) => {
         switch (error.data) {
@@ -105,7 +117,13 @@ export default function AddTeamMemberForm(props: FormProps) {
               description: 'No active organisation found',
             });
             break;
-          case 'use_already_member':
+          case 'not_admin_of_organisation':
+            toast.error('Failed to send invitation', {
+              description:
+                'You must be an admin of the organisation to invite members',
+            });
+            break;
+          case 'user_already_member':
             toast.error('Failed to send invitation', {
               description: 'This user is already a member of the organisation',
             });
@@ -129,8 +147,10 @@ export default function AddTeamMemberForm(props: FormProps) {
               description: 'An unexpected error occurred',
             });
         }
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-    setIsLoading(false);
   }
 
   return (
