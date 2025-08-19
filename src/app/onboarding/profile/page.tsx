@@ -5,7 +5,7 @@ import { useMutation, useQuery } from 'convex/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import UserDetailsForm from '@/components/forms/user-details-form';
+import UserDetailsForm from '@/components/forms/edit-profile-form';
 import { api } from '../../../../convex/_generated/api';
 
 export default function Page() {
@@ -33,7 +33,9 @@ export default function Page() {
           onSuccess={() => {
             // Update the user's onboarding step to the next step
             updateCurrentUser({
-              onboardingStep: 1,
+              data: {
+                onboardingStep: 1,
+              },
             })
               .then(() => {
                 router.replace('/onboarding/organisation');

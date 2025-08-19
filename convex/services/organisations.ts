@@ -43,14 +43,12 @@ export const getByAbnOrAcn = internalQuery({
 
 export const updateActive = mutation({
   args: {
-    imageUrl: v.union(v.string(), v.null()),
+    data: v.object({ imageUrl: v.optional(v.string()) }),
   },
   handler: async (ctx, args) => {
     const activeOrganisationId = await getActiveOrganisationId(ctx);
 
-    await updateOrganisationById(ctx, activeOrganisationId, {
-      imageUrl: args.imageUrl || undefined,
-    });
+    await updateOrganisationById(ctx, activeOrganisationId, args.data);
   },
 });
 

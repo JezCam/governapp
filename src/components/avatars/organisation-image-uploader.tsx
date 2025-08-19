@@ -23,7 +23,7 @@ export default function OrganisationImageUploader({
 
   const handleImageChange = async (image: File | null) => {
     if (image === null) {
-      await updateActiveOrganisation({ imageUrl: null });
+      await updateActiveOrganisation({ data: { imageUrl: undefined } });
       return;
     }
     const uploadUrl = await generateUploadUrl();

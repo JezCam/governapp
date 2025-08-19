@@ -55,7 +55,7 @@ export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
   if (onboardingStep === undefined) {
     await fetchMutation(
       api.services.users.updateCurrent,
-      { onboardingStep: 0 },
+      { data: { onboardingStep: 0 } },
       { token: await convexAuth.getToken() }
     );
     return nextjsMiddlewareRedirect(request, '/onboarding/profile');

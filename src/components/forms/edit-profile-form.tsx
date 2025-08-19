@@ -32,7 +32,7 @@ const formSchema = z.object({
     .refine(validator.isMobilePhone, 'Please enter a valid mobile number'),
 });
 
-export default function UserDetailsForm(props: FormProps & { user: User }) {
+export default function EditProfileForm(props: FormProps & { user: User }) {
   const updateCurrentUser = useMutation(api.services.users.updateCurrent);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -49,9 +49,11 @@ export default function UserDetailsForm(props: FormProps & { user: User }) {
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     updateCurrentUser({
-      firstName: values.firstName,
-      lastName: values.lastName,
-      phone: values.mobileNumber,
+      data: {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        phone: values.mobileNumber,
+      },
     })
       .then(() => {
         toast.success('Your details have been updated successfully');

@@ -68,7 +68,7 @@ export default function NavTeam() {
             </CollapsibleTrigger>
             <CollapsibleContent className="[&>ul]:m-0 [&>ul]:border-none [&>ul]:p-1">
               <SidebarMenu className="gap-0">
-                {memberships?.map((membership) => {
+                {memberships.map((membership) => {
                   const user = membership.user;
                   const name = `${user.firstName} ${user.lastName}`;
                   return (

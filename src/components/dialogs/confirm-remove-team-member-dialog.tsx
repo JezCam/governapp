@@ -3,7 +3,7 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import type { DataModel } from '../../../convex/_generated/dataModel';
+import type { User } from '@/types/convex';
 import UserAvatar from '../avatars/user-avatar';
 import LoadingButton from '../loading-button';
 import { Button } from '../ui/button';
@@ -16,7 +16,7 @@ import {
 } from '../ui/dialog';
 
 export default function ConfirmRemoveTeamMemberDialog(
-  props: DialogProps & { user: DataModel['users']['document'] }
+  props: DialogProps & { user: User }
 ) {
   const [isLoading, setIsLoading] = useState(false);
 

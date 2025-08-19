@@ -81,7 +81,9 @@ export default function OrganisationSwitcher({
               onClick={() => {
                 setIsLoading(true);
                 updateCurrentUser({
-                  activeOrganisationId: membership.organisation._id,
+                  data: {
+                    activeOrganisationId: membership.organisation._id,
+                  },
                 })
                   .then(() => {
                     toast(`Switched to ${membership.organisation.name}`);

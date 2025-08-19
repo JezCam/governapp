@@ -38,9 +38,10 @@ export async function updateCurrentUser(
   updates: Partial<{
     firstName: string;
     lastName: string;
-    imageUrl?: string;
+    imageUrl: string | undefined;
     email: string;
     phone: string;
+    onboardingStep: number;
     activeOrganisationId: Id<'organisations'>;
   }>
 ) {

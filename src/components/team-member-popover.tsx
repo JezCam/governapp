@@ -49,7 +49,7 @@ export default function TeamMemberPopover({
             className="-bottom-6 absolute left-3 size-16 border-none ring-4 ring-popover"
             user={user}
           />
-          <TeamMemberPopoverDropdown user={user}>
+          <TeamMemberPopoverDropdown membership={membership}>
             <Button
               className="!bg-black/30 !border-white/30 absolute top-2 right-2 size-8 rounded-full !hover:bg-black/15 text-white hover:text-white"
               size="icon"

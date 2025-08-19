@@ -36,7 +36,9 @@ export default function Page() {
   const handleOnboardingComplete = () => {
     setIsLoading(true);
     updateCurrentUser({
-      onboardingStep: 2,
+      data: {
+        onboardingStep: 2,
+      },
     })
       .then(() => {
         router.replace('/dashboard');
@@ -152,7 +154,9 @@ export default function Page() {
             setPreviousLoading(true);
             // Update the user's onboarding step to the previous step
             updateCurrentUser({
-              onboardingStep: 0,
+              data: {
+                onboardingStep: 0,
+              },
             })
               .then(() => {
                 router.refresh();

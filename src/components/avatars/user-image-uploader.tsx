@@ -20,7 +20,7 @@ export default function UserImageUploader({
   const handleImageChange = async (image: File | null) => {
     if (image === null) {
       await updateCurrentUser({
-        imageUrl: null,
+        data: { imageUrl: undefined },
       });
       return;
     }

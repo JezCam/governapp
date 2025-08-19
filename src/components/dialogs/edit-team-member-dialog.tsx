@@ -1,5 +1,5 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
-import type { DataModel } from '../../../convex/_generated/dataModel';
+import type { Membership, User } from '@/types/convex';
 import UserAvatar from '../avatars/user-avatar';
 import EditTeamMemberDetailsForm from '../forms/edit-team-member-form';
 import {
@@ -11,8 +11,10 @@ import {
 } from '../ui/dialog';
 
 export default function EditTeamMemberDialog(
-  props: DialogProps & { user: DataModel['users']['document'] }
+  props: DialogProps & { membership: Membership & { user: User } }
 ) {
+  const user = props.membership.user;
+
   return (
     <Dialog onOpenChange={props.onOpenChange} open={props.open}>
       <DialogContent>
@@ -21,13 +23,14 @@ export default function EditTeamMemberDialog(
           <DialogDescription className="flex items-center gap-1">
             Edit the details of
             <span className="!h-0 flex items-center gap-1 font-medium">
-              <UserAvatar className="inline-block size-6" user={props.user} />
-              {`${props.user.firstName} ${props.user.lastName}`}
+              <UserAvatar className="inline-block size-6" user={user} />
+              {`${user.firstName} ${user.lastName}`}
             </span>
           </DialogDescription>
         </DialogHeader>
         <EditTeamMemberDetailsForm
-          formButtonProps={{ onPrevious: () => props.onOpenChange?.(false) }}
+          formButtonProps={{ submitText: 'Update' }}
+          membership={props.membership}
           onSuccess={() => props.onOpenChange?.(false)}
         />
       </DialogContent>

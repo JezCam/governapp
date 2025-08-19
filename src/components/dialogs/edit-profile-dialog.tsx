@@ -1,6 +1,6 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
 import type { User } from '@/types/convex';
-import UserDetailsForm from '../forms/user-details-form';
+import EditProfileForm from '../forms/edit-profile-form';
 import {
   Dialog,
   DialogContent,
@@ -19,7 +19,10 @@ export default function EditProfileDialog(props: DialogProps & { user: User }) {
             Edit your profile details
           </DialogDescription>
         </DialogHeader>
-        <UserDetailsForm user={props.user} />
+        <EditProfileForm
+          formButtonProps={{ submitText: 'Update' }}
+          user={props.user}
+        />
       </DialogContent>
     </Dialog>
   );

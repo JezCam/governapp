@@ -1,5 +1,5 @@
-import { ConvexError } from 'convex/values';
-import { query } from '../_generated/server';
+import { ConvexError, v } from 'convex/values';
+import { mutation, query } from '../_generated/server';
 import {
   getMembershipsForCurrentUser,
   getMembershipsInActiveOrganisation,
@@ -54,3 +54,20 @@ export const listForCurrentUserWithOrganisation = query({
 });
 
 // Mutate
+
+export const update = mutation({
+  args: {
+    id: v.id('memberships'),
+    data: v.object({
+      role: v.string(),
+      isAdmin: v.boolean(),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const membership = await ctx.db.get(args.id);
+    if (!membership) {
+      throw new ConvexError('membership_not_found');
+    }
+    await ctx.db.patch(args.id, args.data);
+  },
+});

@@ -52,7 +52,7 @@ export const columns: ColumnDef<Membership & { user: User }>[] = [
   {
     id: 'menu',
     cell: ({ row }) => (
-      <TeamMemberPopoverDropdown user={row.original.user}>
+      <TeamMemberPopoverDropdown membership={row.original}>
         <DropdownMenuTrigger asChild>
           <Button className="float-right size-8" size="icon" variant="outline">
             <HugeiconsIcon icon={MoreVerticalIcon} />

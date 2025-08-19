@@ -63,30 +63,18 @@ export const listInActiveOrganisation = query({
 
 export const updateCurrent = mutation({
   args: {
-    firstName: v.optional(v.string()),
-    lastName: v.optional(v.string()),
-    imageUrl: v.optional(v.union(v.string(), v.null())),
-    email: v.optional(v.string()),
-    phone: v.optional(v.string()),
-    activeOrganisationId: v.optional(v.id('organisations')),
-    onboardingStep: v.optional(v.number()),
+    data: v.object({
+      firstName: v.optional(v.string()),
+      lastName: v.optional(v.string()),
+      imageUrl: v.optional(v.string()),
+      email: v.optional(v.string()),
+      phone: v.optional(v.string()),
+      activeOrganisationId: v.optional(v.id('organisations')),
+      onboardingStep: v.optional(v.number()),
+    }),
   },
   handler: async (ctx, args) => {
-    await updateCurrentUser(ctx, {
-      ...(args.firstName ? { firstName: args.firstName } : {}),
-      ...(args.lastName ? { lastName: args.lastName } : {}),
-      ...(args.imageUrl ? { imageUrl: args.imageUrl } : {}),
-      ...(args.email ? { email: args.email } : {}),
-      ...(args.phone ? { phone: args.phone } : {}),
-      ...(args.activeOrganisationId
-        ? { activeOrganisationId: args.activeOrganisationId }
-        : {}),
-      ...(args.onboardingStep !== undefined
-        ? { onboardingStep: args.onboardingStep }
-        : {}), // Ensure onboardingStep is updated if provided
-      // Remove imageUrl if it's null
-      ...(args.imageUrl === null ? { imageUrl: undefined } : {}),
-    });
+    await updateCurrentUser(ctx, args.data);
   },
 });
 

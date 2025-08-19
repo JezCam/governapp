@@ -8,7 +8,7 @@ import {
 } from '@hugeicons-pro/core-stroke-rounded';
 import Link from 'next/link';
 import { type ReactNode, useState } from 'react';
-import type { DataModel } from '../../convex/_generated/dataModel';
+import type { Membership, User } from '@/types/convex';
 import ConfirmRemoveTeamMemberDialog from './dialogs/confirm-remove-team-member-dialog';
 import EditTeamMemberDialog from './dialogs/edit-team-member-dialog';
 import {
@@ -19,22 +19,24 @@ import {
 } from './ui/dropdown-menu';
 
 export default function TeamMemberPopoverDropdown({
-  user,
+  membership,
   children,
 }: {
-  user: DataModel['users']['document'];
+  membership: Membership & { user: User };
   children: ReactNode;
 }) {
   const [editTeamMemberOpen, setEditTeamMemberOpen] = useState(false);
   const [confirmRemoveTeamMemberOpen, setConfirmRemoveTeamMemberOpen] =
     useState(false);
 
+  const user = membership.user;
+
   return (
     <DropdownMenu>
       <EditTeamMemberDialog
+        membership={membership}
         onOpenChange={setEditTeamMemberOpen}
         open={editTeamMemberOpen}
-        user={user}
       />
       <ConfirmRemoveTeamMemberDialog
         onOpenChange={setConfirmRemoveTeamMemberOpen}

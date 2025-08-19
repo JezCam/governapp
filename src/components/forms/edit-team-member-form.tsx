@@ -2,10 +2,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from 'convex/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
+import type { Membership, User } from '@/types/convex';
+import { api } from '../../../convex/_generated/api';
 import {
   Form,
   FormControl,
@@ -46,18 +49,30 @@ const formSchema = z.object({
   permission: z.enum(['admin', 'member']),
 });
 
-export default function EditTeamMemberForm(props: FormProps) {
+export default function EditTeamMemberForm(
+  props: FormProps & { membership: Membership & { user: User } }
+) {
+  const updateMembership = useMutation(api.services.memberships.update);
+
   const [isLoading, setIsLoading] = useState(false);
-  const [hasOtherRole, setHasOtherRole] = useState(false);
+  const [hasOtherRole, setHasOtherRole] = useState(
+    !roles.includes(props.membership.role)
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      otherRole: '',
+      role: roles.includes(props.membership.role)
+        ? props.membership.role
+        : 'other',
+      otherRole: roles.includes(props.membership.role)
+        ? ''
+        : props.membership.role,
+      permission: props.membership.isAdmin ? 'admin' : 'member',
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof formSchema>) {
     if (values.role === 'other' && !values.otherRole.length) {
       form.setError('otherRole', {
         type: 'manual',
@@ -66,17 +81,25 @@ export default function EditTeamMemberForm(props: FormProps) {
       return;
     }
 
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     setIsLoading(true);
-    console.log('Form submitted:', values);
-    // sleep for 1 second to simulate a network request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    toast.error('Not yet implemented', {
-      description: 'This feature is not yet implemented.',
-    });
-    props.onSuccess?.();
+    updateMembership({
+      id: props.membership._id,
+      data: {
+        role: values.role === 'other' ? values.otherRole : values.role,
+        isAdmin: values.permission === 'admin',
+      },
+    })
+      .then(() => {
+        toast.success('Team member updated successfully');
+        props.onSuccess?.();
+      })
+      .catch((error) => {
+        console.error('Failed to update team member:', error);
+        toast.error('Failed to update team member');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   return (
@@ -116,7 +139,7 @@ export default function EditTeamMemberForm(props: FormProps) {
             name="role"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Member Role</FormLabel>
+                <FormLabel>Role</FormLabel>
                 <Select
                   defaultValue={field.value}
                   onValueChange={(role) => {
