@@ -86,6 +86,7 @@ export async function createOrganisationAndMembership(
     userId: data.createdByUserId,
     role: data.role,
     isAdmin: true,
+    isOwner: true,
   });
 
   await ctx.db.patch(data.createdByUserId, {

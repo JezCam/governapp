@@ -3,6 +3,17 @@ import { ConvexError } from 'convex/values';
 import type { Id } from '../_generated/dataModel';
 import type { ActionCtx, MutationCtx, QueryCtx } from '../_generated/server';
 
+export async function getUserById(
+  ctx: QueryCtx | MutationCtx,
+  userId: Id<'users'>
+) {
+  const user = await ctx.db.get(userId);
+  if (!user) {
+    throw new ConvexError('user_not_found');
+  }
+  return user;
+}
+
 export async function getCurrentUserId(
   ctx: QueryCtx | MutationCtx | ActionCtx
 ) {

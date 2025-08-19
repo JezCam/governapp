@@ -94,8 +94,24 @@ export default function EditTeamMemberForm(
         props.onSuccess?.();
       })
       .catch((error) => {
-        console.error('Failed to update team member:', error);
-        toast.error('Failed to update team member');
+        switch (error.data) {
+          case 'membership_not_found':
+            toast.error('Membership not found');
+            break;
+          case 'cannot_remove_admin_status_of_creator':
+            toast.error(
+              'You cannot remove admin status from the organisation creator'
+            );
+            form.setError('permission', {
+              type: 'manual',
+              message:
+                'You cannot remove admin status from the organisation creator',
+            });
+            break;
+          default:
+            toast.error('Failed to update team member');
+            break;
+        }
       })
       .finally(() => {
         setIsLoading(false);

@@ -146,14 +146,14 @@ export const acceptInvitationById = mutation({
       throw new ConvexError('invitee_email_mismatch');
     }
 
+    const { role, isAdmin } = invitation;
+
     // Create a new membership
-    await createMembership(
-      ctx,
-      currentUser._id,
-      invitation.organisationId,
-      invitation.role,
-      invitation.isAdmin
-    );
+    await createMembership(ctx, currentUser._id, invitation.organisationId, {
+      role,
+      isAdmin,
+      isOwner: false, // Assuming the user is not the owner when accepting an invitation
+    });
 
     // Update the invitation status to accepted
     await ctx.db.patch(invitation._id, { status: 'accepted' });

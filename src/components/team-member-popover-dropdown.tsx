@@ -39,9 +39,9 @@ export default function TeamMemberPopoverDropdown({
         open={editTeamMemberOpen}
       />
       <ConfirmRemoveTeamMemberDialog
+        membership={membership}
         onOpenChange={setConfirmRemoveTeamMemberOpen}
         open={confirmRemoveTeamMemberOpen}
-        user={user}
       />
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent

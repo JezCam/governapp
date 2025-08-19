@@ -31,6 +31,7 @@ export const organisationTables = {
     userId: v.id('users'),
     role: v.string(),
     isAdmin: v.boolean(),
+    isOwner: v.boolean(),
   }).index('by_organisation_user', ['organisationId', 'userId']),
   invitations: defineTable({
     invitedByUserId: v.id('users'),

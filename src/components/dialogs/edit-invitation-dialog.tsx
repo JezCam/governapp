@@ -22,7 +22,10 @@ export default function EditInvitationDialog(
           </DialogDescription>
         </DialogHeader>
         <EditInvitationForm
-          formButtonProps={{ onPrevious: () => props.onOpenChange?.(false) }}
+          formButtonProps={{
+            onPrevious: () => props.onOpenChange?.(false),
+            previousText: 'Cancel',
+          }}
           invitation={props.invitation}
           onSuccess={() => props.onOpenChange?.(false)}
         />

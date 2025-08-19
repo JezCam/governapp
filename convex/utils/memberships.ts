@@ -4,6 +4,17 @@ import type { MutationCtx, QueryCtx } from '../_generated/server';
 import { getActiveOrganisationId } from './organisations';
 import { getCurrentUserId } from './users';
 
+export async function getMembershipById(
+  ctx: QueryCtx | MutationCtx,
+  membershipId: Id<'memberships'>
+) {
+  const membership = await ctx.db.get(membershipId);
+  if (!membership) {
+    throw new ConvexError('membership_not_found');
+  }
+  return membership;
+}
+
 export async function getMembershipByUserIdAndOrganisationId(
   ctx: QueryCtx | MutationCtx,
   userId: Id<'users'>,
@@ -103,14 +114,12 @@ export async function createMembership(
   ctx: MutationCtx,
   userId: Id<'users'>,
   organisationId: Id<'organisations'>,
-  role: string,
-  isAdmin: boolean
+  data: { role: string; isAdmin: boolean; isOwner: boolean }
 ) {
   const membership = await ctx.db.insert('memberships', {
     userId,
     organisationId,
-    role,
-    isAdmin,
+    ...data,
   });
 
   return membership;

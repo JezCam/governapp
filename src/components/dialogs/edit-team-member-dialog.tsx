@@ -29,7 +29,11 @@ export default function EditTeamMemberDialog(
           </DialogDescription>
         </DialogHeader>
         <EditTeamMemberDetailsForm
-          formButtonProps={{ submitText: 'Update' }}
+          formButtonProps={{
+            submitText: 'Update',
+            onPrevious: () => props.onOpenChange?.(false),
+            previousText: 'Cancel',
+          }}
           membership={props.membership}
           onSuccess={() => props.onOpenChange?.(false)}
         />
