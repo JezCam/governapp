@@ -205,7 +205,7 @@ export default function AvatarUploader({
   return (
     <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
       <div className={cn('flex h-20 w-fit items-center gap-4', className)}>
-        <div className="flex aspect-square h-full shrink-0 items-center justify-center overflow-hidden rounded-full border bg-accent text-muted-foreground">
+        <div className="relative flex aspect-square h-full shrink-0 items-center justify-center overflow-hidden rounded-full border bg-accent text-muted-foreground">
           {imageUrl === undefined && (
             <Loader2 className="size-5 animate-spin" />
           )}
@@ -222,10 +222,9 @@ export default function AvatarUploader({
             <Image
               alt="User avatar"
               className="size-full object-cover"
-              height={64}
+              fill
               src={imageUrl}
               style={{ objectFit: 'cover' }}
-              width={64}
             />
           )}
         </div>
