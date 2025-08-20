@@ -22,7 +22,7 @@ import { createMembership } from '../data/memberships';
 import { getUserByEmail } from '../data/users';
 import { createConvexError } from '../errors';
 import {
-  currentUserActiveOrganisationAdminGuard,
+  isAdminByCurrentUserAndActiveOrganisation,
   isAdminByUserIdAndOrganisationId,
 } from './memberships';
 import { getActiveOrganisationId } from './organisations';
@@ -183,7 +183,10 @@ export const update = mutation({
   },
   handler: async (ctx, args) => {
     // Check if the current user is an admin of the organisation
-    await currentUserActiveOrganisationAdminGuard(ctx);
+    const isAdmin = await isAdminByCurrentUserAndActiveOrganisation(ctx);
+    if (!isAdmin) {
+      throw createConvexError('NOT_ADMIN_OF_ORGANISATION');
+    }
 
     // Get invitation
     const invitation = await getInvitationById(ctx, args.invitationId);
@@ -200,7 +203,10 @@ export const deleteById = mutation({
   args: { invitationId: v.id('invitations') },
   handler: async (ctx, args) => {
     // Check if the current user is an admin of the organisation
-    await currentUserActiveOrganisationAdminGuard(ctx);
+    const isAdmin = await isAdminByCurrentUserAndActiveOrganisation(ctx);
+    if (!isAdmin) {
+      throw createConvexError('NOT_ADMIN_OF_ORGANISATION');
+    }
 
     // Get the invitation
     const invitation = await getInvitationById(ctx, args.invitationId);

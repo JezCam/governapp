@@ -64,7 +64,7 @@ export async function isAdminByUserIdAndOrganisationId(
   return membership.isAdmin;
 }
 
-export async function currentUserActiveOrganisationAdminGuard(
+export async function isAdminByCurrentUserAndActiveOrganisation(
   ctx: QueryCtx | MutationCtx
 ) {
   const currentUserId = await getCurrentUserId(ctx);
@@ -76,9 +76,7 @@ export async function currentUserActiveOrganisationAdminGuard(
     activeOrganisationId
   );
 
-  if (!isAdmin) {
-    throw createConvexError('NOT_ADMIN_OF_ORGANISATION');
-  }
+  return isAdmin;
 }
 
 // Query
@@ -140,6 +138,12 @@ export const listForCurrentUserWithOrganisation = query({
     }
 
     return membershipsWithOrganisation;
+  },
+});
+
+export const isAdmin = query({
+  handler: async (ctx) => {
+    return await isAdminByCurrentUserAndActiveOrganisation(ctx);
   },
 });
 
