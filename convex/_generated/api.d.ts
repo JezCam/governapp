@@ -14,18 +14,19 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as auth from "../auth.js";
+import type * as data_invitations from "../data/invitations.js";
+import type * as data_memberships from "../data/memberships.js";
+import type * as data_organisations from "../data/organisations.js";
+import type * as data_storage from "../data/storage.js";
+import type * as data_users from "../data/users.js";
+import type * as errors from "../errors.js";
 import type * as http from "../http.js";
-import type * as schemas_organisationSchemas from "../schemas/organisationSchemas.js";
-import type * as services_files from "../services/files.js";
+import type * as schemas_organisations from "../schemas/organisations.js";
 import type * as services_invitations from "../services/invitations.js";
 import type * as services_memberships from "../services/memberships.js";
 import type * as services_organisations from "../services/organisations.js";
+import type * as services_storage from "../services/storage.js";
 import type * as services_users from "../services/users.js";
-import type * as utils_invitations from "../utils/invitations.js";
-import type * as utils_memberships from "../utils/memberships.js";
-import type * as utils_organisations from "../utils/organisations.js";
-import type * as utils_storage from "../utils/storage.js";
-import type * as utils_users from "../utils/users.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -37,18 +38,19 @@ import type * as utils_users from "../utils/users.js";
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  "data/invitations": typeof data_invitations;
+  "data/memberships": typeof data_memberships;
+  "data/organisations": typeof data_organisations;
+  "data/storage": typeof data_storage;
+  "data/users": typeof data_users;
+  errors: typeof errors;
   http: typeof http;
-  "schemas/organisationSchemas": typeof schemas_organisationSchemas;
-  "services/files": typeof services_files;
+  "schemas/organisations": typeof schemas_organisations;
   "services/invitations": typeof services_invitations;
   "services/memberships": typeof services_memberships;
   "services/organisations": typeof services_organisations;
+  "services/storage": typeof services_storage;
   "services/users": typeof services_users;
-  "utils/invitations": typeof utils_invitations;
-  "utils/memberships": typeof utils_memberships;
-  "utils/organisations": typeof utils_organisations;
-  "utils/storage": typeof utils_storage;
-  "utils/users": typeof utils_users;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

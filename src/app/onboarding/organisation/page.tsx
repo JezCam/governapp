@@ -176,6 +176,7 @@ export default function Page() {
               });
           },
           submitText: 'Continue',
+          previousText: 'Your details',
         }}
         onSuccess={(data) => {
           setOrganisationData(data);

@@ -1,40 +1,127 @@
-import { ConvexError, v } from 'convex/values';
-import { mutation, query } from '../_generated/server';
+import { v } from 'convex/values';
+import type { Id } from '../_generated/dataModel';
 import {
-  getMembershipById,
-  getMembershipsByUserId,
-  getMembershipsForCurrentUser,
-  getMembershipsInActiveOrganisation,
-  getMembershipsInActiveOrganisationWithUsers,
-} from '../utils/memberships';
-import { getUserById } from '../utils/users';
+  type MutationCtx,
+  mutation,
+  type QueryCtx,
+  query,
+} from '../_generated/server';
+import {
+  getMembershipByUserIdAndOrganisationId,
+  listMembershipsByOrganisationId,
+  listMembershipsByUserId,
+} from '../data/memberships';
+import { createConvexError } from '../errors';
+import { getActiveOrganisationId } from './organisations';
+import { getCurrentUserId } from './users';
+
+// Helpers
+
+export async function listMembershipsForCurrentUser(
+  ctx: QueryCtx | MutationCtx
+) {
+  const currentUserId = await getCurrentUserId(ctx);
+  const memberships = await listMembershipsByUserId(ctx, currentUserId);
+
+  if (memberships.length === 0) {
+    throw createConvexError('NO_MEMBERSHIPS_FOUND');
+  }
+
+  return memberships;
+}
+
+export async function listMembershipsInActiveOrganisation(
+  ctx: QueryCtx | MutationCtx
+) {
+  const activeOrganisationId = await getActiveOrganisationId(ctx);
+  const memberships = await listMembershipsByOrganisationId(
+    ctx,
+    activeOrganisationId
+  );
+
+  if (memberships.length === 0) {
+    throw createConvexError('NO_MEMBERSHIPS_FOUND');
+  }
+
+  return memberships;
+}
+
+export async function isAdminByUserIdAndOrganisationId(
+  ctx: QueryCtx | MutationCtx,
+  userId: Id<'users'>,
+  organisationId: Id<'organisations'>
+) {
+  const membership = await getMembershipByUserIdAndOrganisationId(
+    ctx,
+    userId,
+    organisationId
+  );
+
+  if (!membership) {
+    throw createConvexError('MEMBERSHIP_NOT_FOUND');
+  }
+
+  return membership.isAdmin;
+}
+
+export async function currentUserActiveOrganisationAdminGuard(
+  ctx: QueryCtx | MutationCtx
+) {
+  const currentUserId = await getCurrentUserId(ctx);
+  const activeOrganisationId = await getActiveOrganisationId(ctx);
+
+  const isAdmin = await isAdminByUserIdAndOrganisationId(
+    ctx,
+    currentUserId,
+    activeOrganisationId
+  );
+
+  if (!isAdmin) {
+    throw createConvexError('NOT_ADMIN_OF_ORGANISATION');
+  }
+}
 
 // Query
 
 export const listInActiveOrganisation = query({
   handler: async (ctx) => {
-    const memberships = await getMembershipsInActiveOrganisation(ctx);
-    return memberships;
+    return await listMembershipsInActiveOrganisation(ctx);
   },
 });
 
 export const listInActiveOrganisationWithUsers = query({
   handler: async (ctx) => {
-    const membershipsWithUsers =
-      await getMembershipsInActiveOrganisationWithUsers(ctx);
+    const memberships = await listMembershipsInActiveOrganisation(ctx);
+    const membershipsWithUsers = await Promise.all(
+      memberships.map(async (membership) => {
+        const user = await ctx.db.get(membership.userId);
+        if (user === null) {
+          return null;
+        }
+        return {
+          ...membership,
+          user,
+        };
+      })
+    ).then((results) => results.filter((m) => m !== null));
+
+    if (membershipsWithUsers.length === 0) {
+      throw createConvexError('NO_MEMBERSHIPS_WITH_USERS_FOUND');
+    }
+
     return membershipsWithUsers;
   },
 });
 
 export const listForCurrentUser = query({
   handler: async (ctx) => {
-    return await getMembershipsForCurrentUser(ctx);
+    return await listMembershipsForCurrentUser(ctx);
   },
 });
 
 export const listForCurrentUserWithOrganisation = query({
   handler: async (ctx) => {
-    const memberships = await getMembershipsForCurrentUser(ctx);
+    const memberships = await listMembershipsForCurrentUser(ctx);
     const membershipsWithOrganisation = await Promise.all(
       memberships.map(async (membership) => {
         const organisation = await ctx.db.get(membership.organisationId);
@@ -49,7 +136,7 @@ export const listForCurrentUserWithOrganisation = query({
     ).then((results) => results.filter((m) => m !== null));
 
     if (membershipsWithOrganisation.length === 0) {
-      throw new ConvexError('no_memberships_with_organisations_for_user');
+      throw createConvexError('NO_MEMBERSHIPS_WITH_ORGANISATION_FOUND');
     }
 
     return membershipsWithOrganisation;
@@ -67,11 +154,15 @@ export const update = mutation({
     }),
   },
   handler: async (ctx, args) => {
-    const membership = await getMembershipById(ctx, args.id);
+    const membership = await ctx.db.get(args.id);
+
+    if (!membership) {
+      throw createConvexError('MEMBERSHIP_NOT_FOUND');
+    }
 
     // If removing admin status, ensure the user is not the organisation creator
-    if (args.data.isAdmin === false && membership.isOwner) {
-      throw new ConvexError('cannot_remove_admin_status_of_creator');
+    if (args.data.isAdmin === false && membership.isCreator) {
+      throw createConvexError('CANNOT_DEMOTE_ORGANISATION_CREATOR');
     }
 
     await ctx.db.patch(args.id, args.data);
@@ -81,17 +172,25 @@ export const update = mutation({
 export const remove = mutation({
   args: { id: v.id('memberships') },
   handler: async (ctx, args) => {
-    const membership = await getMembershipById(ctx, args.id);
+    const membership = await ctx.db.get(args.id);
+
+    if (!membership) {
+      throw createConvexError('MEMBERSHIP_NOT_FOUND');
+    }
+
+    const user = await ctx.db.get(membership.userId);
+    if (!user) {
+      throw createConvexError('USER_NOT_FOUND');
+    }
 
     // If removing the organisation creator, throw an error
-    if (membership.isOwner) {
-      throw new ConvexError('cannot_remove_organisation_creator');
+    if (membership.isCreator) {
+      throw createConvexError('CANNOT_REMOVE_ORGANISATION_CREATOR');
     }
 
     // If user has no other organisations, update their onboarding step
     // Otherwise, update their active organisation
-    const user = await getUserById(ctx, membership.userId);
-    const memberships = await getMembershipsByUserId(ctx, membership.userId);
+    const memberships = await listMembershipsByUserId(ctx, membership.userId);
 
     const otherMembership = memberships.find(
       (m) => m.organisationId !== membership.organisationId

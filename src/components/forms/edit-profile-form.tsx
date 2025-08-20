@@ -72,7 +72,11 @@ export default function EditProfileForm(props: FormProps & { user: User }) {
             break;
         }
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        if (!props.redirectOnSuccess) {
+          setIsLoading(false);
+        }
+      });
   }
 
   return (

@@ -1,27 +1,45 @@
 /** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import { render } from '@react-email/components';
-import { ConvexError, v } from 'convex/values';
+import { v } from 'convex/values';
 import { Resend } from 'resend';
 import InvitationEmail from '@/emails/invitation';
-import { api, internal } from '../_generated/api';
-import { action, internalQuery, mutation, query } from '../_generated/server';
-import '../polyfills';
+import { api } from '../_generated/api';
 import {
-  getInvitationById,
+  action,
+  type MutationCtx,
+  mutation,
+  type QueryCtx,
+  query,
+} from '../_generated/server';
+import '../polyfills';
+import type { Id } from '../_generated/dataModel';
+import {
+  listInvitationsByEmailAndOrganisation,
   listInvitationsByEmailAndStatus,
   listInvitationsByOrganisationAndStatus,
-} from '../utils/invitations';
-import { createMembership } from '../utils/memberships';
+} from '../data/invitations';
+import { createMembership } from '../data/memberships';
+import { getUserByEmail } from '../data/users';
+import { createConvexError } from '../errors';
 import {
-  getActiveOrganisation,
-  getActiveOrganisationId,
-  isUserAdminOfOrganisation,
-} from '../utils/organisations';
-import {
-  getCurrentUser,
-  getCurrentUserId,
-  getUserByEmail,
-} from '../utils/users';
+  currentUserActiveOrganisationAdminGuard,
+  isAdminByUserIdAndOrganisationId,
+} from './memberships';
+import { getActiveOrganisationId } from './organisations';
+import { getCurrentUser } from './users';
+
+// Helpers
+export async function getInvitationById(
+  ctx: QueryCtx | MutationCtx,
+  invitationId: Id<'invitations'>
+) {
+  const invitation = await ctx.db.get(invitationId);
+  if (!invitation) {
+    throw createConvexError('INVITATION_NOT_FOUND');
+  }
+
+  return invitation;
+}
 
 // Query
 
@@ -30,9 +48,6 @@ export const getByIdWithOrganisation = query({
   handler: async (ctx, args) => {
     // Get the invitation
     const invitation = await getInvitationById(ctx, args.id);
-    if (!invitation) {
-      throw new ConvexError('invitation_not_found');
-    }
 
     // Get the invited by user
     const invitedByUser = await ctx.db.get(invitation.invitedByUserId);
@@ -60,32 +75,13 @@ export const getByIdWithOrganisation = query({
   },
 });
 
-export const getByEmailAndOrganisation = internalQuery({
-  args: {
-    email: v.string(),
-    organisationId: v.id('organisations'),
-  },
-  handler: async (ctx, args) => {
-    const invitation = await ctx.db
-      .query('invitations')
-      .withIndex('by_organisation_email', (q) =>
-        q
-          .eq('organisationId', args.organisationId)
-          .eq('inviteeEmail', args.email)
-      )
-      .first();
-
-    return invitation;
-  },
-});
-
 export const listPendingByCurrentUserWithOrganisationAndInvitedByUser = query({
   handler: async (ctx) => {
     const currentUser = await getCurrentUser(ctx);
 
     const curreentUserEmail = currentUser.email;
     if (!curreentUserEmail) {
-      throw new ConvexError('missing_email');
+      throw createConvexError('NO_EMAIL');
     }
 
     const invitations = await listInvitationsByEmailAndStatus(
@@ -136,14 +132,12 @@ export const listPendingByActiveOrganisation = query({
 export const acceptInvitationById = mutation({
   args: { invitationId: v.id('invitations') },
   handler: async (ctx, args) => {
+    // Get the invitation
     const invitation = await getInvitationById(ctx, args.invitationId);
-    if (!invitation) {
-      throw new ConvexError('invitation_not_found');
-    }
 
     const currentUser = await getCurrentUser(ctx);
     if (currentUser.email !== invitation.inviteeEmail) {
-      throw new ConvexError('invitee_email_mismatch');
+      throw createConvexError('INVITEE_EMAIL_MISMATCH');
     }
 
     const { role, isAdmin } = invitation;
@@ -152,7 +146,12 @@ export const acceptInvitationById = mutation({
     await createMembership(ctx, currentUser._id, invitation.organisationId, {
       role,
       isAdmin,
-      isOwner: false, // Assuming the user is not the owner when accepting an invitation
+      isCreator: false, // Assuming the user is not the owner when accepting an invitation
+    });
+
+    // Set the active organisation for the user
+    await ctx.db.patch(currentUser._id, {
+      activeOrganisationId: invitation.organisationId,
     });
 
     // Update the invitation status to accepted
@@ -163,14 +162,12 @@ export const acceptInvitationById = mutation({
 export const declineInvitationById = mutation({
   args: { invitationId: v.id('invitations') },
   handler: async (ctx, args) => {
+    // Get the invitation
     const invitation = await getInvitationById(ctx, args.invitationId);
-    if (!invitation) {
-      throw new ConvexError('invitation_not_found');
-    }
 
     const currentUser = await getCurrentUser(ctx);
     if (currentUser.email !== invitation.inviteeEmail) {
-      throw new ConvexError('invitee_email_mismatch');
+      throw createConvexError('INVITEE_EMAIL_MISMATCH');
     }
 
     // Update the invitation status to declined
@@ -185,21 +182,11 @@ export const update = mutation({
     isAdmin: v.boolean(),
   },
   handler: async (ctx, args) => {
+    // Check if the current user is an admin of the organisation
+    await currentUserActiveOrganisationAdminGuard(ctx);
+
     // Get invitation
     const invitation = await getInvitationById(ctx, args.invitationId);
-
-    // Check if the current user is an admin of the organisation
-    const currentUserId = await getCurrentUserId(ctx);
-    const organisationId = invitation.organisationId;
-    const isAdmin = await isUserAdminOfOrganisation(
-      ctx,
-      currentUserId,
-      organisationId
-    );
-
-    if (!isAdmin) {
-      throw new ConvexError('not_admin_of_organisation');
-    }
 
     // Update the invitation
     await ctx.db.patch(invitation._id, {
@@ -212,24 +199,11 @@ export const update = mutation({
 export const deleteById = mutation({
   args: { invitationId: v.id('invitations') },
   handler: async (ctx, args) => {
+    // Check if the current user is an admin of the organisation
+    await currentUserActiveOrganisationAdminGuard(ctx);
+
     // Get the invitation
     const invitation = await getInvitationById(ctx, args.invitationId);
-    if (!invitation) {
-      throw new ConvexError('invitation_not_found');
-    }
-
-    // Check if the current user is an admin of the organisation
-    const currentUserId = await getCurrentUserId(ctx);
-    const organisationId = invitation.organisationId;
-    const isAdmin = await isUserAdminOfOrganisation(
-      ctx,
-      currentUserId,
-      organisationId
-    );
-
-    if (!isAdmin) {
-      throw new ConvexError('not_admin_of_organisation');
-    }
 
     // Delete the invitation
     await ctx.db.delete(invitation._id);
@@ -243,26 +217,22 @@ export const create = mutation({
     isAdmin: v.boolean(),
   },
   handler: async (ctx, args) => {
-    // Authenticate user
     const invitedByUser = await getCurrentUser(ctx);
+    const activeOrganisationId = await getActiveOrganisationId(ctx);
 
-    // Check if the invitee is trying to invite themselves
-    if (invitedByUser.email === args.inviteeEmail) {
-      throw new ConvexError('self_invitation');
-    }
-
-    // Get the active organisation
-    const activeOrganisation = await getActiveOrganisation(ctx);
-
-    // Check if the user is an admin of the organisation
-    const isAdmin = await isUserAdminOfOrganisation(
+    const isAdmin = await isAdminByUserIdAndOrganisationId(
       ctx,
       invitedByUser._id,
-      activeOrganisation._id
+      activeOrganisationId
     );
 
     if (!isAdmin) {
-      throw new ConvexError('not_admin_of_organisation');
+      throw createConvexError('NOT_ADMIN_OF_ORGANISATION');
+    }
+
+    // Check if the invitee is trying to invite themselves
+    if (invitedByUser.email === args.inviteeEmail) {
+      throw createConvexError('CANNOT_INVITE_SELF');
     }
 
     // Get the invitee user by email
@@ -276,34 +246,34 @@ export const create = mutation({
         .query('memberships')
         .withIndex('by_organisation_user', (q) =>
           q
-            .eq('organisationId', activeOrganisation._id)
+            .eq('organisationId', activeOrganisationId)
             .eq('userId', inviteeUser._id)
         )
         .first();
 
       if (existingMembership) {
-        throw new ConvexError('user_already_member');
+        throw createConvexError('INVITEE_ALREADY_MEMBER');
       }
     }
 
     // Check if there's already an invitation for this email and organisation
-    const existingInvitation = await ctx.runQuery(
-      internal.services.invitations.getByEmailAndOrganisation,
-      {
-        email: args.inviteeEmail,
-        organisationId: activeOrganisation._id,
-      }
+    const existingInvitations = await listInvitationsByEmailAndOrganisation(
+      ctx,
+      args.inviteeEmail,
+      activeOrganisationId
     );
 
-    if (existingInvitation) {
-      throw new ConvexError('invitation_already_exists');
+    if (
+      existingInvitations.some((invitation) => invitation.status === 'pending')
+    ) {
+      throw createConvexError('INVITATION_ALREADY_EXISTS');
     }
 
     // Create the invitation
     return await ctx.db.insert('invitations', {
       ...args,
       invitedByUserId: invitedByUser._id,
-      organisationId: activeOrganisation._id,
+      organisationId: activeOrganisationId,
       status: 'pending',
     });
   },

@@ -4,6 +4,7 @@
 import { useMutation } from 'convex/react';
 import { toast } from 'sonner';
 import { api } from '../../../convex/_generated/api';
+import type { ErrorCode } from '../../../convex/errors';
 import AvatarUploader from './avatar-uploader';
 
 export default function OrganisationImageUploader({
@@ -13,7 +14,7 @@ export default function OrganisationImageUploader({
   imageUrl?: string;
   className?: string;
 }) {
-  const generateUploadUrl = useMutation(api.services.files.generateUploadUrl);
+  const generateUploadUrl = useMutation(api.services.storage.generateUploadUrl);
   const updateActiveOrganisationImage = useMutation(
     api.services.organisations.updateImageForActive
   );
@@ -23,30 +24,57 @@ export default function OrganisationImageUploader({
 
   const handleImageChange = async (image: File | null) => {
     if (image === null) {
-      await updateActiveOrganisation({ data: { imageUrl: undefined } });
+      await updateActiveOrganisation({
+        data: { imageUrl: undefined },
+      });
       return;
     }
+
     const uploadUrl = await generateUploadUrl();
-    try {
-      const response = await fetch(uploadUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': image.type,
-        },
-        body: image,
-      });
 
-      const { storageId } = await response.json();
-
-      updateActiveOrganisationImage({
-        storageId,
-      });
-    } catch (error) {
-      console.error('Error uploading image:', error);
+    // This error is repeated in multiple places, so we define it once
+    const defaultError = () =>
       toast.error('Failed to upload image', {
-        description: 'There was an error uploading your organisation image.',
+        description: 'There was an error uploading your profile image.',
       });
-    }
+
+    fetch(uploadUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': image.type,
+      },
+      body: image,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          defaultError();
+        }
+
+        const { storageId } = await response.json();
+
+        updateActiveOrganisationImage({
+          storageId,
+        })
+          .then(() => {
+            toast.success('Profile image updated successfully');
+          })
+          .catch((error) => {
+            switch (error.data as ErrorCode) {
+              case 'UNAUTHENTICATED':
+                toast.error('You must be logged in to upload an image');
+                break;
+              case 'USER_NOT_FOUND':
+                toast.error('User not found');
+                break;
+              default:
+                defaultError();
+                break;
+            }
+          });
+      })
+      .catch(() => {
+        defaultError();
+      });
   };
 
   return (

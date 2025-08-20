@@ -14,6 +14,7 @@ export type FormButtonProps = {
 
 export type FormProps = {
   formButtonProps?: FormButtonProps;
+  redirectOnSuccess?: boolean;
   onSuccess?: () => void;
   onError?: () => void;
 };

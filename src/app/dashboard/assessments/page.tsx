@@ -144,7 +144,7 @@ export default function Assessments() {
   });
 
   return (
-    <div className="size-full p-4">
+    <div className="max-w-[1440px] p-4">
       <NewAssessmentDialog
         onOpenChange={setNewAssessmentOpen}
         open={newAssessmentOpen}

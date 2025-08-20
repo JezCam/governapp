@@ -19,7 +19,6 @@ export const turnoverRanges = [
 
 export const organisationTables = {
   organisations: defineTable({
-    createdByUserId: v.id('users'),
     abnOrAcn: v.string(),
     imageUrl: v.optional(v.string()),
     name: v.string(),
@@ -31,7 +30,7 @@ export const organisationTables = {
     userId: v.id('users'),
     role: v.string(),
     isAdmin: v.boolean(),
-    isOwner: v.boolean(),
+    isCreator: v.boolean(),
   }).index('by_organisation_user', ['organisationId', 'userId']),
   invitations: defineTable({
     invitedByUserId: v.id('users'),

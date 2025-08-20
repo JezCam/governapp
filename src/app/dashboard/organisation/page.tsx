@@ -23,7 +23,7 @@ export default function Organisation() {
   }
 
   return (
-    <div className="flex h-fit flex-col gap-4 overflow-auto p-4">
+    <div className="flex h-fit max-w-[1440px] flex-col gap-4 overflow-auto p-4">
       {/* Organisation Header */}
       <Card className="relative flex w-full shrink-0 flex-row items-start justify-end overflow-hidden rounded-xl bg-transparent p-2 pb-4 shadow-none">
         <div

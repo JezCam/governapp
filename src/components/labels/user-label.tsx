@@ -23,12 +23,9 @@ export default function UserLabel({
     );
   }
   return (
-    <div
-      className={cn('flex items-center gap-1.5 text-sm', className)}
-      title={user.name}
-    >
+    <div className={cn('flex items-center gap-1.5 text-sm', className)}>
       <UserAvatar className="size-6" user={user} />
-      <strong>{user.name}</strong>
+      <strong>{`${user.firstName} ${user.lastName}`}</strong>
     </div>
   );
 }

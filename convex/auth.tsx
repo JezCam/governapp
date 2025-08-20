@@ -21,7 +21,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'GovernApp <onboarding@resend.dev>',
+            from: 'GovernApp <onboarding@jeremycameron.com>',
             to,
             subject: 'Sign in to GovernApp',
             html: await render(<MagicLinkEmail magicLink={url} />),

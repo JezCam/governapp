@@ -4,6 +4,7 @@
 import { useMutation } from 'convex/react';
 import { toast } from 'sonner';
 import { api } from '../../../convex/_generated/api';
+import type { ErrorCode } from '../../../convex/errors';
 import AvatarUploader from './avatar-uploader';
 
 export default function UserImageUploader({
@@ -13,7 +14,7 @@ export default function UserImageUploader({
   imageUrl?: string;
   className?: string;
 }) {
-  const generateUploadUrl = useMutation(api.services.files.generateUploadUrl);
+  const generateUploadUrl = useMutation(api.services.storage.generateUploadUrl);
   const updateUserImage = useMutation(api.services.users.updateImageForCurrent);
   const updateCurrentUser = useMutation(api.services.users.updateCurrent);
 
@@ -24,27 +25,52 @@ export default function UserImageUploader({
       });
       return;
     }
+
     const uploadUrl = await generateUploadUrl();
-    try {
-      const response = await fetch(uploadUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': image.type,
-        },
-        body: image,
-      });
 
-      const { storageId } = await response.json();
-
-      updateUserImage({
-        storageId,
-      });
-    } catch (error) {
-      console.error('Error uploading image:', error);
+    // This error is repeated in multiple places, so we define it once
+    const defaultError = () =>
       toast.error('Failed to upload image', {
-        description: 'There was an error uploading your organisation image.',
+        description: 'There was an error uploading your profile image.',
       });
-    }
+
+    fetch(uploadUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': image.type,
+      },
+      body: image,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          defaultError();
+        }
+
+        const { storageId } = await response.json();
+
+        updateUserImage({
+          storageId,
+        })
+          .then(() => {
+            toast.success('Profile image updated successfully');
+          })
+          .catch((error) => {
+            switch (error.data as ErrorCode) {
+              case 'UNAUTHENTICATED':
+                toast.error('You must be logged in to upload an image');
+                break;
+              case 'USER_NOT_FOUND':
+                toast.error('User not found');
+                break;
+              default:
+                defaultError();
+                break;
+            }
+          });
+      })
+      .catch(() => {
+        defaultError();
+      });
   };
 
   return (

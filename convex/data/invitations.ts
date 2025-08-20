@@ -1,18 +1,5 @@
-import { ConvexError } from 'convex/values';
 import type { DataModel, Id } from '../_generated/dataModel';
 import type { MutationCtx, QueryCtx } from '../_generated/server';
-
-export async function getInvitationById(
-  ctx: QueryCtx | MutationCtx,
-  invitationId: Id<'invitations'>
-) {
-  const invitation = await ctx.db.get(invitationId);
-  if (!invitation) {
-    throw new ConvexError('invitation_not_found');
-  }
-
-  return invitation;
-}
 
 export async function listInvitationsByEmailAndStatus(
   ctx: QueryCtx | MutationCtx,
@@ -38,6 +25,21 @@ export async function listInvitationsByOrganisationAndStatus(
     .query('invitations')
     .withIndex('by_organisation_status', (q) =>
       q.eq('organisationId', organisationId).eq('status', status)
+    )
+    .collect();
+
+  return invitations;
+}
+
+export async function listInvitationsByEmailAndOrganisation(
+  ctx: QueryCtx | MutationCtx,
+  email: string,
+  organisationId: Id<'organisations'>
+) {
+  const invitations = await ctx.db
+    .query('invitations')
+    .withIndex('by_organisation_email', (q) =>
+      q.eq('organisationId', organisationId).eq('inviteeEmail', email)
     )
     .collect();
 

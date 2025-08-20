@@ -1,41 +1,63 @@
-import { ConvexError, v } from 'convex/values';
+import { v } from 'convex/values';
+import { XMLParser } from 'fast-xml-parser';
 import { internal } from '../_generated/api';
-import { action, internalQuery, mutation, query } from '../_generated/server';
-import { turnoverRanges, types } from '../schemas/organisationSchemas';
 import {
-  AbrSeachByAbnOrAcn,
+  action,
+  internalQuery,
+  type MutationCtx,
+  mutation,
+  type QueryCtx,
+  query,
+} from '../_generated/server';
+import {
   createOrganisationAndMembership,
-  getActiveOrganisation,
-  getActiveOrganisationId,
-  getOrganisationById,
-  updateOrganisationById,
-} from '../utils/organisations';
-import { getStorageUrl } from '../utils/storage';
-import { getCurrentUserId } from '../utils/users';
+  getOrganisationByAbnOrAcn,
+} from '../data/organisations';
+import { getStorageUrl } from '../data/storage';
+import { createConvexError } from '../errors';
+import { turnoverRanges, types } from '../schemas/organisations';
+import { getCurrentUser, getCurrentUserId } from './users';
+
+// Helpers
+
+export async function getActiveOrganisationId(ctx: QueryCtx | MutationCtx) {
+  const currentUser = await getCurrentUser(ctx);
+  const activeOrganisationId = currentUser.activeOrganisationId;
+  if (!activeOrganisationId) {
+    throw createConvexError('NO_ACTIVE_ORGANISATION');
+  }
+
+  return activeOrganisationId;
+}
 
 // Query
 
 export const getById = query({
   args: { organisationId: v.id('organisations') },
   handler: async (ctx, args) => {
-    return await getOrganisationById(ctx, args.organisationId);
+    return await ctx.db.get(args.organisationId);
   },
 });
 
 export const getActive = query({
   handler: async (ctx) => {
-    return await getActiveOrganisation(ctx);
+    const activeOrganisationId = await getActiveOrganisationId(ctx);
+    const activeOrganisation = await ctx.db.get(activeOrganisationId);
+
+    if (!activeOrganisation) {
+      throw createConvexError('ORGANISATION_NOT_FOUND');
+    }
+
+    return activeOrganisation;
   },
 });
 
 export const getByAbnOrAcn = internalQuery({
   args: { abnOrAcn: v.string() },
   handler: async (ctx, args) => {
-    const existingOrg = await ctx.db
-      .query('organisations')
-      .withIndex('by_abnOrAcn', (q) => q.eq('abnOrAcn', args.abnOrAcn))
-      .first();
-    return existingOrg;
+    const organisation = await getOrganisationByAbnOrAcn(ctx, args.abnOrAcn);
+
+    return organisation;
   },
 });
 
@@ -48,7 +70,7 @@ export const updateActive = mutation({
   handler: async (ctx, args) => {
     const activeOrganisationId = await getActiveOrganisationId(ctx);
 
-    await updateOrganisationById(ctx, activeOrganisationId, args.data);
+    await ctx.db.patch(activeOrganisationId, args.data);
   },
 });
 
@@ -60,7 +82,11 @@ export const updateImageForActive = mutation({
     const activeOrganisationId = await getActiveOrganisationId(ctx);
     const imageUrl = await getStorageUrl(ctx, args.storageId);
 
-    await updateOrganisationById(ctx, activeOrganisationId, {
+    if (!imageUrl) {
+      throw createConvexError('STORAGE_NOT_FOUND');
+    }
+
+    await ctx.db.patch(activeOrganisationId, {
       imageUrl,
     });
   },
@@ -70,6 +96,7 @@ export const setActive = mutation({
   args: { organisationId: v.id('organisations') },
   handler: async (ctx, args) => {
     const userId = await getCurrentUserId(ctx);
+
     await ctx.db.patch(userId, { activeOrganisationId: args.organisationId });
   },
 });
@@ -85,21 +112,28 @@ export const create = mutation({
   handler: async (ctx, args) => {
     // Check if the user is authenticated
     const currentUserId = await getCurrentUserId(ctx);
+
     // Create the organisation and membership
     const organisationId = await createOrganisationAndMembership(ctx, {
-      createdByUserId: currentUserId,
+      creatorUserId: currentUserId,
       abnOrAcn: args.abnOrAcn,
       name: args.name,
       type: args.type,
       turnoverRange: args.turnoverRange,
       role: args.role,
     });
+
     // Set the active organisation for the user
     await ctx.db.patch(currentUserId, {
       activeOrganisationId: organisationId,
     });
+
     // Return the created organisation
-    const organisation = await getOrganisationById(ctx, organisationId);
+    const organisation = await ctx.db.get(organisationId);
+    if (!organisation) {
+      throw createConvexError('ORGANISATION_NOT_FOUND');
+    }
+
     return organisation;
   },
 });
@@ -118,12 +152,52 @@ export const getOrganisationNameAndTypeByAbnOrAcn = action({
       { abnOrAcn: args.abnOrAcn }
     );
     if (existingOrg) {
-      throw new ConvexError('abn_or_acn_already_exists');
+      throw createConvexError('ORGANISATION_ALREADY_EXISTS');
     }
 
     // Get Organisation Name and Type from ABRXML API
-    const { name, type } = await AbrSeachByAbnOrAcn(args.abnOrAcn, args.isAbn);
+    const url = args.isAbn
+      ? `https://abr.business.gov.au/ABRXMLSearch/AbrXmlSearch.asmx/ABRSearchByABN
+                ?searchString=${args.abnOrAcn}&includeHistoricalDetails=N&authenticationGuid=${process.env.ABRXML_KEY}`
+      : `https://abr.business.gov.au/ABRXMLSearch/AbrXmlSearch.asmx/ABRSearchByASIC
+                ?searchString=${args.abnOrAcn}&includeHistoricalDetails=N&authenticationGuid=${process.env.ABRXML_KEY}`;
 
-    return { name, type };
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch organisation details');
+    }
+
+    const xml = await response.text();
+
+    // Parse the XML reponse into a DOM
+    const parser = new XMLParser();
+    const doc = parser.parse(xml);
+
+    // Check for error
+    const error =
+      doc.ABRPayloadSearchResults.response.exception?.exceptionDescription;
+    if (error) {
+      throw new Error('ABN or ACN not found');
+    }
+
+    const businessEntity = doc.ABRPayloadSearchResults.response.businessEntity;
+
+    // Get the entity name
+    let entityName = '';
+
+    if (businessEntity.mainName) {
+      entityName = businessEntity.mainName.organisationName;
+    } else if (businessEntity.legalName) {
+      const givenName = businessEntity.legalName.givenName;
+      const otherGivenName = businessEntity.legalName.otherGivenName;
+      const familyName = businessEntity.legalName.familyName;
+      entityName = `${familyName}, ${givenName}${otherGivenName ? ` ${otherGivenName}` : ''}`;
+    }
+
+    // Get the entity type
+    const type = businessEntity.entityType.entityDescription;
+
+    return { name: entityName, type: types.find((t) => t === type) || 'Other' };
   },
 });

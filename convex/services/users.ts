@@ -1,20 +1,45 @@
-import { ConvexError, v } from 'convex/values';
-import { mutation, query } from '../_generated/server';
-import { getMembershipsInActiveOrganisation } from '../utils/memberships';
-import { getStorageUrl } from '../utils/storage';
+import { getAuthUserId } from '@convex-dev/auth/server';
+import { v } from 'convex/values';
 import {
-  getCurrentUser,
-  getCurrentUserId,
-  getUserByEmail,
-  updateCurrentUser,
-} from '../utils/users';
+  type MutationCtx,
+  mutation,
+  type QueryCtx,
+  query,
+} from '../_generated/server';
+import { getStorageUrl } from '../data/storage';
+import { getUserByEmail } from '../data/users';
+import { createConvexError } from '../errors';
+
+// Helpers
+
+export async function getCurrentUserId(ctx: QueryCtx | MutationCtx) {
+  const userId = await getAuthUserId(ctx);
+  if (!userId) {
+    throw createConvexError('UNAUTHENTICATED');
+  }
+
+  return userId;
+}
+
+export async function getCurrentUser(ctx: QueryCtx | MutationCtx) {
+  const userId = await getAuthUserId(ctx);
+  if (!userId) {
+    throw createConvexError('UNAUTHENTICATED');
+  }
+
+  const user = await ctx.db.get(userId);
+  if (!user) {
+    throw createConvexError('USER_NOT_FOUND');
+  }
+
+  return user;
+}
 
 // Query
 
 export const getCurrentId = query({
   handler: async (ctx) => {
-    const userId = await getCurrentUserId(ctx);
-    return userId;
+    return await getCurrentUserId(ctx);
   },
 });
 
@@ -28,34 +53,20 @@ export const getByEmail = query({
   args: { email: v.string() },
   handler: async (ctx, args) => {
     const user = await getUserByEmail(ctx, args.email);
+    if (!user) {
+      throw createConvexError('USER_NOT_FOUND');
+    }
+
     return user;
   },
 });
 
 export const getImageForCurrent = query({
   handler: async (ctx) => {
-    const user = await getCurrentUser(ctx);
-    if (!user) {
-      throw new ConvexError('not_authenticated');
-    }
-    const imageUrl = user.imageUrl || null;
-    return imageUrl;
-  },
-});
+    const currentUser = await getCurrentUser(ctx);
+    const imageUrl = currentUser.imageUrl || null;
 
-export const listInActiveOrganisation = query({
-  handler: async (ctx) => {
-    const activeOrganisationMemberships =
-      await getMembershipsInActiveOrganisation(ctx);
-    if (!activeOrganisationMemberships) {
-      throw new ConvexError('no_active_organisation');
-    }
-    const users = await Promise.all(
-      activeOrganisationMemberships.map(
-        async (membership) => await ctx.db.get(membership.userId)
-      )
-    );
-    return users;
+    return imageUrl;
   },
 });
 
@@ -74,7 +85,12 @@ export const updateCurrent = mutation({
     }),
   },
   handler: async (ctx, args) => {
-    await updateCurrentUser(ctx, args.data);
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw createConvexError('UNAUTHENTICATED');
+    }
+
+    await ctx.db.patch(userId, args.data);
   },
 });
 
@@ -83,9 +99,18 @@ export const updateImageForCurrent = mutation({
     storageId: v.id('_storage'),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw createConvexError('UNAUTHENTICATED');
+    }
+
     const imageUrl = await getStorageUrl(ctx, args.storageId);
 
-    await updateCurrentUser(ctx, {
+    if (!imageUrl) {
+      throw createConvexError('STORAGE_NOT_FOUND');
+    }
+
+    await ctx.db.patch(userId, {
       imageUrl,
     });
   },
