@@ -1,11 +1,13 @@
 import { authTables } from '@convex-dev/auth/server';
 import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
+import { frameworkTables } from './schemas/frameworks';
 import { organisationTables } from './schemas/organisations';
 
 const schema = defineSchema({
   ...authTables,
   ...organisationTables,
+  ...frameworkTables,
   users: defineTable({
     name: v.optional(v.string()),
     firstName: v.optional(v.string()),
