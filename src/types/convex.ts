@@ -11,3 +11,9 @@ export type OrganisationTurnoverRange =
   DataModel['organisations']['document']['turnoverRange'];
 
 export type Invitation = DataModel['invitations']['document'];
+
+export type Subscription = DataModel['subscriptions']['document'];
+
+export type Framework = DataModel['frameworks']['document'];
+
+export type Domain = DataModel['domains']['document'];

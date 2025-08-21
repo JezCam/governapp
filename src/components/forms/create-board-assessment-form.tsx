@@ -1,11 +1,14 @@
 /** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import { zodResolver } from '@hookform/resolvers/zod';
 import { parseDate, today } from '@internationalized/date';
+import { useQuery } from 'convex/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
 import { teamMembers } from '@/dummy-data/team';
+import type { Domain, Framework } from '@/types/convex';
+import { api } from '../../../convex/_generated/api';
 import DatePicker from '../date-picker';
 import { Checkbox } from '../ui/checkbox';
 import {
@@ -27,36 +30,6 @@ import {
 import UserMultiSelect from '../user-multiselect';
 import FormButtons from './form-buttons';
 import type { FormProps } from './types';
-
-type Domain = {
-  _id: string;
-  name: string;
-};
-
-type Framework = {
-  _id: string;
-  name: string;
-  domains: Domain[];
-};
-
-const frameworks: Framework[] = [
-  {
-    _id: '1',
-    name: 'Framework 1',
-    domains: [
-      { _id: 'd1', name: 'Domain 1' },
-      { _id: 'd2', name: 'Domain 2' },
-    ],
-  },
-  {
-    _id: '2',
-    name: 'Framework 2',
-    domains: [
-      { _id: 'd3', name: 'Domain 3' },
-      { _id: 'd4', name: 'Domain 4' },
-    ],
-  },
-];
 
 const userOptionSchema = z.object({
   id: z.string(),
@@ -82,8 +55,15 @@ const formSchema = z.object({
 });
 
 export default function CreateBoardAssessmentForm(props: FormProps) {
+  const subscribedBoardFrameworks = useQuery(
+    api.services.frameworks.listSubscribedByTypeWithDomains,
+    { type: 'board' }
+  );
+
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedFramework, setSelectedFramework] = useState<Framework>();
+  const [selectedFramework, setSelectedFramework] = useState<
+    Framework & { domains: Domain[] }
+  >();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -107,6 +87,10 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
       description: 'This feature is not yet implemented.',
     });
     props.onSuccess?.();
+  }
+
+  if (subscribedBoardFrameworks === undefined) {
+    return null; // TODO: Add loading state
   }
 
   return (
@@ -150,7 +134,9 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
               <Select
                 defaultValue={field.value}
                 onValueChange={(value) => {
-                  const framework = frameworks?.find((f) => f._id === value);
+                  const framework = subscribedBoardFrameworks.find(
+                    (f) => f._id === value
+                  );
                   setSelectedFramework(framework);
                   form.setValue('selectedDomainIds', []);
                   field.onChange(value);
@@ -162,7 +148,7 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {frameworks.map((framework) => (
+                  {subscribedBoardFrameworks.map((framework) => (
                     <SelectItem key={framework._id} value={framework._id}>
                       {framework.name}
                     </SelectItem>

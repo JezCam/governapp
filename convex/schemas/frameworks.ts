@@ -1,11 +1,18 @@
 import { defineTable } from 'convex/server';
 import { v } from 'convex/values';
 
+export const riskLevels = [
+  v.literal('black'),
+  v.literal('red'),
+  v.literal('amber'),
+  v.literal('green'),
+];
+
 export const frameworkTables = {
   frameworks: defineTable({
     beta_id: v.string(),
     name: v.string(),
-    type: v.union(v.literal('individual'), v.literal('board')),
+    type: v.union(v.literal('self'), v.literal('board')),
     summary: v.string(),
     description: v.string(),
     blackMax: v.number(),
@@ -17,6 +24,7 @@ export const frameworkTables = {
     reportGreen: v.string(),
     legislation: v.optional(v.string()),
     authority: v.string(),
+    monthlyCost: v.number(),
   })
     .index('by_beta_id', ['beta_id'])
     .index('by_type', ['type']),
@@ -75,15 +83,10 @@ export const frameworkTables = {
     .index('by_domain', ['domainId'])
     .index('by_section', ['sectionId'])
     .index('by_order', ['order']),
-  responses: defineTable({
+  responseOptions: defineTable({
     text: v.string(),
     score: v.number(),
-    riskLevel: v.union(
-      v.literal('black'),
-      v.literal('red'),
-      v.literal('amber'),
-      v.literal('green')
-    ),
+    riskLevel: v.union(...riskLevels),
     order: v.number(),
     isValidNA: v.boolean(),
     triggersAction: v.boolean(),

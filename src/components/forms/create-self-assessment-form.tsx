@@ -1,9 +1,11 @@
 /** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from 'convex/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
+import { api } from '../../../convex/_generated/api';
 import {
   Form,
   FormControl,
@@ -23,13 +25,6 @@ import {
 import FormButtons from './form-buttons';
 import type { FormProps } from './types';
 
-const frameworks = [
-  { _id: '1', name: 'Framework 1' },
-  { _id: '2', name: 'Framework 2' },
-  { _id: '3', name: 'Framework 3' },
-  { _id: '4', name: 'Framework 4' },
-];
-
 const formSchema = z.object({
   name: z
     .string()
@@ -39,6 +34,11 @@ const formSchema = z.object({
 });
 
 export default function CreateSelfAssessmentForm(props: FormProps) {
+  const subscribedSelfFrameworks = useQuery(
+    api.services.frameworks.listSubscribedByTypeWithDomains,
+    { type: 'self' }
+  );
+
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -61,6 +61,10 @@ export default function CreateSelfAssessmentForm(props: FormProps) {
       description: 'This feature is not yet implemented.',
     });
     props.onSuccess?.();
+  }
+
+  if (subscribedSelfFrameworks === undefined) {
+    return null; // TODO: Add loading state
   }
 
   return (
@@ -108,7 +112,7 @@ export default function CreateSelfAssessmentForm(props: FormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {frameworks.map((framework) => (
+                  {subscribedSelfFrameworks.map((framework) => (
                     <SelectItem key={framework._id} value={framework._id}>
                       {framework.name}
                     </SelectItem>

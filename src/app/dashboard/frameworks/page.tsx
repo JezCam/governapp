@@ -3,27 +3,29 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { MoreHorizontalIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
+import { useQuery } from 'convex/react';
 import { useState } from 'react';
 import { DataTable } from '@/components/data-table/data-table';
-import FrameworkDetailsDialog from '@/components/dialogs/framework-details-dialog';
+import SubscriptionDetailsDialog from '@/components/dialogs/subscription-details-dialog';
 import FrameworkLabel from '@/components/labels/framework-label';
 import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { type Framework, frameworks } from '@/dummy-data/frameworks';
 import { formatDateTime } from '@/lib/utils';
+import type { Framework, Subscription } from '@/types/convex';
+import { api } from '../../../../convex/_generated/api';
 import FrameworkStore from './framework-store';
 
 const getFrameworkColumns = (
-  onOpenDetails: (framework: Framework) => void
-): ColumnDef<Framework>[] => [
+  onOpenDetails: (subscription: Subscription) => void
+): ColumnDef<Subscription & { framework: Framework }>[] => [
   {
     size: 35,
     maxSize: 35,
     accessorKey: 'name',
     header: 'Name',
     cell: ({ row }) => {
-      const name = row.original.name;
+      const name = row.original.framework.name;
       return <FrameworkLabel name={name} variant="framework" />;
     },
   },
@@ -33,7 +35,7 @@ const getFrameworkColumns = (
     accessorKey: 'type',
     header: 'Type',
     cell: ({ row }) => {
-      const type = row.original.type;
+      const type = row.original.framework.type;
       return <Badge variant={type} />;
     },
   },
@@ -51,7 +53,7 @@ const getFrameworkColumns = (
       <SortButton column={column}>Monthly Cost</SortButton>
     ),
     cell: ({ row }) => {
-      const cost = row.original.monthlyCost;
+      const cost = row.original.framework.monthlyCost;
       return `$${cost.toFixed(2)}`;
     },
   },
@@ -63,8 +65,8 @@ const getFrameworkColumns = (
       <SortButton column={column}>Subscribed On</SortButton>
     ),
     cell: ({ row }) => {
-      const subscribedOn = row.original.subscribedOn;
-      return formatDateTime(subscribedOn.getTime());
+      const subscribedAt = row.original.subscribedAt;
+      return formatDateTime(subscribedAt);
     },
   },
   {
@@ -83,25 +85,34 @@ const getFrameworkColumns = (
 ];
 
 export default function Frameworks() {
-  const [detailsFramework, setDetailsFramework] = useState<Framework>();
-
-  const columns = getFrameworkColumns((framework) =>
-    setDetailsFramework(framework)
+  const frameworkSubscriptions = useQuery(
+    api.services.subscriptions.listForActiveOrganisationWithFrameworks
   );
+
+  const [detailsSubscription, setDetailsSubscription] =
+    useState<Subscription>();
+
+  const columns = getFrameworkColumns((subscription) =>
+    setDetailsSubscription(subscription)
+  );
+
+  if (frameworkSubscriptions === undefined) {
+    return null; // TODO: Add loading state
+  }
 
   return (
     <div className="flex size-full flex-col gap-8 overflow-auto p-4">
-      <FrameworkDetailsDialog
+      <SubscriptionDetailsDialog
         onOpenChange={(open) => {
           if (!open) {
-            setDetailsFramework(undefined);
+            setDetailsSubscription(undefined);
           }
         }}
-        open={!!detailsFramework}
+        open={!!detailsSubscription}
       />
       <DataTable
         columns={columns}
-        data={frameworks}
+        data={frameworkSubscriptions}
         hasMenu
         minWidth="800px"
         title="Your Frameworks"

@@ -2,12 +2,12 @@ import type { DialogProps } from '@radix-ui/react-dialog';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 
-export default function FrameworkDetailsDialog(props: DialogProps) {
+export default function SubscriptionDetailsDialog(props: DialogProps) {
   return (
     <Dialog onOpenChange={props.onOpenChange} open={props.open}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Framework Details</DialogTitle>
+          <DialogTitle>Subscription Details</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">

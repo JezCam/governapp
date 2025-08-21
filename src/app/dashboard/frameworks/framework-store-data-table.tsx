@@ -26,17 +26,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import type { Framework } from './framework-store';
+import type { Framework } from '@/types/convex';
 import FrameworkTypeFilter from './framework-type-filter';
 
 interface FrameworkStoreDataTableProps {
-  className?: string; // Additional classes for the table container
   columns: ColumnDef<Framework>[];
   data: Framework[];
 }
 
 export function FrameworksStoreDataTable({
-  className,
   columns,
   data,
 }: FrameworkStoreDataTableProps) {
@@ -76,7 +74,7 @@ export function FrameworksStoreDataTable({
   };
 
   return (
-    <div className={cn('flex size-full flex-col', className)}>
+    <div className="flex size-full flex-col">
       <div className="mb-4 flex items-center gap-2">
         <div className="relative w-full max-w-xs">
           <Input
