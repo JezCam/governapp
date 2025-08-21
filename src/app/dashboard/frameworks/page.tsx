@@ -42,7 +42,7 @@ const getFrameworkColumns = (
   {
     size: 20,
     maxSize: 20,
-    accessorKey: 'authority',
+    accessorKey: 'framework.authority',
     header: 'Authority',
   },
   {

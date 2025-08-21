@@ -24,18 +24,18 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { cn } from '@/lib/utils';
-// import UserLabel from './labels/user-label'; TODO: Implement
+import type { User } from '@/types/convex';
+import UserLabel from './labels/user-label';
 
 export interface UserOption {
-  id: string;
-  name: string;
-  imageUrl?: string;
+  user: User;
   disable?: boolean;
   /** fixed option that can't be removed. */
   fixed?: boolean;
   /** Group the options by providing key. */
-  [key: string]: string | boolean | undefined;
+  [key: string]: string | number | boolean | User | undefined;
 }
+
 interface GroupUserOption {
   [key: string]: UserOption[];
 }
@@ -431,9 +431,9 @@ const UserMultiSelect = ({
                 )}
                 data-disabled={disabled || undefined}
                 data-fixed={option.fixed}
-                key={option.id}
+                key={option.user._id}
               >
-                {option.name}
+                {`${option.user.firstName} ${option.user.lastName}`}
                 <button
                   aria-label="Remove"
                   className="-inset-y-px -end-px absolute flex size-7 items-center justify-center rounded-e-md border border-transparent p-0 text-muted-foreground/80 outline-none outline-hidden transition-[color,box-shadow] hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
@@ -557,7 +557,7 @@ const UserMultiSelect = ({
                                   'pointer-events-none cursor-not-allowed opacity-50'
                               )}
                               disabled={option.disable}
-                              key={option.name}
+                              key={`${option.user.firstName} ${option.user.lastName}`}
                               onMouseDown={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -572,9 +572,9 @@ const UserMultiSelect = ({
                                 setSelected(newOptions);
                                 onChange?.(newOptions);
                               }}
-                              value={option.name}
+                              value={`${option.user.firstName} ${option.user.lastName}`}
                             >
-                              {/* <UserLabel user={option} /> */}
+                              <UserLabel user={option.user} />
                             </CommandItem>
                           );
                         })}

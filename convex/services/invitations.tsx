@@ -41,7 +41,7 @@ export async function getInvitationById(
   return invitation;
 }
 
-// Query
+// Queries
 
 export const getByIdWithOrganisation = query({
   args: { id: v.id('invitations') },
@@ -127,7 +127,7 @@ export const listPendingByActiveOrganisation = query({
   },
 });
 
-// Mutate
+// Mutations
 
 export const acceptInvitationById = mutation({
   args: { invitationId: v.id('invitations') },

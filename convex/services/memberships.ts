@@ -79,7 +79,7 @@ export async function isAdminByCurrentUserAndActiveOrganisation(
   return isAdmin;
 }
 
-// Query
+// Queries
 
 export const listInActiveOrganisation = query({
   handler: async (ctx) => {
@@ -147,7 +147,7 @@ export const isAdmin = query({
   },
 });
 
-// Mutate
+// Mutations
 
 export const update = mutation({
   args: {

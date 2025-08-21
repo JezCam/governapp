@@ -8,6 +8,8 @@ import { listSubscriptionsByOrganisationId } from '../data/subscriptions';
 import { getActiveOrganisationId } from './organisations';
 import { listSubscriptionsWithFrameworkByOrganisationId } from './subscriptions';
 
+// Queries
+
 export const list = query({
   handler: async (ctx) => {
     return await ctx.db.query('frameworks').collect();

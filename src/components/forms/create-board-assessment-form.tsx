@@ -1,14 +1,14 @@
 /** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 import { zodResolver } from '@hookform/resolvers/zod';
 import { parseDate, today } from '@internationalized/date';
-import { useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
-import { teamMembers } from '@/dummy-data/team';
 import type { Domain, Framework } from '@/types/convex';
 import { api } from '../../../convex/_generated/api';
+import type { Id } from '../../../convex/_generated/dataModel';
 import DatePicker from '../date-picker';
 import { Checkbox } from '../ui/checkbox';
 import {
@@ -31,12 +31,6 @@ import UserMultiSelect from '../user-multiselect';
 import FormButtons from './form-buttons';
 import type { FormProps } from './types';
 
-const userOptionSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  imageUrl: z.string().url().optional(),
-});
-
 const formSchema = z.object({
   name: z
     .string()
@@ -47,7 +41,7 @@ const formSchema = z.object({
   selectedDomainIds: z.array(z.string()).min(1, {
     message: 'Please select at least one domain',
   }),
-  selectedParticipants: z.array(userOptionSchema).min(1, {
+  participantsUserIds: z.array(z.string()).min(1, {
     message: 'You must select at least one participant',
   }),
   startDate: z.string().min(1, 'Please select a start date'),
@@ -55,10 +49,14 @@ const formSchema = z.object({
 });
 
 export default function CreateBoardAssessmentForm(props: FormProps) {
+  const memberships = useQuery(
+    api.services.memberships.listInActiveOrganisationWithUsers
+  );
   const subscribedBoardFrameworks = useQuery(
     api.services.frameworks.listSubscribedByTypeWithDomains,
     { type: 'board' }
   );
+  const createAssessment = useMutation(api.services.assessments.create);
 
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFramework, setSelectedFramework] = useState<
@@ -71,25 +69,48 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
       name: '',
       frameworkId: '',
       selectedDomainIds: [],
-      selectedParticipants: [],
+      participantsUserIds: [],
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log('Form submitted:', values);
-    // sleep for 1 second to simulate a network request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    toast.error('Not yet implemented', {
-      description: 'This feature is not yet implemented.',
-    });
-    props.onSuccess?.();
+
+    const name = values.name.trim();
+    const frameworkId = values.frameworkId as Id<'frameworks'>;
+    const selectedDomainIds = values.selectedDomainIds as Id<'domains'>[];
+    const participantsUserIds = values.participantsUserIds as Id<'users'>[];
+    const questionsTotal = selectedDomainIds.reduce((total, domainId) => {
+      const domain = selectedFramework?.domains.find((d) => d._id === domainId);
+      return total + (domain?.questionsTotal || 0);
+    }, 0);
+    const startDate = parseDate(values.startDate)
+      .toDate('Australia/Sydney')
+      .getTime();
+    const dueDate = parseDate(values.dueDate)
+      .toDate('Australia/Sydney')
+      .getTime();
+
+    createAssessment({
+      name,
+      frameworkId,
+      selectedDomainIds,
+      participantsUserIds,
+      questionsTotal,
+      startDate,
+      dueDate,
+    })
+      .then(() => {
+        toast.success('Assessment created successfully');
+        props.onSuccess?.();
+      })
+      .catch(() => {
+        toast.error('Failed to create assessment');
+      })
+      .finally(() => setIsLoading(false));
   }
 
-  if (subscribedBoardFrameworks === undefined) {
+  if (subscribedBoardFrameworks === undefined || memberships === undefined) {
     return null; // TODO: Add loading state
   }
 
@@ -206,16 +227,14 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
         )}
         <FormField
           control={form.control}
-          name="selectedParticipants"
+          name="participantsUserIds"
           render={({ field, fieldState }) => (
             <FormItem>
               <FormLabel>Participants</FormLabel>
               <FormControl>
                 <UserMultiSelect
-                  defaultOptions={teamMembers.map((user) => ({
-                    id: user.userId,
-                    name: user.name,
-                    imageUrl: user.imageUrl,
+                  defaultOptions={memberships.map((membership) => ({
+                    user: membership.user,
                   }))}
                   emptyIndicator={
                     <p className="text-center text-sm">No users found</p>
@@ -223,8 +242,10 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
                   inputProps={{
                     'aria-invalid': fieldState.invalid,
                   }}
+                  onChange={(value) =>
+                    field.onChange(value.map((v) => v.user._id))
+                  }
                   placeholder="Select users"
-                  {...field}
                 />
               </FormControl>
               <FormMessage />

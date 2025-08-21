@@ -1,7 +1,5 @@
-import { v } from 'convex/values';
 import type { Id } from '../_generated/dataModel';
 import { type MutationCtx, type QueryCtx, query } from '../_generated/server';
-import { listDomainsByFrameworkId } from '../data/domains';
 import { listSubscriptionsByOrganisationId } from '../data/subscriptions';
 import { getActiveOrganisationId } from './organisations';
 
@@ -32,7 +30,7 @@ export async function listSubscriptionsWithFrameworkByOrganisationId(
   return subscriptionsWithFrameworks.filter((s) => s !== null);
 }
 
-// Query
+// Queries
 
 export const listForActiveOrganisationWithFrameworks = query({
   handler: async (ctx) => {

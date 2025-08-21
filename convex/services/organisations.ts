@@ -30,7 +30,7 @@ export async function getActiveOrganisationId(ctx: QueryCtx | MutationCtx) {
   return activeOrganisationId;
 }
 
-// Query
+// Queries
 
 export const getById = query({
   args: { organisationId: v.id('organisations') },
@@ -61,7 +61,7 @@ export const getByAbnOrAcn = internalQuery({
   },
 });
 
-// Mutate
+// Mutations
 
 export const updateActive = mutation({
   args: {
