@@ -93,6 +93,23 @@ export const getByUserAssessmentId = query({
   },
 });
 
+export const getNameByUserAssesmentId = query({
+  args: { userAssessmentId: v.id('userAssessments') },
+  handler: async (ctx, args) => {
+    const userAssessment = await ctx.db.get(args.userAssessmentId);
+    if (!userAssessment) {
+      throw createConvexError('USER_ASSESSMENT_NOT_FOUND');
+    }
+
+    const assessment = await ctx.db.get(userAssessment.assessmentId);
+    if (!assessment) {
+      throw createConvexError('ASSESSMENT_NOT_FOUND');
+    }
+
+    return assessment.name;
+  },
+});
+
 // Mutations
 
 export const create = mutation({
@@ -142,6 +159,8 @@ export const create = mutation({
           ...(type === 'board' && { organisationId: activeOrganisationId }),
           status: 'not-started',
           startDate: Date.now(),
+          domainIndex: 0,
+          sectionIndex: 0,
           questionIndex: 0,
         })
       )

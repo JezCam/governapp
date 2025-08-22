@@ -2,6 +2,7 @@
 
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Home09Icon } from '@hugeicons-pro/core-stroke-rounded';
+import { useQuery } from 'convex/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Fragment, useMemo } from 'react';
@@ -13,6 +14,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { api } from '../../../../convex/_generated/api';
+import type { Id } from '../../../../convex/_generated/dataModel';
 
 export default function AppBreadcrumb() {
   const pathname = usePathname();
@@ -42,6 +45,23 @@ export default function AppBreadcrumb() {
     });
   }, [pathname]);
 
+  const isAssessmentPage = breadcrumbs.at(-2)?.label === 'Assessments';
+
+  const assessmentName = useQuery(
+    api.services.assessments.getNameByUserAssesmentId,
+    isAssessmentPage
+      ? {
+          userAssessmentId: breadcrumbs
+            .at(-1)
+            ?.label.toLowerCase() as Id<'userAssessments'>,
+        }
+      : 'skip'
+  );
+
+  if (isAssessmentPage && assessmentName === undefined) {
+    return null; // TODO: Implement a loading state or error handling
+  }
+
   return (
     <Breadcrumb>
       <BreadcrumbList>
@@ -64,7 +84,7 @@ export default function AppBreadcrumb() {
                 <BreadcrumbItem>
                   {breadcrumb.isLast ? (
                     <BreadcrumbPage className="font-medium">
-                      {breadcrumb.label}
+                      {isAssessmentPage ? assessmentName : breadcrumb.label}
                     </BreadcrumbPage>
                   ) : (
                     <BreadcrumbLink asChild>

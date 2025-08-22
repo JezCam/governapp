@@ -4,7 +4,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 import z from 'zod';
 import {
   Form,
@@ -15,49 +14,38 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import type { QuestionWithResponseOptions } from '@/types/convex';
 import LoadingButton from '../loading-button';
-
-const responseOptions = [
-  { text: 'Chair only.', id: '0' },
-  { text: 'Chair and Deputy Chair.', id: '1' },
-  { text: 'Chair, Deputy Chair and Secretary.', id: '2' },
-  { text: 'Chair, Deputy Chair, Secretary and Treasurer.', id: '3' },
-  { text: 'Chair and Secretary only.', id: '4' },
-  { text: 'Chair, Secretary and Treasurer.', id: '5' },
-  { text: 'Chair, Deputy Chair, Secretary, and Treasurer.', id: '6' },
-];
 
 const formSchema = z.object({
   responseOptionId: z.string({ message: 'Please select an option' }),
 });
 
-export default function QuestionForm() {
+export default function QuestionForm({
+  question,
+  onNext,
+  onPrevious,
+}: {
+  question: QuestionWithResponseOptions;
+  onNext?: () => void;
+  onPrevious?: () => void;
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    setIsLoading(true);
-    console.log('Form submitted:', values);
-    // sleep for 1 second to simulate a network request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
     setIsLoading(false);
-    toast.error('Not yet implemented', {
-      description: 'This feature is not yet implemented.',
-    });
+    onNext?.();
+    // TODO: Implement create response and go back on error and clearing form etc
   }
 
   return (
     <div className="flex size-full flex-col items-center overflow-auto p-4 py-12">
       <div className="flex w-xl flex-col gap-8">
-        <p className="text-center font-medium">
-          If you are an Incorporated Association, other than general members,
-          what specific leadership roles are operating on your Board (whether
-          occupied or currently vacant)?
-        </p>
+        <p className="text-center font-medium">{question.text}</p>
         <Form {...form}>
           <form
             className="flex h-full min-h-fit flex-col gap-8"
@@ -74,17 +62,17 @@ export default function QuestionForm() {
                       onValueChange={field.onChange}
                       value={field.value}
                     >
-                      {responseOptions.map((option) => (
-                        <FormItem key={option.id}>
+                      {question.responseOptions.map((option) => (
+                        <FormItem key={option._id}>
                           <FormControl>
                             <FormLabel
                               className="group flex w-full cursor-pointer items-center gap-4 rounded-md border bg-accent p-4 transition-colors has-data-[state=checked]:border-ga-purple-200 has-data-[state=checked]:bg-ga-purple-100 dark:has-data-[state=checked]:border-ga-purple-800 dark:has-data-[state=checked]:bg-ga-purple-950"
-                              htmlFor={option.id}
+                              htmlFor={option._id}
                             >
                               <RadioGroupItem
-                                checked={field.value === option.id}
-                                id={option.id}
-                                value={option.id}
+                                checked={field.value === option._id}
+                                id={option._id}
+                                value={option._id}
                               />
                               <span className="font-medium transition-colors group-has-data-[state=checked]:text-primary">
                                 {option.text}
@@ -101,7 +89,8 @@ export default function QuestionForm() {
             />
             <div className="grid grid-cols-2 gap-2">
               <LoadingButton
-                disabled={isLoading}
+                disabled={isLoading || !onPrevious}
+                onClick={onPrevious}
                 type="button"
                 variant="secondary"
               >
@@ -111,7 +100,6 @@ export default function QuestionForm() {
                 Next
               </LoadingButton>
             </div>
-            {/* TODO : User form button component */}
           </form>
         </Form>
       </div>
