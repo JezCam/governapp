@@ -19,7 +19,9 @@ export type ErrorCode =
   | 'CANNOT_INVITE_SELF'
   | 'INVITEE_ALREADY_MEMBER'
   | 'INVITATION_ALREADY_EXISTS'
-  | 'NO_MEMBERSHIPS_WITH_ORGANISATION_FOUND';
+  | 'NO_MEMBERSHIPS_WITH_ORGANISATION_FOUND'
+  | 'ASSESSMENT_NOT_FOUND'
+  | 'FRAMEWORK_NOT_FOUND';
 
 export function createConvexError(code: ErrorCode) {
   return new ConvexError(code);

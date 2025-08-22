@@ -17,3 +17,16 @@ export type Subscription = DataModel['subscriptions']['document'];
 export type Framework = DataModel['frameworks']['document'];
 
 export type Domain = DataModel['domains']['document'];
+
+export type Assessment = DataModel['assessments']['document'];
+
+export type UserAssessment = DataModel['userAssessments']['document'];
+
+export type UserAssessmentWithUser = UserAssessment & {
+  user: User;
+};
+
+export type AssessmentWithFrameworkAndUserAssessmentsWithUser = Assessment & {
+  framework: Framework;
+  userAssessmentsWithUser: UserAssessmentWithUser[];
+};

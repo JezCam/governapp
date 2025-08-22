@@ -7,6 +7,7 @@ import {
   ZapIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
+import { useQuery } from 'convex/react';
 import Link from 'next/link';
 import { useState } from 'react';
 import AssessmentsStatusFilter from '@/app/dashboard/assessments/assessments-status-filter';
@@ -16,19 +17,22 @@ import NewAssessmentDialog from '@/components/dialogs/new-assessment-dialog';
 import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { type Assessment, assessments } from '@/dummy-data/assessments';
 import { formatDateTime } from '@/lib/utils';
+import type { AssessmentWithFrameworkAndUserAssessmentsWithUser } from '@/types/convex';
+import { api } from '../../../../convex/_generated/api';
 
 const getAssessmentColumns = (
-  onOpenDetails: (assessment: Assessment) => void
-): ColumnDef<Assessment>[] => [
+  onOpenDetails: (
+    assessment: AssessmentWithFrameworkAndUserAssessmentsWithUser
+  ) => void
+): ColumnDef<AssessmentWithFrameworkAndUserAssessmentsWithUser>[] => [
   {
     size: 10,
     maxSize: 10,
     accessorKey: 'type',
     header: ({ column }) => <SortButton column={column}>Type</SortButton>,
     cell: ({ row }) => {
-      const type = row.original.type;
+      const type = row.original.organisationId ? 'board' : 'self';
       return <Badge variant={type} />;
     },
   },
@@ -59,7 +63,7 @@ const getAssessmentColumns = (
     header: ({ column }) => <SortButton column={column}>Due Date</SortButton>,
     cell: ({ row }) => {
       const dueDate = row.original.dueDate;
-      return formatDateTime(dueDate.getTime());
+      return formatDateTime(new Date(dueDate).getTime());
     },
   },
   {
@@ -68,7 +72,7 @@ const getAssessmentColumns = (
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      const id = row.original.id;
+      const id = row.original._id;
       const status = row.original.status;
 
       switch (status) {
@@ -84,7 +88,6 @@ const getAssessmentColumns = (
               <Link href="/dashboard/assessments/123">Continue assessment</Link>
             </Button>
           );
-        case 'completed':
         case 'closed':
           return (
             <div className="flex gap-2">
@@ -125,7 +128,7 @@ const getAssessmentColumns = (
     cell: ({ row }) => (
       <Button
         className="float-right size-8"
-        onClick={() => onOpenDetails(row.original as Assessment)}
+        onClick={() => onOpenDetails(row.original)}
         size="icon"
         variant="outline"
       >
@@ -136,12 +139,22 @@ const getAssessmentColumns = (
 ];
 
 export default function Assessments() {
+  const assessments = useQuery(
+    api.services.assessments
+      .listForActiveOrganisationWithFrameworkAndUserAssessmentsWithUser
+  );
+
   const [newAssessmentOpen, setNewAssessmentOpen] = useState(false);
-  const [detailsAssessment, setDetailsAssessment] = useState<Assessment>();
+  const [detailsAssessment, setDetailsAssessment] =
+    useState<AssessmentWithFrameworkAndUserAssessmentsWithUser>();
 
   const columns = getAssessmentColumns((assessment) => {
     setDetailsAssessment(assessment);
   });
+
+  if (assessments === undefined) {
+    return null; // TODO: Implement loading state
+  }
 
   return (
     <div className="max-w-[1440px] p-4">

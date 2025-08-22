@@ -30,9 +30,7 @@ export const assessmentTables = {
     status: v.union(
       v.literal('not-started'),
       v.literal('in-progress'),
-      v.literal('completed'),
-      v.literal('overdue'),
-      v.literal('incomplete')
+      v.literal('completed')
     ),
     startDate: v.number(),
     finishDate: v.optional(v.number()),
