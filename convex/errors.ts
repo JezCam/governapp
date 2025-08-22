@@ -21,7 +21,8 @@ export type ErrorCode =
   | 'INVITATION_ALREADY_EXISTS'
   | 'NO_MEMBERSHIPS_WITH_ORGANISATION_FOUND'
   | 'ASSESSMENT_NOT_FOUND'
-  | 'FRAMEWORK_NOT_FOUND';
+  | 'FRAMEWORK_NOT_FOUND'
+  | 'USER_ASSESSMENT_NOT_FOUND';
 
 export function createConvexError(code: ErrorCode) {
   return new ConvexError(code);

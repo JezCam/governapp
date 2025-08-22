@@ -1,3 +1,4 @@
+import type { api } from '../../convex/_generated/api';
 import type { DataModel } from '../../convex/_generated/dataModel';
 
 export type User = DataModel['users']['document'];
@@ -26,7 +27,6 @@ export type UserAssessmentWithUser = UserAssessment & {
   user: User;
 };
 
-export type AssessmentWithFrameworkAndUserAssessmentsWithUser = Assessment & {
-  framework: Framework;
-  userAssessmentsWithUser: UserAssessmentWithUser[];
-};
+export type AssessmentTableRow = Awaited<
+  typeof api.services.assessments.listForActiveOrganisation._returnType
+>[number];

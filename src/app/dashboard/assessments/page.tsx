@@ -18,14 +18,12 @@ import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatDateTime } from '@/lib/utils';
-import type { AssessmentWithFrameworkAndUserAssessmentsWithUser } from '@/types/convex';
+import type { AssessmentTableRow } from '@/types/convex';
 import { api } from '../../../../convex/_generated/api';
 
 const getAssessmentColumns = (
-  onOpenDetails: (
-    assessment: AssessmentWithFrameworkAndUserAssessmentsWithUser
-  ) => void
-): ColumnDef<AssessmentWithFrameworkAndUserAssessmentsWithUser>[] => [
+  onOpenDetails: (assessment: AssessmentTableRow) => void
+): ColumnDef<AssessmentTableRow>[] => [
   {
     size: 10,
     maxSize: 10,
@@ -72,20 +70,24 @@ const getAssessmentColumns = (
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      const id = row.original._id;
+      const uaId = row.original.currentUserAssessmentId;
       const status = row.original.status;
 
       switch (status) {
         case 'not-started':
           return (
             <Button asChild size="sm" variant="outline">
-              <Link href="/dashboard/assessments/123">Start assessment</Link>
+              <Link href={`/dashboard/assessments/${uaId}`}>
+                Start assessment
+              </Link>
             </Button>
           );
         case 'in-progress':
           return (
             <Button asChild size="sm" variant="secondary">
-              <Link href="/dashboard/assessments/123">Continue assessment</Link>
+              <Link href={`/dashboard/assessments/${uaId}`}>
+                Continue assessment
+              </Link>
             </Button>
           );
         case 'closed':
@@ -94,7 +96,7 @@ const getAssessmentColumns = (
               <Button asChild size="sm" variant="outline">
                 <Link
                   className="flex gap-2"
-                  href={`/dashboard/reports?assessment=${id}`}
+                  href={`/dashboard/reports?assessment=${uaId}`}
                 >
                   <HugeiconsIcon
                     className="text-muted-foreground"
@@ -107,7 +109,7 @@ const getAssessmentColumns = (
               <Button asChild className="!pl-2" size="sm" variant="outline">
                 <Link
                   className="flex gap-1"
-                  href={`/dashboard/actions?assessment=${id}`}
+                  href={`/dashboard/actions?assessment=${uaId}`}
                 >
                   <HugeiconsIcon
                     className="text-primary"
@@ -140,13 +142,12 @@ const getAssessmentColumns = (
 
 export default function Assessments() {
   const assessments = useQuery(
-    api.services.assessments
-      .listForActiveOrganisationWithFrameworkAndUserAssessmentsWithUser
+    api.services.assessments.listForActiveOrganisation
   );
 
   const [newAssessmentOpen, setNewAssessmentOpen] = useState(false);
   const [detailsAssessment, setDetailsAssessment] =
-    useState<AssessmentWithFrameworkAndUserAssessmentsWithUser>();
+    useState<AssessmentTableRow>();
 
   const columns = getAssessmentColumns((assessment) => {
     setDetailsAssessment(assessment);

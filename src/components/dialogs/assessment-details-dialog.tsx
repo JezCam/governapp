@@ -1,7 +1,7 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
 import type { ColumnDef } from '@tanstack/react-table';
 import type {
-  AssessmentWithFrameworkAndUserAssessmentsWithUser,
+  AssessmentTableRow,
   UserAssessmentWithUser,
 } from '@/types/convex';
 import { DataTable } from '../data-table/data-table';
@@ -36,21 +36,19 @@ const participantsTableColumns: ColumnDef<UserAssessmentWithUser>[] = [
 ];
 
 export default function AssessmentDetailsDialog({
-  ...props
+  assessment,
+  ...rest
 }: DialogProps & {
-  assessment: AssessmentWithFrameworkAndUserAssessmentsWithUser;
+  assessment: AssessmentTableRow;
 }) {
   return (
-    <Dialog onOpenChange={props.onOpenChange} open={props.open}>
+    <Dialog onOpenChange={rest.onOpenChange} open={rest.open}>
       <DialogContent className="gap-6">
         <DialogHeader>
-          <DialogTitle>{props.assessment.name}</DialogTitle>
+          <DialogTitle>{assessment.name}</DialogTitle>
         </DialogHeader>
-        <FrameworkLabel
-          name={props.assessment.framework.name}
-          variant="framework"
-        />
-        {props.assessment.status === 'closed' && (
+        <FrameworkLabel name={assessment.framework.name} variant="framework" />
+        {assessment.status === 'closed' && (
           <div className="flex w-full gap-4">
             <div className="flex w-full flex-col gap-1.5">
               <Label>Score</Label>
@@ -71,7 +69,7 @@ export default function AssessmentDetailsDialog({
           //   actionOnClick={() => {}}
           //   actionText="Add participant"
           columns={participantsTableColumns}
-          data={props.assessment.userAssessmentsWithUser}
+          data={assessment.userAssessments}
           title="Participants"
         />
       </DialogContent>

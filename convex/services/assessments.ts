@@ -1,76 +1,97 @@
 import { v } from 'convex/values';
-import type { Id } from '../_generated/dataModel';
-import {
-  type MutationCtx,
-  mutation,
-  type QueryCtx,
-  query,
-} from '../_generated/server';
+import { mutation, query } from '../_generated/server';
 import {
   listUserAssessmentsByAssessmentId,
   listUserAssessmentsByUserId,
   mapUserAssessmentsWithUser,
 } from '../data/userAssessments';
 import { createConvexError } from '../errors';
+import { mapDomainsWithSections } from './domains';
 import { getActiveOrganisationId } from './organisations';
 import { getCurrentUserId } from './users';
 
-// Helpers
-export async function listAssessmentsWithDataByAssessmentIds(
-  ctx: QueryCtx | MutationCtx,
-  assessmentIds: Id<'assessments'>[]
-) {
-  return await Promise.all(
-    assessmentIds.map(async (assessmentId) => {
-      const assessment = await ctx.db.get(assessmentId);
-      if (!assessment) {
-        throw createConvexError('ASSESSMENT_NOT_FOUND');
-      }
-
-      const framework = await ctx.db.get(assessment.frameworkId);
-      if (!framework) {
-        throw createConvexError('FRAMEWORK_NOT_FOUND');
-      }
-
-      const userAssessments = await listUserAssessmentsByAssessmentId(
-        ctx,
-        assessmentId
-      );
-
-      const userAssessmentsWithUser = await mapUserAssessmentsWithUser(
-        ctx,
-        userAssessments
-      );
-
-      return {
-        ...assessment,
-        framework,
-        userAssessmentsWithUser,
-      };
-    })
-  );
-}
-
 // Queries
 
-export const listForActiveOrganisationWithFrameworkAndUserAssessmentsWithUser =
-  query({
-    handler: async (ctx) => {
-      const currentUserId = await getCurrentUserId(ctx);
-      const activeOrganisationId = await getActiveOrganisationId(ctx);
-      const userAsssessments = await listUserAssessmentsByUserId(
-        ctx,
-        currentUserId
-      );
-      const userAssessmentsFilteredByOrganisation = userAsssessments.filter(
-        (ua) => !ua.organisationId || ua.organisationId === activeOrganisationId
-      );
-      const assessmentIds = userAssessmentsFilteredByOrganisation.map(
-        (ua) => ua.assessmentId
-      );
-      return await listAssessmentsWithDataByAssessmentIds(ctx, assessmentIds);
-    },
-  });
+export const listForActiveOrganisation = query({
+  handler: async (ctx) => {
+    const currentUserId = await getCurrentUserId(ctx);
+    const activeOrganisationId = await getActiveOrganisationId(ctx);
+    const userAsssessments = await listUserAssessmentsByUserId(
+      ctx,
+      currentUserId
+    );
+    const userAssessmentsFilteredByOrganisation = userAsssessments.filter(
+      (ua) => !ua.organisationId || ua.organisationId === activeOrganisationId
+    );
+
+    return (
+      await Promise.all(
+        userAssessmentsFilteredByOrganisation.map(async (ua) => {
+          const assessment = await ctx.db.get(ua.assessmentId);
+          if (!assessment) {
+            throw createConvexError('ASSESSMENT_NOT_FOUND');
+          }
+
+          const framework = await ctx.db.get(ua.frameworkId);
+          if (!framework) {
+            throw createConvexError('FRAMEWORK_NOT_FOUND');
+          }
+
+          const userAssessments = await listUserAssessmentsByAssessmentId(
+            ctx,
+            ua.assessmentId
+          );
+
+          const userAssessmentsWithUser = await mapUserAssessmentsWithUser(
+            ctx,
+            userAssessments
+          );
+
+          return {
+            ...assessment,
+            currentUserAssessmentId: ua._id,
+            framework,
+            userAssessments: userAssessmentsWithUser,
+          };
+        })
+      )
+    ).filter((a) => a !== null);
+  },
+});
+
+export const getByUserAssessmentId = query({
+  args: { userAssessmentId: v.id('userAssessments') },
+  handler: async (ctx, args) => {
+    const userAssessment = await ctx.db.get(args.userAssessmentId);
+    if (!userAssessment) {
+      throw createConvexError('USER_ASSESSMENT_NOT_FOUND');
+    }
+
+    const assessment = await ctx.db.get(userAssessment.assessmentId);
+    if (!assessment) {
+      throw createConvexError('ASSESSMENT_NOT_FOUND');
+    }
+
+    const framework = await ctx.db.get(userAssessment.frameworkId);
+    if (!framework) {
+      throw createConvexError('FRAMEWORK_NOT_FOUND');
+    }
+
+    const domains = (
+      await Promise.all(
+        assessment.selectedDomainIds.map((domainId) => ctx.db.get(domainId))
+      )
+    ).filter((d) => d !== null);
+
+    const domainsWithSections = await mapDomainsWithSections(ctx, domains);
+
+    return {
+      ...assessment,
+      userAssessment,
+      framework: { ...framework, domains: domainsWithSections },
+    };
+  },
+});
 
 // Mutations
 
