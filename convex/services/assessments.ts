@@ -166,6 +166,7 @@ export const create = mutation({
           domainIndex: 0,
           sectionIndex: 0,
           questionIndex: 0,
+          questionNumber: 0,
         })
       )
     );

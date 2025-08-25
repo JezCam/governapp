@@ -37,7 +37,7 @@ export const assessmentTables = {
     domainIndex: v.number(),
     sectionIndex: v.number(),
     questionIndex: v.number(),
-    questionNumber: v.optional(v.number()),
+    questionNumber: v.number(),
     assessmentId: v.id('assessments'),
     organisationId: v.optional(v.id('organisations')),
     frameworkId: v.id('frameworks'),

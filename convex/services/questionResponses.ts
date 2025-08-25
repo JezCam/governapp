@@ -12,7 +12,7 @@ export const createOrUpdate = mutation({
     responseOptionId: v.id('responseOptions'),
     nextDomainIndex: v.optional(v.number()),
     nextSectionIndex: v.optional(v.number()),
-    nextQuestionIndex: v.number(),
+    nextQuestionIndex: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     // Check if a response already exists for this userAssessmentId and questionId
@@ -46,7 +46,7 @@ export const createOrUpdate = mutation({
     await ctx.db.patch(args.userAssessmentId, {
       ...(args.nextDomainIndex && { domainIndex: args.nextDomainIndex }),
       ...(args.nextSectionIndex && { sectionIndex: args.nextSectionIndex }),
-      questionIndex: args.nextQuestionIndex,
+      ...(args.nextQuestionIndex && { questionIndex: args.nextQuestionIndex }),
       questionNumber: (userAssessment.questionNumber || 0) + 1,
     });
   },
