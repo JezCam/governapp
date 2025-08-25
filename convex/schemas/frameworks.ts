@@ -10,7 +10,6 @@ export const riskLevels = [
 
 export const frameworkTables = {
   frameworks: defineTable({
-    beta_id: v.string(),
     name: v.string(),
     type: v.union(v.literal('self'), v.literal('board')),
     summary: v.string(),
@@ -25,16 +24,12 @@ export const frameworkTables = {
     legislation: v.optional(v.string()),
     authority: v.string(),
     monthlyCost: v.number(),
-  })
-    .index('by_beta_id', ['beta_id'])
-    .index('by_type', ['type']),
+  }).index('by_type', ['type']),
   domains: defineTable({
-    beta_id: v.string(),
     order: v.number(),
     name: v.string(),
     description: v.string(),
     questionsTotal: v.number(),
-    questionsOffset: v.number(),
     blackMax: v.number(),
     redMax: v.number(),
     amberMax: v.number(),
@@ -43,11 +38,8 @@ export const frameworkTables = {
     reportAmber: v.string(),
     reportGreen: v.string(),
     frameworkId: v.id('frameworks'),
-  })
-    .index('by_beta_id', ['beta_id'])
-    .index('by_framework', ['frameworkId']),
+  }).index('by_framework', ['frameworkId']),
   sections: defineTable({
-    beta_id: v.string(),
     order: v.number(),
     name: v.string(),
     description: v.string(),
@@ -62,11 +54,8 @@ export const frameworkTables = {
     reportGreen: v.string(),
     domainId: v.id('domains'),
     frameworkId: v.id('frameworks'),
-  })
-    .index('by_beta_id', ['beta_id'])
-    .index('by_domain', ['domainId']),
+  }).index('by_domain', ['domainId']),
   questions: defineTable({
-    beta_id: v.string(),
     order: v.number(),
     text: v.string(),
     explanatory: v.string(),
@@ -79,10 +68,8 @@ export const frameworkTables = {
     sectionId: v.id('sections'),
   })
     .index('by_framework_order', ['frameworkId', 'order'])
-    .index('by_beta_id', ['beta_id'])
     .index('by_domain', ['domainId'])
-    .index('by_section', ['sectionId'])
-    .index('by_order', ['order']),
+    .index('by_section', ['sectionId']),
   responseOptions: defineTable({
     text: v.string(),
     score: v.number(),
@@ -93,4 +80,10 @@ export const frameworkTables = {
     actionText: v.optional(v.string()),
     questionId: v.id('questions'),
   }).index('by_question', ['questionId']),
+  subscriptions: defineTable({
+    userId: v.id('users'),
+    organisationId: v.id('organisations'),
+    frameworkId: v.id('frameworks'),
+    subscribedAt: v.number(),
+  }).index('by_organisation', ['organisationId']),
 };

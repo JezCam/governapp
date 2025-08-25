@@ -47,12 +47,8 @@ export const assessmentTables = {
     .index('by_assessment', ['assessmentId'])
     .index('by_user_organisation', ['userId', 'organisationId']),
   questionResponses: defineTable({
-    userId: v.id('users'),
-    assessmentId: v.id('assessments'),
     userAssessmentId: v.id('userAssessments'),
     questionId: v.id('questions'),
     responseOptionId: v.id('responseOptions'),
-  })
-    .index('by_assessment_question', ['assessmentId', 'questionId'])
-    .index('by_user_assessment_question', ['userAssessmentId', 'questionId']),
+  }).index('by_user_assessment_question', ['userAssessmentId', 'questionId']),
 };

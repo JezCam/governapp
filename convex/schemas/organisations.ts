@@ -47,9 +47,4 @@ export const organisationTables = {
     .index('by_inviteeEmail_status', ['inviteeEmail', 'status'])
     .index('by_organisation_email', ['organisationId', 'inviteeEmail'])
     .index('by_organisation_status', ['organisationId', 'status']),
-  subscriptions: defineTable({
-    organisationId: v.id('organisations'),
-    frameworkId: v.id('frameworks'),
-    subscribedAt: v.number(),
-  }).index('by_organisation', ['organisationId']),
 };

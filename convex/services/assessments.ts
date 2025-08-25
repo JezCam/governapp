@@ -83,7 +83,11 @@ export const getByUserAssessmentId = query({
       )
     ).filter((d) => d !== null);
 
-    const domainsWithSections = await mapDomainsWithSections(ctx, domains);
+    const domainsWithSections = await mapDomainsWithSections(
+      ctx,
+      domains,
+      args.userAssessmentId
+    );
 
     return {
       ...assessment,

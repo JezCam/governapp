@@ -22,9 +22,10 @@ export type Domain = DataModel['domains']['document'];
 export type Section = DataModel['sections']['document'];
 export type Question = DataModel['questions']['document'];
 export type ResponseOption = DataModel['responseOptions']['document'];
-export type QuestionWithResponseOptions = Question & {
-  responseOptions: ResponseOption[];
-};
+
+export type QuestionFormQuestion = Awaited<
+  typeof api.services.assessments.getByUserAssessmentId._returnType
+>['framework']['domains'][number]['sections'][number]['questions'][number];
 
 // Assessments domain
 

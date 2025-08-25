@@ -1,8 +1,9 @@
 'use client';
 
-import { useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import QuestionForm from '@/components/forms/question-form';
 import { api } from '../../../../../convex/_generated/api';
 import type { Id } from '../../../../../convex/_generated/dataModel';
@@ -10,6 +11,10 @@ import AssessmentHeader from './assessment-header';
 import ProgressTree from './progress-tree';
 
 export default function Page() {
+  const createOrUpdateQuestionResponse = useMutation(
+    api.services.questionResponses.createOrUpdate
+  );
+
   const { id } = useParams();
 
   const assessment = useQuery(api.services.assessments.getByUserAssessmentId, {
@@ -40,30 +45,65 @@ export default function Page() {
   const currentSection = currentDomain.sections[sectionIndex];
   const currentQuestion = currentSection.questions[questionIndex];
 
-  // Next question logic
-  const hasNextQuestion = currentSection.questions.length > questionIndex + 1;
-  const hasNextSection = currentDomain.sections.length > sectionIndex + 1;
-  const hasNextDomain = framework.domains.length > domainIndex + 1;
+  const handleNext = (responseOptionId: Id<'responseOptions'>) => {
+    // Update client state
+    const currentDomainIndex = domainIndex;
+    const currentSectionIndex = sectionIndex;
+    const currentQuestionIndex = questionIndex;
+    const currentQuestionNumber = questionNumber;
+
+    // Question index
+    const isNextSection = questionIndex === currentSection.questions.length - 1;
+    const nextQuestionIndex = isNextSection ? 0 : questionIndex + 1;
+    setQuestionIndex(nextQuestionIndex);
+
+    // Section index
+    const isNextDomain =
+      isNextSection && sectionIndex === currentDomain.sections.length - 1;
+    const nextSectionIndex = isNextDomain ? 0 : sectionIndex + 1;
+    if (isNextSection) {
+      setSectionIndex(nextSectionIndex);
+    }
+
+    // Domain index
+    const nextDomainIndex = domainIndex + 1;
+    if (isNextDomain) {
+      setDomainIndex(nextDomainIndex);
+    }
+
+    setQuestionNumber(questionNumber + 1);
+
+    // Update backend state
+    const data = {
+      userAssessmentId: assessment.userAssessment._id,
+      questionId: currentQuestion._id,
+      responseOptionId,
+      ...(isNextDomain && { nextDomainIndex }),
+      ...(isNextSection && { nextSectionIndex }),
+      nextQuestionIndex,
+    };
+
+    createOrUpdateQuestionResponse(data).catch((error) => {
+      switch (error.data) {
+        case 'USER_ASSESSMENT_NOT_FOUND':
+          toast.error('User assessment not found. Please refresh the page.');
+          break;
+        default:
+          toast.error('An unexpected error occurred. Please try again.');
+      }
+
+      // Revert client state
+      setDomainIndex(currentDomainIndex);
+      setSectionIndex(currentSectionIndex);
+      setQuestionIndex(currentQuestionIndex);
+      setQuestionNumber(currentQuestionNumber);
+    });
+  };
 
   // Previous question logic
   const hasPreviousQuestion = questionIndex > 0;
   const hasPreviousSection = sectionIndex > 0;
   const hasPreviousDomain = domainIndex > 0;
-
-  const handleNext = () => {
-    if (hasNextQuestion) {
-      setQuestionIndex(questionIndex + 1);
-      setQuestionNumber(questionNumber + 1);
-    } else if (hasNextSection) {
-      setSectionIndex(sectionIndex + 1);
-      setQuestionIndex(0);
-    } else if (hasNextDomain) {
-      setDomainIndex(domainIndex + 1);
-      setSectionIndex(0);
-      setQuestionIndex(0);
-    }
-    setQuestionNumber(questionNumber + 1);
-  };
 
   const handlePrevious = () => {
     if (hasPreviousQuestion) {

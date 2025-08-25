@@ -26,10 +26,7 @@ export default function ProgressTree({
     }
     if (s === undefined) {
       return (
-        currentDomain.sections
-          .slice(0, sectionIndex)
-          .reduce((acc, section) => acc + section.questionsTotal, 0) +
-        questionIndex
+        currentDomain.sections[sectionIndex].questionsOffset + questionIndex
       );
     }
     if (s < sectionIndex) {

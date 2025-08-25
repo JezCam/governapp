@@ -2,7 +2,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import {
@@ -14,8 +13,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import type { QuestionWithResponseOptions } from '@/types/convex';
-import LoadingButton from '../loading-button';
+import type { QuestionFormQuestion } from '@/types/convex';
+import type { Id } from '../../../convex/_generated/dataModel';
+import { Button } from '../ui/button';
 
 const formSchema = z.object({
   responseOptionId: z.string({ message: 'Please select an option' }),
@@ -26,20 +26,21 @@ export default function QuestionForm({
   onNext,
   onPrevious,
 }: {
-  question: QuestionWithResponseOptions;
-  onNext?: () => void;
+  question: QuestionFormQuestion;
+  onNext?: (responseOptionId: Id<'responseOptions'>) => void;
   onPrevious?: () => void;
 }) {
-  const [isLoading, setIsLoading] = useState(false);
+  console.log('Rendering QuestionForm with question:', question);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      responseOptionId: question.existingResponseOptionId,
+    },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    setIsLoading(false);
-    onNext?.();
-    // TODO: Implement create response and go back on error and clearing form etc
+    onNext?.(values.responseOptionId as Id<'responseOptions'>);
   }
 
   return (
@@ -58,7 +59,6 @@ export default function QuestionForm({
                 <FormItem>
                   <FormControl>
                     <RadioGroup
-                      disabled={isLoading}
                       onValueChange={field.onChange}
                       value={field.value}
                     >
@@ -88,17 +88,15 @@ export default function QuestionForm({
               )}
             />
             <div className="grid grid-cols-2 gap-2">
-              <LoadingButton
-                disabled={isLoading || !onPrevious}
+              <Button
+                disabled={!onPrevious}
                 onClick={onPrevious}
                 type="button"
                 variant="secondary"
               >
                 Previous
-              </LoadingButton>
-              <LoadingButton isLoading={isLoading} type="submit">
-                Next
-              </LoadingButton>
+              </Button>
+              <Button type="submit">Next</Button>
             </div>
           </form>
         </Form>

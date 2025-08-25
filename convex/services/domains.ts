@@ -1,4 +1,4 @@
-import type { DataModel } from '../_generated/dataModel';
+import type { DataModel, Id } from '../_generated/dataModel';
 import type { MutationCtx, QueryCtx } from '../_generated/server';
 import { listSectionsByDomainId } from '../data/sections';
 import { mapSectionsWithQuestions } from './sections';
@@ -7,7 +7,8 @@ import { mapSectionsWithQuestions } from './sections';
 
 export async function mapDomainsWithSections(
   ctx: QueryCtx | MutationCtx,
-  domains: DataModel['domains']['document'][]
+  domains: DataModel['domains']['document'][],
+  userAssessmentId?: Id<'userAssessments'>
 ) {
   return await Promise.all(
     domains.map(async (domain) => {
@@ -15,7 +16,8 @@ export async function mapDomainsWithSections(
 
       const sectionsWithQuestions = await mapSectionsWithQuestions(
         ctx,
-        sections
+        sections,
+        userAssessmentId
       );
 
       return {
