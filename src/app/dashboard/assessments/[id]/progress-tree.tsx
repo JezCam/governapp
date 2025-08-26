@@ -15,22 +15,20 @@ export default function ProgressTree({
   sectionIndex: number;
   questionIndex: number;
 }) {
-  const getProgress = (d: number, s?: number) => {
+  const getDomainProgress = (d: number) => {
     const currentDomain = domains[d];
-
     if (d < domainIndex) {
       return currentDomain.questionsTotal;
     }
     if (d > domainIndex) {
       return 0;
     }
-    if (s === undefined) {
-      return (
-        currentDomain.sections[sectionIndex].questionsOffset + questionIndex
-      );
-    }
-    if (s < sectionIndex) {
-      return currentDomain.sections[s].questionsTotal;
+    return currentDomain.sections[sectionIndex].questionsOffset + questionIndex;
+  };
+
+  const getSectionProgress = (d: number, s: number) => {
+    if (d < domainIndex || s < sectionIndex) {
+      return domains[d].sections[s].questionsTotal;
     }
     if (s > sectionIndex) {
       return 0;
@@ -49,10 +47,10 @@ export default function ProgressTree({
               <Progress
                 className="bg-ga-blue-600/20 dark:bg-ga-blue-500/20"
                 indicatorClassName="bg-ga-blue-600 dark:bg-ga-blue-500"
-                value={(getProgress(d) / domain.questionsTotal) * 100}
+                value={(getDomainProgress(d) / domain.questionsTotal) * 100}
               />
               <span className="shrink-0 font-medium text-xs">
-                {getProgress(d)}/{domain.questionsTotal}
+                {getDomainProgress(d)}/{domain.questionsTotal}
               </span>
             </div>
           </div>
@@ -73,10 +71,13 @@ export default function ProgressTree({
                     <Progress
                       className="bg-ga-green-600/20 dark:bg-ga-green-500/20"
                       indicatorClassName="bg-ga-green-600 dark:bg-ga-green-500"
-                      value={(getProgress(d, s) / section.questionsTotal) * 100}
+                      value={
+                        (getSectionProgress(d, s) / section.questionsTotal) *
+                        100
+                      }
                     />
                     <span className="shrink-0 font-medium text-xs">
-                      {getProgress(d, s)}/{section.questionsTotal}
+                      {getSectionProgress(d, s)}/{section.questionsTotal}
                     </span>
                   </div>
                 </div>

@@ -48,6 +48,7 @@ export const createOrUpdate = mutation({
       ...(args.nextSectionIndex && { sectionIndex: args.nextSectionIndex }),
       ...(args.nextQuestionIndex && { questionIndex: args.nextQuestionIndex }),
       questionNumber: (userAssessment.questionNumber || 0) + 1,
+      ...(userAssessment.status === 'not-started' && { status: 'in-progress' }),
     });
   },
 });

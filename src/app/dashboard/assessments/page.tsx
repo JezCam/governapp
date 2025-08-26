@@ -90,7 +90,7 @@ const getAssessmentColumns = (
               </Link>
             </Button>
           );
-        case 'closed':
+        case 'completed':
           return (
             <div className="flex gap-2">
               <Button asChild size="sm" variant="outline">

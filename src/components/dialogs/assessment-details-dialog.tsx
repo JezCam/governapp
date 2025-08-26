@@ -48,7 +48,7 @@ export default function AssessmentDetailsDialog({
           <DialogTitle>{assessment.name}</DialogTitle>
         </DialogHeader>
         <FrameworkLabel name={assessment.framework.name} variant="framework" />
-        {assessment.status === 'closed' && (
+        {assessment.status === 'completed' && (
           <div className="flex w-full gap-4">
             <div className="flex w-full flex-col gap-1.5">
               <Label>Score</Label>

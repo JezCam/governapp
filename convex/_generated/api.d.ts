@@ -45,6 +45,7 @@ import type * as services_questions from "../services/questions.js";
 import type * as services_sections from "../services/sections.js";
 import type * as services_storage from "../services/storage.js";
 import type * as services_subscriptions from "../services/subscriptions.js";
+import type * as services_userAssessments from "../services/userAssessments.js";
 import type * as services_users from "../services/users.js";
 
 /**
@@ -88,6 +89,7 @@ declare const fullApi: ApiFromModules<{
   "services/sections": typeof services_sections;
   "services/storage": typeof services_storage;
   "services/subscriptions": typeof services_subscriptions;
+  "services/userAssessments": typeof services_userAssessments;
   "services/users": typeof services_users;
 }>;
 export declare const api: FilterApi<

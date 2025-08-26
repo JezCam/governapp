@@ -8,6 +8,7 @@ import QuestionForm from '@/components/forms/question-form';
 import { api } from '../../../../../convex/_generated/api';
 import type { Id } from '../../../../../convex/_generated/dataModel';
 import AssessmentHeader from './assessment-header';
+import CompleteCard from './complete-card';
 import DomainCard from './domain-card';
 import ProgressTree from './progress-tree';
 import SectionCard from './section-card';
@@ -44,6 +45,8 @@ export default function Page() {
   const [sectionContinued, setSectionContinued] = useState(true);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
     if (!assessment || assessmentLoaded) {
@@ -103,6 +106,7 @@ export default function Page() {
       ? true
       : nextQuestionIndex > maxQuestionIndex;
 
+    // New max progress can be assertained by an increase in question index
     const newMaxProgressQuestion =
       newMaxQuestionIndex && isMaxSectionIndex && isMaxDomainIndex;
 
@@ -118,6 +122,7 @@ export default function Page() {
       setSectionContinued(false);
     }
 
+    // New max progress can be assertained by an increase in section index
     const newMaxProgressSection =
       isNextSection && newMaxSectionIndex && isMaxDomainIndex;
 
@@ -125,10 +130,16 @@ export default function Page() {
     const nextDomainIndex = domainIndex + 1;
     const newMaxDomainIndex = nextDomainIndex > maxDomainIndex;
     if (isNextDomain) {
-      setDomainIndex(nextDomainIndex);
-      setDomainContinued(false);
+      // Check if assessment is complete
+      if (nextDomainIndex >= framework.domains.length) {
+        setCompleted(true);
+      } else {
+        setDomainIndex(nextDomainIndex);
+        setDomainContinued(false);
+      }
     }
 
+    // New max progress can be assertained by an increase in domain index
     const newMaxProgressDomain = isNextDomain && newMaxDomainIndex;
 
     // No change
@@ -215,10 +226,6 @@ export default function Page() {
   // Question Form Button Logic
   const disablePrevious =
     domainIndex === 0 && sectionIndex === 0 && questionIndex === 0;
-  const disableNext =
-    domainIndex === framework.domains.length - 1 &&
-    sectionIndex === currentDomain.sections.length - 1 &&
-    questionIndex === currentSection.questions.length - 1;
 
   return (
     <div className="flex size-full flex-col">
@@ -237,6 +244,25 @@ export default function Page() {
         />
         <div className="flex size-full flex-col items-center overflow-auto p-4 py-12">
           {(() => {
+            if (completed) {
+              return (
+                <CompleteCard
+                  onPrevious={() => {
+                    const lastDomain = framework.domains.at(-1);
+                    const lastSection = lastDomain?.sections.at(-1);
+                    setDomainIndex(framework.domains.length - 1);
+                    setSectionIndex(
+                      lastDomain ? lastDomain.sections.length - 1 : 0
+                    );
+                    setQuestionIndex(
+                      lastSection ? lastSection.questions.length - 1 : 0
+                    );
+                    setCompleted(false);
+                  }}
+                  userAssessmentId={assessment.userAssessment._id}
+                />
+              );
+            }
             if (questionIndex === 0) {
               if (!domainContinued) {
                 return (
@@ -261,7 +287,7 @@ export default function Page() {
                   {currentQuestion.text}
                 </p>
                 <QuestionForm
-                  onNext={disableNext ? undefined : handleNext}
+                  onNext={handleNext}
                   onPrevious={
                     disablePrevious || isLoading ? undefined : handlePrevious
                   }

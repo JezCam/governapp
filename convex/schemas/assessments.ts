@@ -8,7 +8,7 @@ export const assessmentTables = {
     status: v.union(
       v.literal('not-started'),
       v.literal('in-progress'),
-      v.literal('closed')
+      v.literal('completed')
     ),
     maxScore: v.number(),
     actualScore: v.number(),
