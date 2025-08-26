@@ -49,7 +49,7 @@ export const listForActiveOrganisation = query({
 
           return {
             ...assessment,
-            currentUserAssessmentId: ua._id,
+            currentUserAssessment: ua,
             framework,
             userAssessments: userAssessmentsWithUser,
           };

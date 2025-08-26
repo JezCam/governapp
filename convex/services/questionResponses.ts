@@ -50,5 +50,16 @@ export const createOrUpdate = mutation({
       questionNumber: (userAssessment.questionNumber || 0) + 1,
       ...(userAssessment.status === 'not-started' && { status: 'in-progress' }),
     });
+
+    // Update the assessment's status to in-progress if it was not-started
+    const assessment = await ctx.db.get(userAssessment.assessmentId);
+    if (!assessment) {
+      throw createConvexError('ASSESSMENT_NOT_FOUND');
+    }
+    if (assessment.status === 'not-started') {
+      await ctx.db.patch(userAssessment.assessmentId, {
+        status: 'in-progress',
+      });
+    }
   },
 });

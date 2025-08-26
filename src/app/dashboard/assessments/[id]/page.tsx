@@ -27,9 +27,8 @@ export default function Page() {
   const [assessmentLoaded, setAssessmentLoaded] = useState(false);
 
   // Question Number State (for header)
-  const [questionNumber, setQuestionNumber] = useState<number>(
-    assessment?.userAssessment.questionNumber || 0
-  );
+  const [maxQuestionNumber, setMaxQuestionNumber] = useState<number>(0);
+  const [questionNumber, setQuestionNumber] = useState<number>(0);
 
   // Domain, Section, Question Index State
   const [maxDomainIndex, setMaxDomainIndex] = useState(0);
@@ -63,6 +62,7 @@ export default function Page() {
     setMaxQuestionIndex(assessment.userAssessment.questionIndex);
 
     setQuestionNumber(assessment.userAssessment.questionNumber);
+    setMaxQuestionNumber(assessment.userAssessment.questionNumber);
 
     if (assessment.userAssessment.questionIndex === 0) {
       setSectionContinued(false);
@@ -93,15 +93,20 @@ export default function Page() {
     const isMaxDomainIndex = domainIndex === maxDomainIndex;
 
     // Update client state
+    const currentMaxDomainIndex = maxQuestionNumber;
     const currentDomainIndex = domainIndex;
+    const currentMaxSectionIndex = maxSectionIndex;
     const currentSectionIndex = sectionIndex;
+    const currentMaxQuestionIndex = maxQuestionIndex;
     const currentQuestionIndex = questionIndex;
+    const currentMaxQuestionNumber = questionNumber;
     const currentQuestionNumber = questionNumber;
 
     // Question index
     const isNextSection = questionIndex === currentSection.questions.length - 1;
     const nextQuestionIndex = isNextSection ? 0 : questionIndex + 1;
     setQuestionIndex(nextQuestionIndex);
+    setQuestionNumber(questionNumber + 1);
     const newMaxQuestionIndex = isNextSection
       ? true
       : nextQuestionIndex > maxQuestionIndex;
@@ -155,7 +160,7 @@ export default function Page() {
     const newProgress =
       newMaxProgressQuestion || newMaxProgressSection || newMaxProgressDomain;
     if (newProgress) {
-      setQuestionNumber(questionNumber + 1);
+      setMaxQuestionNumber(questionNumber + 1);
       if (isNextDomain) {
         setMaxDomainIndex(nextDomainIndex);
       }
@@ -188,9 +193,16 @@ export default function Page() {
         }
 
         // Revert client state
+        setMaxDomainIndex(currentMaxDomainIndex);
         setDomainIndex(currentDomainIndex);
+
+        setMaxSectionIndex(currentMaxSectionIndex);
         setSectionIndex(currentSectionIndex);
+
+        setMaxQuestionIndex(currentMaxQuestionIndex);
         setQuestionIndex(currentQuestionIndex);
+
+        setMaxQuestionNumber(currentMaxQuestionNumber);
         setQuestionNumber(currentQuestionNumber);
       })
       .finally(() => {
@@ -204,6 +216,7 @@ export default function Page() {
   const hasPreviousDomain = domainIndex > 0;
 
   const handlePrevious = () => {
+    setQuestionNumber(questionNumber - 1);
     if (hasPreviousQuestion) {
       setQuestionIndex(questionIndex - 1);
     } else if (hasPreviousSection) {
@@ -232,7 +245,7 @@ export default function Page() {
       <AssessmentHeader
         assessmentName={assessment.name}
         frameworkName={framework.name}
-        questionNumber={questionNumber}
+        questionNumber={maxQuestionNumber}
         questionsTotal={assessment.questionsTotal}
       />
       <div className="flex size-full overflow-auto">

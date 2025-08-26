@@ -36,23 +36,20 @@ export default function QuestionForm({
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      responseOptionId: question.existingResponseOptionId,
-    },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    form.reset({ responseOptionId: undefined });
     onNext?.(values.responseOptionId as Id<'responseOptions'>);
-    form.reset();
   }
 
   useEffect(() => {
-    if (question.existingResponseOptionId === undefined) {
-      return;
+    if (
+      !form.getValues('responseOptionId') &&
+      question.existingResponseOptionId
+    ) {
+      form.setValue('responseOptionId', question.existingResponseOptionId);
     }
-    form.reset({
-      responseOptionId: question.existingResponseOptionId,
-    });
   }, [question, form]);
 
   return (
@@ -97,7 +94,10 @@ export default function QuestionForm({
           <LoadingButton
             disabled={!onPrevious}
             isLoading={previousLoading}
-            onClick={onPrevious}
+            onClick={() => {
+              form.reset({ responseOptionId: undefined });
+              onPrevious?.();
+            }}
             type="button"
             variant="secondary"
           >

@@ -64,7 +64,6 @@ export default function AssessmentDetailsDialog({
             </div>
           </div>
         )}
-        <Separator />
         <DataTable
           //   actionOnClick={() => {}}
           //   actionText="Add participant"

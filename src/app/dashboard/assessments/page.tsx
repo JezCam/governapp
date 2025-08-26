@@ -70,14 +70,16 @@ const getAssessmentColumns = (
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      const uaId = row.original.currentUserAssessmentId;
-      const status = row.original.status;
+      const { currentUserAssessment } = row.original;
+      const status = currentUserAssessment.status;
 
       switch (status) {
         case 'not-started':
           return (
             <Button asChild size="sm" variant="outline">
-              <Link href={`/dashboard/assessments/${uaId}`}>
+              <Link
+                href={`/dashboard/assessments/${currentUserAssessment._id}`}
+              >
                 Start assessment
               </Link>
             </Button>
@@ -85,7 +87,9 @@ const getAssessmentColumns = (
         case 'in-progress':
           return (
             <Button asChild size="sm" variant="secondary">
-              <Link href={`/dashboard/assessments/${uaId}`}>
+              <Link
+                href={`/dashboard/assessments/${currentUserAssessment._id}`}
+              >
                 Continue assessment
               </Link>
             </Button>
@@ -96,7 +100,7 @@ const getAssessmentColumns = (
               <Button asChild size="sm" variant="outline">
                 <Link
                   className="flex gap-2"
-                  href={`/dashboard/reports?assessment=${uaId}`}
+                  href={`/dashboard/reports?assessment=${currentUserAssessment._id}`}
                 >
                   <HugeiconsIcon
                     className="text-muted-foreground"
@@ -109,7 +113,7 @@ const getAssessmentColumns = (
               <Button asChild className="!pl-2" size="sm" variant="outline">
                 <Link
                   className="flex gap-1"
-                  href={`/dashboard/actions?assessment=${uaId}`}
+                  href={`/dashboard/actions?assessment=${currentUserAssessment._id}`}
                 >
                   <HugeiconsIcon
                     className="text-primary"
