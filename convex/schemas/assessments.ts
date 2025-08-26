@@ -50,5 +50,7 @@ export const assessmentTables = {
     userAssessmentId: v.id('userAssessments'),
     questionId: v.id('questions'),
     responseOptionId: v.id('responseOptions'),
-  }).index('by_user_assessment_question', ['userAssessmentId', 'questionId']),
+  })
+    .index('by_user_assessment_question', ['userAssessmentId', 'questionId'])
+    .index('by_user_assessment', ['userAssessmentId']),
 };

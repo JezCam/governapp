@@ -13,3 +13,15 @@ export async function getQuestionResponseByUserAssessmentIdAndQuestionId(
     )
     .first();
 }
+
+export async function listQuestionResponsesByUserAssessmentId(
+  ctx: QueryCtx | MutationCtx,
+  userAssessmentId: Id<'userAssessments'>
+) {
+  return await ctx.db
+    .query('questionResponses')
+    .withIndex('by_user_assessment', (q) =>
+      q.eq('userAssessmentId', userAssessmentId)
+    )
+    .collect();
+}

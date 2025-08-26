@@ -4,12 +4,15 @@ import type {
   AssessmentTableRow,
   UserAssessmentWithUser,
 } from '@/types/convex';
+import DeleteAssessmentButton from '../assessments/delete-assessment-button';
 import { DataTable } from '../data-table/data-table';
 import FrameworkLabel from '../labels/framework-label';
 import UserLabel from '../labels/user-label';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Label } from '../ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Progress } from '../ui/progress';
 import { Separator } from '../ui/separator';
 
@@ -71,6 +74,34 @@ export default function AssessmentDetailsDialog({
           data={assessment.userAssessments}
           title="Participants"
         />
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <h2 className="font-bold text-destructive text-lg">Danger Zone</h2>
+            <p className="text-muted-foreground text-sm">
+              Delete this assessment and all associated data
+            </p>
+          </div>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button className="w-fit" variant="destructive">
+                Delete assessment
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="flex w-fit flex-col gap-2 p-3 "
+              side="top"
+            >
+              <strong className="text-sm">Are you sure?</strong>
+              <DeleteAssessmentButton
+                assessmentId={assessment._id}
+                onSuccess={() => rest.onOpenChange?.(false)}
+              >
+                Yes, delete
+              </DeleteAssessmentButton>
+            </PopoverContent>
+          </Popover>
+        </div>
       </DialogContent>
     </Dialog>
   );

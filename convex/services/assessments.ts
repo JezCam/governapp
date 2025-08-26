@@ -1,5 +1,6 @@
 import { v } from 'convex/values';
 import { mutation, query } from '../_generated/server';
+import { listQuestionResponsesByUserAssessmentId } from '../data/questionResponses';
 import {
   listUserAssessmentsByAssessmentId,
   listUserAssessmentsByUserId,
@@ -170,5 +171,36 @@ export const create = mutation({
         })
       )
     );
+  },
+});
+
+export const deleteById = mutation({
+  args: { assessmentId: v.id('assessments') },
+  handler: async (ctx, args) => {
+    const assessment = await ctx.db.get(args.assessmentId);
+    if (!assessment) {
+      throw createConvexError('ASSESSMENT_NOT_FOUND');
+    }
+
+    const userAssessments = await listUserAssessmentsByAssessmentId(
+      ctx,
+      args.assessmentId
+    );
+
+    const questionResponses = (
+      await Promise.all(
+        userAssessments.map(
+          async (ua) =>
+            await listQuestionResponsesByUserAssessmentId(ctx, ua._id)
+        )
+      )
+    ).flat();
+
+    // Delete everything
+    await Promise.all(
+      questionResponses.map(async (qr) => await ctx.db.delete(qr._id))
+    );
+    await Promise.all(userAssessments.map(async (ua) => ctx.db.delete(ua._id)));
+    await ctx.db.delete(args.assessmentId);
   },
 });

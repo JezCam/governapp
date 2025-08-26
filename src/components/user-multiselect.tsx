@@ -15,6 +15,7 @@
 
 import { Command as CommandPrimitive, useCommandState } from 'cmdk';
 import { XIcon } from 'lucide-react';
+// biome-ignore lint/performance/noNamespaceImport: <explanation>
 import * as React from 'react';
 import { useEffect } from 'react';
 import {
