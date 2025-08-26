@@ -149,7 +149,7 @@ function removePickedOption(
 
   for (const [key, value] of Object.entries(cloneOption)) {
     cloneOption[key] = value.filter(
-      (val) => !picked.find((p) => p.id === val.id)
+      (val) => !picked.some((p) => p.user._id === val.user._id)
     );
   }
   return cloneOption;
@@ -514,7 +514,7 @@ const UserMultiSelect = ({
       <div className="relative">
         <div
           className={cn(
-            'absolute top-2 z-10 w-full overflow-hidden rounded-md border border-input',
+            'absolute top-2 z-10 w-full overflow-hidden rounded-md border border-input shadow-md',
             'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=open]:animate-in',
             !open && 'hidden'
           )}
@@ -522,7 +522,7 @@ const UserMultiSelect = ({
         >
           {open && (
             <CommandList
-              className="bg-popover text-popover-foreground shadow-lg outline-hidden"
+              className="bg-popover text-popover-foreground outline-hidden"
               onMouseEnter={() => {
                 setOnScrollbar(true);
               }}

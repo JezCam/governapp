@@ -282,7 +282,8 @@ export default function Page() {
               }
             }
             return (
-              <div className="flex w-xl flex-col gap-8">
+              <div className="flex w-xl flex-col items-center gap-8">
+                <strong className="text-primary">{`Question ${questionNumber + 1} / ${assessment.questionsTotal}`}</strong>
                 <p className="text-center font-medium">
                   {currentQuestion.text}
                 </p>

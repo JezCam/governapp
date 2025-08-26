@@ -20,7 +20,7 @@ export default function DomainCard({
       </div>
       <div className="flex flex-col items-center gap-2">
         <span className="font-semibold text-lg">{domain.name} Domain</span>
-        <p className="max-w-sm text-center text-muted-foreground">
+        <p className="max-w-lg text-center text-muted-foreground">
           {domain.description}
         </p>
       </div>

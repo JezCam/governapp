@@ -58,7 +58,7 @@ export default function QuestionForm({
   return (
     <Form {...form}>
       <form
-        className="flex h-full min-h-fit flex-col gap-8"
+        className="flex h-full min-h-fit w-full flex-col gap-8"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField

@@ -20,7 +20,7 @@ export default function SectionCard({
       </div>
       <div className="flex flex-col items-center gap-2">
         <span className="font-semibold text-lg">{section.name} Section</span>
-        <p className="max-w-sm text-center text-muted-foreground">
+        <p className="max-w-lg text-center text-muted-foreground">
           {section.description}
         </p>
       </div>

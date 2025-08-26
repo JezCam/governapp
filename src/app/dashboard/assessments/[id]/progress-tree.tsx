@@ -23,16 +23,27 @@ export default function ProgressTree({
     if (d > domainIndex) {
       return 0;
     }
-    return currentDomain.sections[sectionIndex].questionsOffset + questionIndex;
+    return (
+      currentDomain.sections
+        .slice(0, sectionIndex)
+        .reduce((acc, s) => acc + s.questionsTotal, 0) + questionIndex
+    );
   };
 
   const getSectionProgress = (d: number, s: number) => {
-    if (d < domainIndex || s < sectionIndex) {
+    // Future domain
+    if (d > domainIndex) {
+      return 0;
+    }
+    // Past domain or current domain, past section
+    if (d < domainIndex || (d === domainIndex && s < sectionIndex)) {
       return domains[d].sections[s].questionsTotal;
     }
+    // Future section
     if (s > sectionIndex) {
       return 0;
     }
+    // Current section
     return questionIndex;
   };
 
