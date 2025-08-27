@@ -10,9 +10,7 @@ export const createOrUpdate = mutation({
     userAssessmentId: v.id('userAssessments'),
     questionId: v.id('questions'),
     responseOptionId: v.id('responseOptions'),
-    nextDomainIndex: v.optional(v.number()),
-    nextSectionIndex: v.optional(v.number()),
-    nextQuestionIndex: v.optional(v.number()),
+    questionIndex: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     // Check if a response already exists for this userAssessmentId and questionId
@@ -38,16 +36,17 @@ export const createOrUpdate = mutation({
     });
 
     // Update the userAssessment's progress
+    if (args.questionIndex === undefined) {
+      return;
+    }
+
     const userAssessment = await ctx.db.get(args.userAssessmentId);
     if (!userAssessment) {
       throw createConvexError('USER_ASSESSMENT_NOT_FOUND');
     }
 
     await ctx.db.patch(args.userAssessmentId, {
-      ...(args.nextDomainIndex && { domainIndex: args.nextDomainIndex }),
-      ...(args.nextSectionIndex && { sectionIndex: args.nextSectionIndex }),
-      ...(args.nextQuestionIndex && { questionIndex: args.nextQuestionIndex }),
-      questionNumber: (userAssessment.questionNumber || 0) + 1,
+      questionIndex: args.questionIndex,
       ...(userAssessment.status === 'not-started' && { status: 'in-progress' }),
     });
 

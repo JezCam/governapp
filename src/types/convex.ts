@@ -23,9 +23,12 @@ export type Section = DataModel['sections']['document'];
 export type Question = DataModel['questions']['document'];
 export type ResponseOption = DataModel['responseOptions']['document'];
 
-export type QuestionFormQuestion = Awaited<
+export type AssessmentSection = Awaited<
   typeof api.services.assessments.getByUserAssessmentId._returnType
->['framework']['domains'][number]['sections'][number]['questions'][number];
+>['sections'][number];
+export type AssessmentQuestion = Awaited<
+  typeof api.services.assessments.getByUserAssessmentId._returnType
+>['questions'][number];
 
 // Assessments domain
 

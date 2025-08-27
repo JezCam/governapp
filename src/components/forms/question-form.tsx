@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import type { QuestionFormQuestion } from '@/types/convex';
+import type { AssessmentQuestion } from '@/types/convex';
 import type { Id } from '../../../convex/_generated/dataModel';
 import LoadingButton from '../loading-button';
 import { Button } from '../ui/button';
@@ -29,7 +29,7 @@ export default function QuestionForm({
   previousLoading,
   onPrevious,
 }: {
-  question: QuestionFormQuestion;
+  question: AssessmentQuestion;
   onNext?: (responseOptionId: Id<'responseOptions'>) => void;
   previousLoading: boolean;
   onPrevious?: () => void;

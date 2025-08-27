@@ -1,13 +1,18 @@
 import { v } from 'convex/values';
 import { mutation, query } from '../_generated/server';
-import { listQuestionResponsesByUserAssessmentId } from '../data/questionResponses';
+import {
+  getQuestionResponseByUserAssessmentIdAndQuestionId,
+  listQuestionResponsesByUserAssessmentId,
+} from '../data/questionResponses';
+import { listQuestionsBySectionId } from '../data/questions';
+import { listResponseOptionsByQuestionId } from '../data/responseOptions';
+import { listSectionsByDomainId } from '../data/sections';
 import {
   listUserAssessmentsByAssessmentId,
   listUserAssessmentsByUserId,
   mapUserAssessmentsWithUser,
 } from '../data/userAssessments';
 import { createConvexError } from '../errors';
-import { mapDomainsWithSections } from './domains';
 import { getActiveOrganisationId } from './organisations';
 import { getCurrentUserId } from './users';
 
@@ -78,22 +83,92 @@ export const getByUserAssessmentId = query({
       throw createConvexError('FRAMEWORK_NOT_FOUND');
     }
 
+    // Get all domains for this assessment
     const domains = (
       await Promise.all(
         assessment.selectedDomainIds.map((domainId) => ctx.db.get(domainId))
       )
-    ).filter((d) => d !== null);
+    )
+      .filter((d) => d !== null)
+      .sort((a, b) => a.order - b.order);
 
-    const domainsWithSections = await mapDomainsWithSections(
-      ctx,
-      domains,
-      args.userAssessmentId
+    // Get all sections for all domains
+    const sections = (
+      await Promise.all(
+        domains.map(async (d, i) =>
+          (
+            await listSectionsByDomainId(ctx, d._id)
+          )
+            .map((s) => ({ ...s, domainIndex: i }))
+            .sort((a, b) => a.order - b.order)
+        )
+      )
+    ).flat();
+
+    // Get all questions for all sections
+    const questions = (
+      await Promise.all(
+        sections.map(async (s, i) =>
+          (
+            await listQuestionsBySectionId(ctx, s._id)
+          )
+            .map((q) => ({ ...q, domainIndex: s.domainIndex, sectionIndex: i }))
+            .sort((a, b) => a.order - b.order)
+        )
+      )
+    ).flat();
+
+    // Map questions with response options and existing responses
+    const questionsWithData = await Promise.all(
+      questions.map(async (question) => {
+        const responseOptions = await listResponseOptionsByQuestionId(
+          ctx,
+          question._id
+        );
+
+        const existingResponse =
+          await getQuestionResponseByUserAssessmentIdAndQuestionId(
+            ctx,
+            userAssessment._id,
+            question._id
+          );
+
+        return {
+          ...question,
+          responseOptions,
+          ...(existingResponse && {
+            existingResponseOptionId: existingResponse.responseOptionId,
+          }),
+        };
+      })
     );
+
+    // Add values for progress tracking
+    const domainCounters = new Array(domains.length).fill(0);
+    const sectionCounters = new Array(sections.length).fill(0);
+    const questionsWithCounts = questionsWithData.map((q) => {
+      // Domain progress
+      const domainCount = domainCounters[q.domainIndex] || 0;
+      domainCounters[q.domainIndex] = domainCount + 1;
+
+      // Section progress
+      const sectionCount = sectionCounters[q.sectionIndex] || 0;
+      sectionCounters[q.sectionIndex] = sectionCount + 1;
+
+      return {
+        ...q,
+        domainCount,
+        sectionCount,
+      };
+    });
 
     return {
       ...assessment,
+      framework,
+      domains,
+      sections,
+      questions: questionsWithCounts,
       userAssessment,
-      framework: { ...framework, domains: domainsWithSections },
     };
   },
 });
@@ -164,10 +239,7 @@ export const create = mutation({
           ...(type === 'board' && { organisationId: activeOrganisationId }),
           status: 'not-started',
           startDate: Date.now(),
-          domainIndex: 0,
-          sectionIndex: 0,
           questionIndex: 0,
-          questionNumber: 0,
         })
       )
     );

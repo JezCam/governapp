@@ -6,13 +6,15 @@ import { Progress } from '@/components/ui/progress';
 export default function AssessmentHeader({
   frameworkName,
   assessmentName,
-  questionNumber,
+  questionIndex,
   questionsTotal,
+  completed,
 }: {
   frameworkName: string;
   assessmentName: string;
-  questionNumber: number;
+  questionIndex: number;
   questionsTotal: number;
+  completed: boolean;
 }) {
   return (
     <div className="flex flex-col">
@@ -34,7 +36,9 @@ export default function AssessmentHeader({
       </div>
       <Progress
         className="rounded-none"
-        value={(questionNumber / questionsTotal) * 100}
+        value={
+          ((completed ? questionsTotal : questionIndex) / questionsTotal) * 100
+        }
       />
     </div>
   );
