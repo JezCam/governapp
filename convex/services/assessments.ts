@@ -6,13 +6,13 @@ import {
 } from '../data/questionResponses';
 import { listQuestionsBySectionId } from '../data/questions';
 import { listResponseOptionsByQuestionId } from '../data/responseOptions';
-import { listSectionsByDomainId } from '../data/sections';
 import {
   listUserAssessmentsByAssessmentId,
   listUserAssessmentsByUserId,
   mapUserAssessmentsWithUser,
 } from '../data/userAssessments';
 import { createConvexError } from '../errors';
+import { mapDomainsWithSections } from './domains';
 import { getActiveOrganisationId } from './organisations';
 import { getCurrentUserId } from './users';
 
@@ -84,7 +84,7 @@ export const getByUserAssessmentId = query({
     }
 
     // Get all domains for this assessment
-    const domains = (
+    const domainsData = (
       await Promise.all(
         assessment.selectedDomainIds.map((domainId) => ctx.db.get(domainId))
       )
@@ -92,35 +92,35 @@ export const getByUserAssessmentId = query({
       .filter((d) => d !== null)
       .sort((a, b) => a.order - b.order);
 
-    // Get all sections for all domains
-    const sections = (
-      await Promise.all(
-        domains.map(async (d, i) =>
-          (
-            await listSectionsByDomainId(ctx, d._id)
-          )
-            .map((s) => ({ ...s, domainIndex: i }))
-            .sort((a, b) => a.order - b.order)
-        )
-      )
-    ).flat();
+    const domains = await mapDomainsWithSections(ctx, domainsData);
 
-    // Get all questions for all sections
-    const questions = (
+    // Get all questions with domain and section indexes
+    const questionsData = (
       await Promise.all(
-        sections.map(async (s, i) =>
+        domains.map(async (domain, d) =>
           (
-            await listQuestionsBySectionId(ctx, s._id)
-          )
-            .map((q) => ({ ...q, domainIndex: s.domainIndex, sectionIndex: i }))
-            .sort((a, b) => a.order - b.order)
+            await Promise.all(
+              domain.sections.map(async (section, s) =>
+                (
+                  await listQuestionsBySectionId(ctx, section._id)
+                )
+                  .sort((a, b) => a.order - b.order)
+                  .map((question, q) => ({
+                    ...question,
+                    domainIndex: d,
+                    sectionIndex: s,
+                    questionIndex: q,
+                  }))
+              )
+            )
+          ).flat()
         )
       )
     ).flat();
 
     // Map questions with response options and existing responses
-    const questionsWithData = await Promise.all(
-      questions.map(async (question) => {
+    const questions = await Promise.all(
+      questionsData.map(async (question) => {
         const responseOptions = await listResponseOptionsByQuestionId(
           ctx,
           question._id
@@ -143,31 +143,11 @@ export const getByUserAssessmentId = query({
       })
     );
 
-    // Add values for progress tracking
-    const domainCounters = new Array(domains.length).fill(0);
-    const sectionCounters = new Array(sections.length).fill(0);
-    const questionsWithCounts = questionsWithData.map((q) => {
-      // Domain progress
-      const domainCount = domainCounters[q.domainIndex] || 0;
-      domainCounters[q.domainIndex] = domainCount + 1;
-
-      // Section progress
-      const sectionCount = sectionCounters[q.sectionIndex] || 0;
-      sectionCounters[q.sectionIndex] = sectionCount + 1;
-
-      return {
-        ...q,
-        domainCount,
-        sectionCount,
-      };
-    });
-
     return {
       ...assessment,
       framework,
       domains,
-      sections,
-      questions: questionsWithCounts,
+      questions,
       userAssessment,
     };
   },

@@ -3,33 +3,25 @@ import FrameworkLabel from '@/components/labels/framework-label';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import type {
+  AssessmentDomain,
   AssessmentQuestion,
-  AssessmentSection,
-  Domain,
+  Section,
 } from '@/types/convex';
 
 export default function ProgressTree({
   domains,
-  sections,
   question,
   completed,
 }: {
-  domains: Domain[];
-  sections: AssessmentSection[];
+  domains: AssessmentDomain[];
   question: AssessmentQuestion;
   completed: boolean;
 }) {
   const domainIndex = question.domainIndex;
-  const domainCount = question.domainCount;
   const sectionIndex = question.sectionIndex;
-  const sectionCount = question.sectionCount;
+  const questionIndex = question.questionIndex;
 
-  const domainsWithSections = domains.map((domain, i) => ({
-    ...domain,
-    sections: sections.filter((s) => s.domainIndex === i),
-  }));
-
-  const getDomainProgress = (domain: Domain, d: number) => {
+  const getDomainProgress = (domain: AssessmentDomain, d: number) => {
     if (completed) {
       return domain.questionsTotal;
     }
@@ -42,14 +34,14 @@ export default function ProgressTree({
       return domain.questionsTotal;
     }
     // Current Domain
-    return domainCount;
+    return (
+      domain.sections.slice(0, sectionIndex).reduce((acc, section) => {
+        return acc + section.questionsTotal;
+      }, 0) + questionIndex
+    );
   };
 
-  const getSectionProgress = (
-    section: AssessmentSection,
-    d: number,
-    s: number
-  ) => {
+  const getSectionProgress = (section: Section, d: number, s: number) => {
     if (completed) {
       return section.questionsTotal;
     }
@@ -66,12 +58,12 @@ export default function ProgressTree({
       return 0;
     }
     // Current section
-    return sectionCount;
+    return questionIndex;
   };
 
   return (
     <div className="flex h-full w-96 flex-col overflow-auto border-r">
-      {domainsWithSections.map((domain, d) => {
+      {domains.map((domain, d) => {
         const domainProgress = getDomainProgress(domain, d);
 
         return (

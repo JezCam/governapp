@@ -53,13 +53,13 @@ export default function Page() {
       // Update domain/section card visibility
       if (
         assessment.questions[assessment.userAssessment.questionIndex]
-          .domainCount === 0
+          .questionIndex === 0
       ) {
         setDomainContinued(false);
       }
       if (
         assessment.questions[assessment.userAssessment.questionIndex]
-          .sectionCount === 0
+          .sectionIndex === 0
       ) {
         setSectionContinued(false);
       }
@@ -75,8 +75,8 @@ export default function Page() {
   const userAssessment = assessment.userAssessment;
   const framework = assessment.framework;
   const question = assessment.questions[questionIndex];
-  const section = assessment.sections.at(question.sectionIndex);
-  const domain = assessment.domains.at(section?.domainIndex || 0);
+  const domain = assessment.domains.at(question.domainIndex);
+  const section = domain?.sections.at(question.sectionIndex);
 
   const handleNext = (responseOptionId: Id<'responseOptions'>) => {
     const hasNextQuestion = questionIndex < assessment.questions.length - 1;
@@ -86,10 +86,16 @@ export default function Page() {
       setQuestionIndex(questionIndex + 1);
 
       // Update domain/section card visibility
-      if (section && question.sectionCount === section.questionsTotal - 1) {
+      const newSectionNext =
+        section && question.questionIndex === section.questionsTotal - 1;
+      const newDomainNext =
+        newSectionNext &&
+        domain &&
+        question.sectionIndex === domain.sections.length - 1;
+      if (newSectionNext) {
         setSectionContinued(false);
       }
-      if (domain && question.domainCount === domain.questionsTotal - 1) {
+      if (newDomainNext) {
         setDomainContinued(false);
       }
     } else {
@@ -153,7 +159,6 @@ export default function Page() {
           completed={completed}
           domains={assessment.domains}
           question={assessment.questions[maxQuestionIndex]}
-          sections={assessment.sections}
         />
         <div className="flex size-full flex-col items-center overflow-auto p-4 py-12">
           {(() => {

@@ -35,6 +35,7 @@ import type * as schemas_frameworks from "../schemas/frameworks.js";
 import type * as schemas_organisations from "../schemas/organisations.js";
 import type * as schemas_reports from "../schemas/reports.js";
 import type * as services_assessments from "../services/assessments.js";
+import type * as services_domains from "../services/domains.js";
 import type * as services_frameworks from "../services/frameworks.js";
 import type * as services_invitations from "../services/invitations.js";
 import type * as services_memberships from "../services/memberships.js";
@@ -76,6 +77,7 @@ declare const fullApi: ApiFromModules<{
   "schemas/organisations": typeof schemas_organisations;
   "schemas/reports": typeof schemas_reports;
   "services/assessments": typeof services_assessments;
+  "services/domains": typeof services_domains;
   "services/frameworks": typeof services_frameworks;
   "services/invitations": typeof services_invitations;
   "services/memberships": typeof services_memberships;
