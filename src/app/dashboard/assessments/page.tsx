@@ -72,10 +72,12 @@ const getAssessmentColumns = (
     header: 'Actions',
     cell: ({ row }) => {
       const { currentUserAssessment } = row.original;
-      const status = currentUserAssessment.status;
+      const assessmentStatus = row.original.status;
+      const userAssessmentStatus = currentUserAssessment.status;
 
-      switch (status) {
-        case 'not-started':
+      switch ([assessmentStatus, userAssessmentStatus].join(',')) {
+        case 'not-started,not-started':
+        case 'in-progress,not-started':
           return (
             <Button asChild size="sm" variant="outline">
               <Link
@@ -85,7 +87,7 @@ const getAssessmentColumns = (
               </Link>
             </Button>
           );
-        case 'in-progress':
+        case 'in-progress,in-progress':
           return (
             <Button asChild size="sm" variant="secondary">
               <Link
@@ -95,7 +97,11 @@ const getAssessmentColumns = (
               </Link>
             </Button>
           );
-        case 'completed':
+        case 'in-progress,completed':
+          return 'All done! Waiting on your team...';
+        case 'completed,completed':
+        case 'completed,in-progress':
+        case 'completed,not-started':
           return (
             <div className="flex gap-2">
               <Button asChild size="sm" variant="outline">

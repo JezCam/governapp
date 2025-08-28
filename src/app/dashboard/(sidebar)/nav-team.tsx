@@ -88,7 +88,7 @@ export default function NavTeam() {
                           <span className="truncate font-medium">{name}</span>
                           {currentUser._id === user._id && (
                             <Badge
-                              className="border-primary/15 bg-sidebar-accent text-sidebar-accent-foreground"
+                              className="border-primary/20 bg-sidebar-accent text-sidebar-accent-foreground"
                               variant="outline"
                             >
                               You

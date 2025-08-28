@@ -77,7 +77,7 @@ export default function QuestionForm({
                             id={option._id}
                             value={option._id}
                           />
-                          <span className="font-medium transition-colors group-has-data-[state=checked]:text-primary">
+                          <span className="font-medium leading-4.5 transition-colors group-has-data-[state=checked]:text-primary">
                             {option.text}
                           </span>
                         </FormLabel>
