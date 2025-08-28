@@ -6,7 +6,6 @@ import { CornerDownLeft, MoonIcon, SunIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useContext } from 'react';
-import { SearchMenuContext } from '@/app/dashboard/layout';
 import { Button } from '../../../components/ui/button';
 import {
   CommandDialog,
@@ -23,6 +22,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '../../../components/ui/sidebar';
+import { SearchMenuContext } from '../context';
 import { pages } from './nav-main';
 
 export default function SearchButton() {

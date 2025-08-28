@@ -8,13 +8,14 @@ import { useState } from 'react';
 import { DataTable } from '@/components/data-table/data-table';
 import AddTeamMemberDialog from '@/components/dialogs/add-team-member-dialog';
 import UserLabel from '@/components/labels/user-label';
+import MembershipDropdown from '@/components/memberships/membership-dropdown';
 import SortButton from '@/components/sort-button';
-import TeamMemberPopoverDropdown from '@/components/team-member-popover-dropdown';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import type { Membership, User } from '@/types/convex';
 import { api } from '../../../../convex/_generated/api';
+import { useUserContext } from '../context';
 
 export const columns: ColumnDef<Membership & { user: User }>[] = [
   {
@@ -52,18 +53,20 @@ export const columns: ColumnDef<Membership & { user: User }>[] = [
   {
     id: 'menu',
     cell: ({ row }) => (
-      <TeamMemberPopoverDropdown membership={row.original}>
+      <MembershipDropdown membership={row.original}>
         <DropdownMenuTrigger asChild>
           <Button className="float-right size-8" size="icon" variant="outline">
             <HugeiconsIcon icon={MoreVerticalIcon} />
           </Button>
         </DropdownMenuTrigger>
-      </TeamMemberPopoverDropdown>
+      </MembershipDropdown>
     ),
   },
 ];
 
 export default function TeamMembersTable() {
+  const { isAdminOfActiveOrganisation } = useUserContext();
+
   const memberships = useQuery(
     api.services.memberships.listInActiveOrganisationWithUsers
   );
@@ -80,8 +83,12 @@ export default function TeamMembersTable() {
         open={addTeamMemberOpen}
       />
       <DataTable
-        actionOnClick={() => setAddTeamMemberOpen(true)}
-        actionText="Add team member"
+        actionOnClick={
+          isAdminOfActiveOrganisation
+            ? () => setAddTeamMemberOpen(true)
+            : undefined
+        }
+        actionText={'Add team member'}
         className="h-fit"
         columns={columns}
         data={memberships}

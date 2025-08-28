@@ -8,23 +8,26 @@ import {
 } from '@hugeicons-pro/core-stroke-rounded';
 import Link from 'next/link';
 import { type ReactNode, useState } from 'react';
+import { useUserContext } from '@/app/dashboard/context';
 import type { Membership, User } from '@/types/convex';
-import ConfirmRemoveTeamMemberDialog from './dialogs/confirm-remove-team-member-dialog';
-import EditTeamMemberDialog from './dialogs/edit-team-member-dialog';
+import ConfirmRemoveTeamMemberDialog from '../dialogs/confirm-remove-team-member-dialog';
+import EditTeamMemberDialog from '../dialogs/edit-team-member-dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
+} from '../ui/dropdown-menu';
 
-export default function TeamMemberPopoverDropdown({
+export default function MembershipDropdown({
   membership,
   children,
 }: {
   membership: Membership & { user: User };
   children: ReactNode;
 }) {
+  const { currentUser, isAdminOfActiveOrganisation } = useUserContext();
+
   const [editTeamMemberOpen, setEditTeamMemberOpen] = useState(false);
   const [confirmRemoveTeamMemberOpen, setConfirmRemoveTeamMemberOpen] =
     useState(false);
@@ -55,24 +58,28 @@ export default function TeamMemberPopoverDropdown({
             View assigned actions
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem
-          className="gap-2 p-2"
-          onSelect={() => setEditTeamMemberOpen(true)}
-        >
-          <HugeiconsIcon icon={Edit04Icon} strokeWidth={2} />
-          Edit member details
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="hover:!text-destructive hover:!bg-destructive/10 gap-2 p-2 text-destructive"
-          onSelect={() => setConfirmRemoveTeamMemberOpen(true)}
-        >
-          <HugeiconsIcon
-            className="text-destructive"
-            icon={UserMinus02Icon}
-            strokeWidth={2}
-          />
-          Remove from team
-        </DropdownMenuItem>
+        {isAdminOfActiveOrganisation && currentUser._id !== user._id && (
+          <>
+            <DropdownMenuItem
+              className="gap-2 p-2"
+              onSelect={() => setEditTeamMemberOpen(true)}
+            >
+              <HugeiconsIcon icon={Edit04Icon} strokeWidth={2} />
+              Edit member details
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="hover:!text-destructive hover:!bg-destructive/10 gap-2 p-2 text-destructive"
+              onSelect={() => setConfirmRemoveTeamMemberOpen(true)}
+            >
+              <HugeiconsIcon
+                className="text-destructive"
+                icon={UserMinus02Icon}
+                strokeWidth={2}
+              />
+              Remove from team
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

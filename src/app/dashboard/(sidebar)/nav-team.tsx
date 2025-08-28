@@ -10,7 +10,7 @@ import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import UserAvatar from '@/components/avatars/user-avatar';
 import AddTeamMemberDialogContent from '@/components/dialogs/add-team-member-dialog';
-import TeamMemberPopover from '@/components/team-member-popover';
+import MembershipPopover from '@/components/memberships/membership-popover';
 import { Badge } from '@/components/ui/badge';
 import {
   Collapsible,
@@ -25,8 +25,11 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { api } from '../../../../convex/_generated/api';
+import { useUserContext } from '../context';
 
 export default function NavTeam() {
+  const { currentUser } = useUserContext();
+
   const memberships = useQuery(
     api.services.memberships.listInActiveOrganisationWithUsers
   );
@@ -73,7 +76,7 @@ export default function NavTeam() {
                   const name = `${user.firstName} ${user.lastName}`;
                   return (
                     <SidebarMenuItem key={user._id}>
-                      <TeamMemberPopover membership={membership}>
+                      <MembershipPopover membership={membership}>
                         <SidebarMenuButton
                           className="h-fit gap-2.5 p-1.75 group-data-[collapsible=icon]:rounded-full"
                           tooltip={name}
@@ -83,8 +86,16 @@ export default function NavTeam() {
                             user={user}
                           />
                           <span className="truncate font-medium">{name}</span>
+                          {currentUser._id === user._id && (
+                            <Badge
+                              className="border-primary/15 bg-sidebar-accent text-sidebar-accent-foreground"
+                              variant="outline"
+                            >
+                              You
+                            </Badge>
+                          )}
                         </SidebarMenuButton>
-                      </TeamMemberPopover>
+                      </MembershipPopover>
                     </SidebarMenuItem>
                   );
                 })}

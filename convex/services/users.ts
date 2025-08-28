@@ -9,6 +9,7 @@ import {
 import { getStorageUrl } from '../data/storage';
 import { getUserByEmail } from '../data/users';
 import { createConvexError } from '../errors';
+import { isAdminByCurrentUserAndActiveOrganisation } from './memberships';
 
 // Helpers
 
@@ -67,6 +68,12 @@ export const getImageForCurrent = query({
     const imageUrl = currentUser.imageUrl || null;
 
     return imageUrl;
+  },
+});
+
+export const isAdminOfActiveOrganisation = query({
+  handler: async (ctx) => {
+    return await isAdminByCurrentUserAndActiveOrganisation(ctx);
   },
 });
 

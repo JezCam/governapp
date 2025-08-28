@@ -149,9 +149,9 @@ export function DataTable<TData, TValue>({
             <h2 className="font-semibold text-base">{title}</h2>
             <Badge variant="blue">{data.length}</Badge>
           </div>
-          {actionText && (
+          {actionOnClick && (
             <Button onClick={actionOnClick} size="sm">
-              {actionText}
+              {actionText || 'Add'}
               <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} />
             </Button>
           )}

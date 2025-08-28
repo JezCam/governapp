@@ -141,12 +141,6 @@ export const listForCurrentUserWithOrganisation = query({
   },
 });
 
-export const isAdmin = query({
-  handler: async (ctx) => {
-    return await isAdminByCurrentUserAndActiveOrganisation(ctx);
-  },
-});
-
 // Mutations
 
 export const update = mutation({
