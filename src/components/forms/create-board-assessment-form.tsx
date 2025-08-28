@@ -44,8 +44,8 @@ const formSchema = z.object({
   participantsUserIds: z.array(z.string()).min(1, {
     message: 'You must select at least one participant',
   }),
-  startDate: z.string().min(1, 'Please select a start date'),
-  dueDate: z.string().min(1, 'Please select a due date'),
+  startDate: z.string({ message: 'Please select a start date' }),
+  dueDate: z.string({ message: 'Please select a due date' }),
 });
 
 export default function CreateBoardAssessmentForm(props: FormProps) {

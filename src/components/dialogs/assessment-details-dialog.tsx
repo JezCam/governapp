@@ -1,5 +1,7 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
 import type { ColumnDef } from '@tanstack/react-table';
+import { useState } from 'react';
+import { useUserContext } from '@/app/dashboard/context';
 import type {
   AssessmentTableRow,
   UserAssessmentWithUser,
@@ -12,7 +14,6 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Label } from '../ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Progress } from '../ui/progress';
 import { Separator } from '../ui/separator';
 
@@ -44,6 +45,10 @@ export default function AssessmentDetailsDialog({
 }: DialogProps & {
   assessment: AssessmentTableRow;
 }) {
+  const { isAdminOfActiveOrganisation } = useUserContext();
+
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+
   return (
     <Dialog onOpenChange={rest.onOpenChange} open={rest.open}>
       <DialogContent className="gap-6">
@@ -74,34 +79,36 @@ export default function AssessmentDetailsDialog({
           data={assessment.userAssessments}
           title="Participants"
         />
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1">
-            <h2 className="font-bold text-destructive text-lg">Danger Zone</h2>
-            <p className="text-muted-foreground text-sm">
-              Delete this assessment and all associated data
-            </p>
-          </div>
+        {(isAdminOfActiveOrganisation || assessment.type === 'self') && (
+          <>
+            <Separator />
 
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button className="w-fit" variant="destructive">
-                Delete assessment
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              className="flex w-fit flex-col gap-2 p-3 "
-              side="top"
-            >
-              <strong className="text-sm">Are you sure?</strong>
-              <DeleteAssessmentButton
-                assessmentId={assessment._id}
-                onSuccess={() => rest.onOpenChange?.(false)}
-              >
-                Yes, delete
-              </DeleteAssessmentButton>
-            </PopoverContent>
-          </Popover>
-        </div>
+            <div className="flex items-center justify-between">
+              <strong className="text-destructive">
+                {deleteConfirm
+                  ? 'Are you sure? This action is irreversible'
+                  : 'Delete assessment'}
+              </strong>
+              {deleteConfirm ? (
+                <DeleteAssessmentButton
+                  assessmentId={assessment._id}
+                  onSuccess={() => rest.onOpenChange?.(false)}
+                >
+                  Yes, delete
+                </DeleteAssessmentButton>
+              ) : (
+                <Button
+                  className="w-fit justify-self-end"
+                  onClick={() => setDeleteConfirm(true)}
+                  size="sm"
+                  variant="destructive"
+                >
+                  Delete assessment
+                </Button>
+              )}
+            </div>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );

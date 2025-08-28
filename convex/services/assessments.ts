@@ -217,6 +217,7 @@ export const create = mutation({
     const assessment = await ctx.db.insert('assessments', {
       name: args.name,
       status: 'not-started',
+      type,
       maxScore: 0,
       actualScore: 0,
       calculatedScore: 0,

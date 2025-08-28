@@ -10,6 +10,7 @@ export const assessmentTables = {
       v.literal('in-progress'),
       v.literal('completed')
     ),
+    type: v.union(v.literal('self'), v.literal('board')),
     maxScore: v.number(),
     actualScore: v.number(),
     calculatedScore: v.number(),

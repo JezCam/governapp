@@ -32,8 +32,7 @@ const getAssessmentColumns = (
     accessorKey: 'type',
     header: ({ column }) => <SortButton column={column}>Type</SortButton>,
     cell: ({ row }) => {
-      const type = row.original.organisationId ? 'board' : 'self';
-      return <Badge variant={type} />;
+      return <Badge variant={row.original.type} />;
     },
   },
   {
