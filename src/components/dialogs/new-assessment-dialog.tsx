@@ -1,5 +1,7 @@
 'use client';
 
+import { HugeiconsIcon } from '@hugeicons/react';
+import { UserGroupIcon, UserIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { DialogProps } from '@radix-ui/react-dialog';
 import CreateBoardAssessmentForm from '../forms/create-board-assessment-form';
 import CreateSelfAssessmentForm from '../forms/create-self-assessment-form';
@@ -36,8 +38,14 @@ export default function NewAssessmentDialog({ ...props }: DialogProps) {
         </DialogHeader>
         <Tabs defaultValue="self">
           <TabsList className="mb-4 w-full">
-            <TabsTrigger value="self">Self</TabsTrigger>
-            <TabsTrigger value="board">Board</TabsTrigger>
+            <TabsTrigger value="self">
+              <HugeiconsIcon icon={UserIcon} strokeWidth={2} />
+              Self
+            </TabsTrigger>
+            <TabsTrigger value="board">
+              <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} />
+              Board
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="self">
             <CreateSelfAssessmentForm

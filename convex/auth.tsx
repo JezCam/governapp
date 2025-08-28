@@ -60,7 +60,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       }
 
       await ctx.db.patch(args.userId, {
-        onboardingStep: 0, // Set onboarding to false for new users
+        onboardingStep: 0, // Initialise onboarding step to 0
       });
     },
   },
