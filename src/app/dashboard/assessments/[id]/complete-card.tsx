@@ -40,8 +40,8 @@ export default function CompleteCard({
           default:
             toast.error('An unexpected error occurred. Please try again.');
         }
-      })
-      .finally(() => setIsLoading(false));
+        setIsLoading(false);
+      });
   };
 
   return (

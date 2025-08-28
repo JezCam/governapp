@@ -1,5 +1,7 @@
 'use client';
 
+import { HugeiconsIcon } from '@hugeicons/react';
+import { PlusSignIcon } from '@hugeicons-pro/core-stroke-rounded';
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -150,6 +152,7 @@ export function DataTable<TData, TValue>({
           {actionText && (
             <Button onClick={actionOnClick} size="sm">
               {actionText}
+              <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} />
             </Button>
           )}
         </div>

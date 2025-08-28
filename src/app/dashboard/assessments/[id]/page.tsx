@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import QuestionForm from '@/components/forms/question-form';
+import type { AssessmentQuestion } from '@/types/convex';
 import { api } from '../../../../../convex/_generated/api';
 import type { Id } from '../../../../../convex/_generated/dataModel';
 import AssessmentHeader from './assessment-header';
@@ -36,7 +37,19 @@ export default function Page() {
   const [showCompleteCard, setShowCompleteCard] = useState(false);
   const [completed, setCompleted] = useState(false);
 
+  const updateCardVisibility = (q: AssessmentQuestion) => {
+    const newSection = q.questionIndex === 0;
+    const newDomain = newSection && q.sectionIndex === 0;
+    if (newSection) {
+      setSectionContinued(false);
+    }
+    if (newDomain) {
+      setDomainContinued(false);
+    }
+  };
+
   // On assessment load
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!assessmentLoaded && assessment) {
       if (
@@ -50,19 +63,9 @@ export default function Page() {
       setQuestionIndex(assessment.userAssessment.questionIndex);
       setMaxQuestionIndex(assessment.userAssessment.questionIndex);
 
-      // Update domain/section card visibility
-      if (
+      updateCardVisibility(
         assessment.questions[assessment.userAssessment.questionIndex]
-          .questionIndex === 0
-      ) {
-        setDomainContinued(false);
-      }
-      if (
-        assessment.questions[assessment.userAssessment.questionIndex]
-          .sectionIndex === 0
-      ) {
-        setSectionContinued(false);
-      }
+      );
 
       setAssessmentLoaded(true);
     }
@@ -80,33 +83,23 @@ export default function Page() {
 
   const handleNext = (responseOptionId: Id<'responseOptions'>) => {
     const hasNextQuestion = questionIndex < assessment.questions.length - 1;
+    const nextQuestionIndex = questionIndex + 1;
 
     // Move to next question or complete
     if (hasNextQuestion) {
-      setQuestionIndex(questionIndex + 1);
+      setQuestionIndex(nextQuestionIndex);
 
       // Update domain/section card visibility
-      const newSectionNext =
-        section && question.questionIndex === section.questionsTotal - 1;
-      const newDomainNext =
-        newSectionNext &&
-        domain &&
-        question.sectionIndex === domain.sections.length - 1;
-      if (newSectionNext) {
-        setSectionContinued(false);
-      }
-      if (newDomainNext) {
-        setDomainContinued(false);
-      }
+      updateCardVisibility(assessment.questions[nextQuestionIndex]);
     } else {
       setShowCompleteCard(true);
       setCompleted(true);
     }
 
     // Update max question index if needed
-    const progress = hasNextQuestion && questionIndex + 1 > maxQuestionIndex;
+    const progress = hasNextQuestion && nextQuestionIndex > maxQuestionIndex;
     if (progress) {
-      setMaxQuestionIndex(questionIndex + 1);
+      setMaxQuestionIndex(nextQuestionIndex);
     }
 
     // No change
@@ -121,7 +114,7 @@ export default function Page() {
       userAssessmentId: userAssessment._id,
       questionId: question._id,
       responseOptionId,
-      ...(progress && { questionIndex: questionIndex + 1 }),
+      ...(progress && { questionIndex: nextQuestionIndex }),
     };
 
     createOrUpdateQuestionResponse(data)
