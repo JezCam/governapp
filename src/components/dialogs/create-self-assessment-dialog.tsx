@@ -2,7 +2,7 @@ import type { DialogProps } from '@radix-ui/react-dialog';
 import CreateSelfAssessmentForm from '../forms/create-self-assessment-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 
-export default function CreateSelfAssessmentDialogContent(props: DialogProps) {
+export default function CreateSelfAssessmentDialog(props: DialogProps) {
   return (
     <Dialog onOpenChange={props.onOpenChange} open={props.open}>
       <DialogContent>

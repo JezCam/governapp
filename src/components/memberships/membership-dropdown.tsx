@@ -77,7 +77,7 @@ export default function MembershipDropdown({
                 strokeWidth={2}
               />
               Remove from team
-            </DropdownMenuItem>
+            </DropdownMenuItem>{' '}
           </>
         )}
       </DropdownMenuContent>

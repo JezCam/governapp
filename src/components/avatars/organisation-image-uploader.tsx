@@ -3,6 +3,7 @@
 
 import { useMutation } from 'convex/react';
 import { toast } from 'sonner';
+import { useUserContext } from '@/app/dashboard/context';
 import { api } from '../../../convex/_generated/api';
 import type { ErrorCode } from '../../../convex/errors';
 import AvatarUploader from './avatar-uploader';
@@ -14,6 +15,8 @@ export default function OrganisationImageUploader({
   imageUrl?: string;
   className?: string;
 }) {
+  const { isAdminOfActiveOrganisation } = useUserContext();
+
   const generateUploadUrl = useMutation(api.services.storage.generateUploadUrl);
   const updateActiveOrganisationImage = useMutation(
     api.services.organisations.updateImageForActive
@@ -79,6 +82,7 @@ export default function OrganisationImageUploader({
 
   return (
     <AvatarUploader
+      canChange={isAdminOfActiveOrganisation}
       className={className}
       imageUrl={imageUrl}
       label="Organisation Image"

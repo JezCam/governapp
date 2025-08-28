@@ -2,8 +2,10 @@
 
 import { useQuery } from 'convex/react';
 import { type ReactNode, useEffect, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import AppHeader from '@/app/dashboard/(header)/app-header';
 import AppSidebar from '@/app/dashboard/(sidebar)/app-sidebar';
+import ErrorPage from '@/components/error-page';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { api } from '../../../convex/_generated/api';
 import AppFooter from './(footer)/app-footer';
@@ -33,19 +35,21 @@ export default function Layout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <UserContext value={{ currentUser, isAdminOfActiveOrganisation }}>
-      <SearchMenuContext value={{ open, setOpen }}>
-        <SidebarProvider>
-          <AppSidebar />
-          <main className="flex h-screen w-screen flex-1 flex-col overflow-hidden">
-            <AppHeader />
-            <div className="flex flex-1 justify-center overflow-auto border-t border-b">
-              {children}
-            </div>
-            <AppFooter />
-          </main>
-        </SidebarProvider>
-      </SearchMenuContext>
-    </UserContext>
+    <ErrorBoundary FallbackComponent={ErrorPage}>
+      <UserContext value={{ currentUser, isAdminOfActiveOrganisation }}>
+        <SearchMenuContext value={{ open, setOpen }}>
+          <SidebarProvider>
+            <AppSidebar />
+            <main className="flex h-screen w-screen flex-1 flex-col overflow-hidden">
+              <AppHeader />
+              <div className="flex flex-1 justify-center overflow-auto border-t border-b">
+                {children}
+              </div>
+              <AppFooter />
+            </main>
+          </SidebarProvider>
+        </SearchMenuContext>
+      </UserContext>
+    </ErrorBoundary>
   );
 }

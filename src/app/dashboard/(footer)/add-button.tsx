@@ -11,6 +11,7 @@ import { DialogClose, DialogContent } from '@radix-ui/react-dialog';
 import { useState } from 'react';
 import AddOrganisationDialog from '@/components/dialogs/add-organisation-dialog';
 import AddTeamMemberDialog from '@/components/dialogs/add-team-member-dialog';
+import CreateSelfAssessmentDialog from '@/components/dialogs/create-self-assessment-dialog';
 import NewAssessmentDialog from '@/components/dialogs/new-assessment-dialog';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,10 +22,15 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { useUserContext } from '../context';
 
 export default function AddButton() {
+  const { isAdminOfActiveOrganisation } = useUserContext();
+
   const [open, setOpen] = useState(false);
   const [addOrganisationOpen, setAddOrganisationOpen] = useState(false);
+  const [createSelfAssessmentOpen, setCreateSelfAssessmentOpen] =
+    useState(false);
   const [newAssessmentOpen, setNewAssessmentOpen] = useState(false);
   const [addTeamMemberOpen, setAddTeamMemberOpen] = useState(false);
 
@@ -33,6 +39,11 @@ export default function AddButton() {
       <AddOrganisationDialog
         onOpenChange={setAddOrganisationOpen}
         open={addOrganisationOpen}
+      />
+      {/* For non admin user */}
+      <CreateSelfAssessmentDialog
+        onOpenChange={setCreateSelfAssessmentOpen}
+        open={createSelfAssessmentOpen}
       />
       <NewAssessmentDialog
         onOpenChange={setNewAssessmentOpen}
@@ -83,7 +94,11 @@ export default function AddButton() {
                   'hover:before:-inset-15 before:absolute before:content-[""]'
                 )}
                 onClick={() => {
-                  setNewAssessmentOpen(true);
+                  if (isAdminOfActiveOrganisation) {
+                    setNewAssessmentOpen(true);
+                  } else {
+                    setCreateSelfAssessmentOpen(true);
+                  }
                   setOpen(false);
                 }}
                 variant="ghost"

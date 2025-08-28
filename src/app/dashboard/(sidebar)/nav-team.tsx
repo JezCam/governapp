@@ -9,7 +9,7 @@ import { useQuery } from 'convex/react';
 import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import UserAvatar from '@/components/avatars/user-avatar';
-import AddTeamMemberDialogContent from '@/components/dialogs/add-team-member-dialog';
+import AddTeamMemberDialog from '@/components/dialogs/add-team-member-dialog';
 import MembershipPopover from '@/components/memberships/membership-popover';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -28,7 +28,7 @@ import { api } from '../../../../convex/_generated/api';
 import { useUserContext } from '../context';
 
 export default function NavTeam() {
-  const { currentUser } = useUserContext();
+  const { currentUser, isAdminOfActiveOrganisation } = useUserContext();
 
   const memberships = useQuery(
     api.services.memberships.listInActiveOrganisationWithUsers
@@ -99,20 +99,25 @@ export default function NavTeam() {
                     </SidebarMenuItem>
                   );
                 })}
-                <AddTeamMemberDialogContent
+                <AddTeamMemberDialog
                   onOpenChange={setAddTeamMemberOpen}
                   open={addTeamMemberOpen}
                 />
-                <SidebarMenuButton
-                  className="mt-2 h-fit gap-2.5 whitespace-nowrap p-1.75 font-medium group-data-[collapsible=icon]:rounded-full"
-                  onClick={() => setAddTeamMemberOpen(true)}
-                  tooltip="Add Team Member"
-                >
-                  <div className="flex size-7 shrink-0 items-center justify-center [&>svg]:size-4.5 [&>svg]:text-sidebar-primary">
-                    <HugeiconsIcon icon={PlusSignCircleIcon} strokeWidth={2} />
-                  </div>
-                  Add Team Member
-                </SidebarMenuButton>
+                {isAdminOfActiveOrganisation && (
+                  <SidebarMenuButton
+                    className="mt-2 h-fit gap-2.5 whitespace-nowrap p-1.75 font-medium group-data-[collapsible=icon]:rounded-full"
+                    onClick={() => setAddTeamMemberOpen(true)}
+                    tooltip="Add Team Member"
+                  >
+                    <div className="flex size-7 shrink-0 items-center justify-center [&>svg]:size-4.5 [&>svg]:text-sidebar-primary">
+                      <HugeiconsIcon
+                        icon={PlusSignCircleIcon}
+                        strokeWidth={2}
+                      />
+                    </div>
+                    Add Team Member
+                  </SidebarMenuButton>
+                )}
               </SidebarMenu>
             </CollapsibleContent>
           </SidebarMenuItem>

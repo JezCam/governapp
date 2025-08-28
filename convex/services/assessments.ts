@@ -13,6 +13,7 @@ import {
 } from '../data/userAssessments';
 import { createConvexError } from '../errors';
 import { mapDomainsWithSections } from './domains';
+import { isAdminByCurrentUserAndActiveOrganisation } from './memberships';
 import { getActiveOrganisationId } from './organisations';
 import { getCurrentUserId } from './users';
 
@@ -71,6 +72,11 @@ export const getByUserAssessmentId = query({
     const userAssessment = await ctx.db.get(args.userAssessmentId);
     if (!userAssessment) {
       throw createConvexError('USER_ASSESSMENT_NOT_FOUND');
+    }
+
+    const currentUserId = await getCurrentUserId(ctx);
+    if (userAssessment.userId !== currentUserId) {
+      throw createConvexError('NOT_USER_ASSESSMENT_USER');
     }
 
     const assessment = await ctx.db.get(userAssessment.assessmentId);
@@ -161,6 +167,11 @@ export const getNameByUserAssesmentId = query({
       throw createConvexError('USER_ASSESSMENT_NOT_FOUND');
     }
 
+    const currentUserId = await getCurrentUserId(ctx);
+    if (userAssessment.userId !== currentUserId) {
+      throw createConvexError('NOT_USER_ASSESSMENT_USER');
+    }
+
     const assessment = await ctx.db.get(userAssessment.assessmentId);
     if (!assessment) {
       throw createConvexError('ASSESSMENT_NOT_FOUND');
@@ -187,6 +198,14 @@ export const create = mutation({
     const activeOrganisationId = await getActiveOrganisationId(ctx);
 
     const type = args.participantsUserIds ? 'board' : 'self';
+
+    if (type === 'board') {
+      // Check user is admin of organisation
+      const isAdmin = await isAdminByCurrentUserAndActiveOrganisation(ctx);
+      if (!isAdmin) {
+        throw createConvexError('NOT_ADMIN_OF_ORGANISATION');
+      }
+    }
 
     if (!args.participantsUserIds) {
       args.participantsUserIds = [currentUserId];

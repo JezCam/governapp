@@ -22,7 +22,8 @@ export type ErrorCode =
   | 'NO_MEMBERSHIPS_WITH_ORGANISATION_FOUND'
   | 'ASSESSMENT_NOT_FOUND'
   | 'FRAMEWORK_NOT_FOUND'
-  | 'USER_ASSESSMENT_NOT_FOUND';
+  | 'USER_ASSESSMENT_NOT_FOUND'
+  | 'NOT_USER_ASSESSMENT_USER';
 
 export function createConvexError(code: ErrorCode) {
   return new ConvexError(code);

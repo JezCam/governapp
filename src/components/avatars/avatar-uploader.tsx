@@ -87,12 +87,14 @@ async function getCroppedImg(
 
 export default function AvatarUploader({
   imageUrl = null,
+  canChange = false,
   onChange,
   label = 'Avatar',
   rounded,
   className,
 }: {
   imageUrl?: string | null;
+  canChange?: boolean;
   onChange: (image: File | null) => Promise<void>;
   label?: string;
   rounded?: boolean;
@@ -228,38 +230,40 @@ export default function AvatarUploader({
             />
           )}
         </div>
-        <div className="flex flex-col gap-3">
-          <Label>{label}</Label>
-          <div className="flex gap-2">
-            <div className="relative inline-block">
-              <LoadingButton
-                aria-haspopup="dialog"
-                isLoading={isUpdateLoading}
-                onClick={openFileDialog}
-                size="sm"
-                variant="outline"
-              >
-                {imageUrl ? 'Change image' : 'Upload image'}
-              </LoadingButton>
-              <input
-                {...getInputProps()}
-                aria-label="Upload image file"
-                className="sr-only"
-                tabIndex={-1}
-              />
+        {canChange && (
+          <div className="flex flex-col gap-3">
+            <Label>{label}</Label>
+            <div className="flex gap-2">
+              <div className="relative inline-block">
+                <LoadingButton
+                  aria-haspopup="dialog"
+                  isLoading={isUpdateLoading}
+                  onClick={openFileDialog}
+                  size="sm"
+                  variant="outline"
+                >
+                  {imageUrl ? 'Change image' : 'Upload image'}
+                </LoadingButton>
+                <input
+                  {...getInputProps()}
+                  aria-label="Upload image file"
+                  className="sr-only"
+                  tabIndex={-1}
+                />
+              </div>
+              {imageUrl && (
+                <LoadingButton
+                  isLoading={isRemoveLoading}
+                  onClick={handleRemoveFinalImage}
+                  size="sm"
+                  variant="destructive"
+                >
+                  Remove
+                </LoadingButton>
+              )}
             </div>
-            {imageUrl && (
-              <LoadingButton
-                isLoading={isRemoveLoading}
-                onClick={handleRemoveFinalImage}
-                size="sm"
-                variant="destructive"
-              >
-                Remove
-              </LoadingButton>
-            )}
           </div>
-        </div>
+        )}
       </div>
 
       <DialogContent className="gap-0 p-0 sm:max-w-140 *:[button]:hidden">

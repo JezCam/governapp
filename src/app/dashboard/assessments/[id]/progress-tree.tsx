@@ -91,7 +91,7 @@ export default function ProgressTree({
                   <div className="group flex pl-4" key={section._id}>
                     <div
                       className={cn(
-                        'flex w-full flex-col gap-2 border-ga-green-200 border-b border-l bg-ga-green-50 p-4 group-first:rounded-tl-md group-first:border-t group-last:border-b-0 dark:border-ga-green-800 dark:bg-ga-green-950',
+                        'flex w-full flex-col gap-2 border-ga-green-200 border-b border-l bg-ga-green-50 p-4 group-first:border-t group-last:border-b-0 dark:border-ga-green-800 dark:bg-ga-green-950',
                         d === question.domainIndex &&
                           s === question.sectionIndex
                           ? 'border-l-4 border-l-ga-green-400 bg-ga-green-100 dark:border-l-ga-green-600 dark:bg-ga-green-900'

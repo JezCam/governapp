@@ -52,6 +52,7 @@ export default function AddOrganisationDialog({ ...props }: DialogStackProps) {
             </DialogStackTitle>
           </DialogStackHeader>
           <OrganisationDetailsForm
+            formButtonProps={{ submitText: 'Next' }}
             onSuccess={(data) => {
               setOrganisationData(data);
               setIndex(1);

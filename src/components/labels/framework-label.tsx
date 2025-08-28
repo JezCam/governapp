@@ -23,7 +23,7 @@ export default function FrameworkLabel({
   return (
     <div className="flex items-center gap-1">
       <HugeiconsIcon
-        className={`!size-3.5 ${colourMap[variant]}`}
+        className={`!size-3.5 shrink-0 ${colourMap[variant]}`}
         icon={iconMap[variant]}
       />
       <span

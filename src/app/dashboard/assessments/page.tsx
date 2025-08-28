@@ -13,6 +13,7 @@ import { useState } from 'react';
 import AssessmentsStatusFilter from '@/app/dashboard/assessments/assessments-status-filter';
 import { DataTable } from '@/components/data-table/data-table';
 import AssessmentDetailsDialog from '@/components/dialogs/assessment-details-dialog';
+import CreateSelfAssessmentDialog from '@/components/dialogs/create-self-assessment-dialog';
 import NewAssessmentDialog from '@/components/dialogs/new-assessment-dialog';
 import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
@@ -20,6 +21,7 @@ import { Button } from '@/components/ui/button';
 import { formatDateTime } from '@/lib/utils';
 import type { AssessmentTableRow } from '@/types/convex';
 import { api } from '../../../../convex/_generated/api';
+import { useUserContext } from '../context';
 
 const getAssessmentColumns = (
   onOpenDetails: (assessment: AssessmentTableRow) => void
@@ -145,10 +147,14 @@ const getAssessmentColumns = (
 ];
 
 export default function Assessments() {
+  const { isAdminOfActiveOrganisation } = useUserContext();
+
   const assessments = useQuery(
     api.services.assessments.listForActiveOrganisation
   );
 
+  const [createSelfAssessmentOpen, setCreateSelfAssessmentOpen] =
+    useState(false);
   const [newAssessmentOpen, setNewAssessmentOpen] = useState(false);
   const [detailsAssessment, setDetailsAssessment] =
     useState<AssessmentTableRow>();
@@ -163,6 +169,11 @@ export default function Assessments() {
 
   return (
     <div className="max-w-[1440px] p-4">
+      {/* For non admin user */}
+      <CreateSelfAssessmentDialog
+        onOpenChange={setCreateSelfAssessmentOpen}
+        open={createSelfAssessmentOpen}
+      />
       <NewAssessmentDialog
         onOpenChange={setNewAssessmentOpen}
         open={newAssessmentOpen}
@@ -179,7 +190,13 @@ export default function Assessments() {
         />
       )}
       <DataTable
-        actionOnClick={() => setNewAssessmentOpen(true)}
+        actionOnClick={() => {
+          if (isAdminOfActiveOrganisation) {
+            setNewAssessmentOpen(true);
+          } else {
+            setCreateSelfAssessmentOpen(true);
+          }
+        }}
         actionText="Create new assessment"
         columns={columns}
         data={assessments}

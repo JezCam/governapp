@@ -12,10 +12,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { api } from '../../../../convex/_generated/api';
+import { useUserContext } from '../context';
 import PendingInvitationsTable from './pending-invitations-table';
 import TeamMembersTable from './team-members-table';
 
 export default function Organisation() {
+  const { isAdminOfActiveOrganisation } = useUserContext();
+
   const activeOrganisation = useQuery(api.services.organisations.getActive);
 
   if (!activeOrganisation) {
@@ -92,7 +95,7 @@ export default function Organisation() {
         </Table>
       </Card>
       <TeamMembersTable />
-      <PendingInvitationsTable />
+      {isAdminOfActiveOrganisation && <PendingInvitationsTable />}
     </div>
   );
 }

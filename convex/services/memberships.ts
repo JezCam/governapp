@@ -152,14 +152,19 @@ export const update = mutation({
     }),
   },
   handler: async (ctx, args) => {
+    const isAdmin = await isAdminByCurrentUserAndActiveOrganisation(ctx);
+    if (!isAdmin) {
+      throw createConvexError('NOT_ADMIN_OF_ORGANISATION');
+    }
+
     const membership = await ctx.db.get(args.id);
 
     if (!membership) {
       throw createConvexError('MEMBERSHIP_NOT_FOUND');
     }
 
-    // If removing admin status, ensure the user is not the organisation creator
     if (args.data.isAdmin === false && membership.isCreator) {
+      // If removing admin status, ensure the user is not the organisation creator
       throw createConvexError('CANNOT_DEMOTE_ORGANISATION_CREATOR');
     }
 
@@ -170,6 +175,11 @@ export const update = mutation({
 export const remove = mutation({
   args: { id: v.id('memberships') },
   handler: async (ctx, args) => {
+    const isAdmin = await isAdminByCurrentUserAndActiveOrganisation(ctx);
+    if (!isAdmin) {
+      throw createConvexError('NOT_ADMIN_OF_ORGANISATION');
+    }
+
     const membership = await ctx.db.get(args.id);
 
     if (!membership) {
