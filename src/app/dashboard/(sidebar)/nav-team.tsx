@@ -25,10 +25,10 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { api } from '../../../../convex/_generated/api';
-import { useUserContext } from '../context';
 
 export default function NavTeam() {
-  const { currentUser, isAdminOfActiveOrganisation } = useUserContext();
+  const currentUser = useQuery(api.services.users.getCurrent);
+  const isAdmin = useQuery(api.services.users.isAdminOfActiveOrganisation);
 
   const memberships = useQuery(
     api.services.memberships.listInActiveOrganisationWithUsers
@@ -38,7 +38,11 @@ export default function NavTeam() {
   const { open } = useSidebar();
   const [addTeamMemberOpen, setAddTeamMemberOpen] = useState(false);
 
-  if (memberships === undefined) {
+  if (
+    memberships === undefined ||
+    currentUser === undefined ||
+    isAdmin === undefined
+  ) {
     return null; // TODO: Add skeletons for memberships = undefined
   }
 
@@ -103,7 +107,7 @@ export default function NavTeam() {
                   onOpenChange={setAddTeamMemberOpen}
                   open={addTeamMemberOpen}
                 />
-                {isAdminOfActiveOrganisation && (
+                {isAdmin && (
                   <SidebarMenuButton
                     className="mt-2 h-fit gap-2.5 whitespace-nowrap p-1.75 font-medium group-data-[collapsible=icon]:rounded-full"
                     onClick={() => setAddTeamMemberOpen(true)}

@@ -36,7 +36,7 @@ export default function UserDropdown() {
   const { signOut } = useAuthActions();
   const { setOpen } = useContext(SearchMenuContext);
 
-  const user = useQuery(api.services.users.getCurrent);
+  const currentUser = useQuery(api.services.users.getCurrent);
 
   return (
     <div className="flex h-full items-center border-l px-2">
@@ -47,13 +47,13 @@ export default function UserDropdown() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button className="!p-2 h-12 w-[256px] items-center" variant="ghost">
-            <UserAvatar className="size-8" user={user} />
+            <UserAvatar className="size-8" user={currentUser} />
             <div className="grid h-8 flex-1 text-left text-sm leading-tight">
-              {user ? (
+              {currentUser ? (
                 <>
-                  <span className="truncate font-medium">{`${user.firstName} ${user.lastName}`}</span>
+                  <span className="truncate font-medium">{`${currentUser.firstName} ${currentUser.lastName}`}</span>
                   <span className="truncate font-normal text-muted-foreground text-xs">
-                    {user.email}
+                    {currentUser.email}
                   </span>
                 </>
               ) : (

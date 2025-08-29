@@ -242,9 +242,7 @@ export const create = mutation({
     }
 
     // Get the invitee user by email
-    const inviteeUser = await ctx.runQuery(api.services.users.getByEmail, {
-      email: args.inviteeEmail,
-    });
+    const inviteeUser = await getUserByEmail(ctx, args.inviteeEmail);
 
     // Check if the invitee already has an active membership in the organisation
     if (inviteeUser) {

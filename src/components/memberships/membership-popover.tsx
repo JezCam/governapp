@@ -5,9 +5,10 @@ import {
   Edit04Icon,
   MoreVerticalIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
+import { useQuery } from 'convex/react';
 import { type ReactNode, useState } from 'react';
-import { useUserContext } from '@/app/dashboard/context';
 import type { Membership, User } from '@/types/convex';
+import { api } from '../../../convex/_generated/api';
 import UserAvatar from '../avatars/user-avatar';
 import EditProfileDialog from '../dialogs/edit-profile-dialog';
 import { Badge } from '../ui/badge';
@@ -24,11 +25,15 @@ export default function MembershipPopover({
   };
   children: ReactNode;
 }) {
-  const { currentUser } = useUserContext();
+  const currentUser = useQuery(api.services.users.getCurrent);
 
   const [editProfileOpen, setEditProfileOpen] = useState(false);
 
   const user = membership.user;
+
+  if (currentUser === undefined) {
+    return null; // TODO: Implement loading state
+  }
 
   return (
     <Popover>

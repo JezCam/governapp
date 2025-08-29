@@ -1,7 +1,6 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
 import type { ColumnDef } from '@tanstack/react-table';
 import { useState } from 'react';
-import { useUserContext } from '@/app/dashboard/context';
 import type {
   AssessmentTableRow,
   UserAssessmentWithUser,
@@ -41,12 +40,12 @@ const participantsTableColumns: ColumnDef<UserAssessmentWithUser>[] = [
 
 export default function AssessmentDetailsDialog({
   assessment,
+  isAdmin,
   ...rest
 }: DialogProps & {
   assessment: AssessmentTableRow;
+  isAdmin: boolean;
 }) {
-  const { isAdminOfActiveOrganisation } = useUserContext();
-
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   return (
@@ -72,14 +71,16 @@ export default function AssessmentDetailsDialog({
             </div>
           </div>
         )}
-        <DataTable
-          //   actionOnClick={() => {}}
-          //   actionText="Add participant"
-          columns={participantsTableColumns}
-          data={assessment.userAssessments}
-          title="Participants"
-        />
-        {(isAdminOfActiveOrganisation || assessment.type === 'self') && (
+        {assessment.type === 'board' && (
+          <DataTable
+            //   actionOnClick={() => {}}
+            //   actionText="Add participant"
+            columns={participantsTableColumns}
+            data={assessment.userAssessments}
+            title="Participants"
+          />
+        )}
+        {(isAdmin || assessment.type === 'self') && (
           <>
             <Separator />
 

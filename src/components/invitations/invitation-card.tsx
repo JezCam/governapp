@@ -2,7 +2,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Cancel01Icon, Tick01Icon } from '@hugeicons-pro/core-stroke-rounded';
 import type { Invitation, Organisation, User } from '@/types/convex';
 import OrganisationAvatar from '../avatars/organisation-avatar';
-import UserLabel from '../labels/user-label';
+import UserAvatar from '../avatars/user-avatar';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
@@ -33,8 +33,11 @@ export default function InvitationCard({
     <Card className="flex w-full flex-col gap-3 p-2 shadow-xs">
       <div className="flex items-center gap-1 px-2 pt-1 text-muted-foreground text-sm">
         From
-        <UserLabel className="ml-0.5" user={invitedByUser} />(
-        {invitedByUser.email})
+        <div className="flex items-center gap-1.5 text-sm">
+          <UserAvatar className="size-6" user={invitedByUser} />
+          <strong>{`${invitedByUser.firstName} ${invitedByUser.lastName}`}</strong>
+        </div>
+        ({invitedByUser.email})
       </div>
       <div className="flex items-center justify-between gap-2 rounded-sm bg-accent p-2">
         <div className="flex min-w-0 items-center gap-2">

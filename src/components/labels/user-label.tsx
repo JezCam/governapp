@@ -2,9 +2,10 @@
 
 import { HugeiconsIcon } from '@hugeicons/react';
 import { DashedLineCircleIcon } from '@hugeicons-pro/core-stroke-rounded';
-import { useUserContext } from '@/app/dashboard/context';
+import { useQuery } from 'convex/react';
 import { cn } from '@/lib/utils';
 import type { User } from '@/types/convex';
+import { api } from '../../../convex/_generated/api';
 import UserAvatar from '../avatars/user-avatar';
 import { Badge } from '../ui/badge';
 
@@ -15,9 +16,9 @@ export default function UserLabel({
   user: User;
   className?: string;
 }) {
-  const { currentUser } = useUserContext();
+  const currentUser = useQuery(api.services.users.getCurrent);
 
-  if (user === undefined) {
+  if (user === undefined || currentUser === undefined) {
     return null; // TODO: Add skeleton for user label
   }
 

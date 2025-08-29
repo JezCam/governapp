@@ -21,7 +21,6 @@ import { Button } from '@/components/ui/button';
 import { formatDateTime } from '@/lib/utils';
 import type { AssessmentTableRow } from '@/types/convex';
 import { api } from '../../../../convex/_generated/api';
-import { useUserContext } from '../context';
 
 const getAssessmentColumns = (
   onOpenDetails: (assessment: AssessmentTableRow) => void
@@ -152,11 +151,10 @@ const getAssessmentColumns = (
 ];
 
 export default function Assessments() {
-  const { isAdminOfActiveOrganisation } = useUserContext();
-
   const assessments = useQuery(
     api.services.assessments.listForActiveOrganisation
   );
+  const isAdmin = useQuery(api.services.users.isAdminOfActiveOrganisation);
 
   const [createSelfAssessmentOpen, setCreateSelfAssessmentOpen] =
     useState(false);
@@ -168,7 +166,7 @@ export default function Assessments() {
     setDetailsAssessment(assessment);
   });
 
-  if (assessments === undefined) {
+  if (assessments === undefined || isAdmin === undefined) {
     return null; // TODO: Implement loading state
   }
 
@@ -186,6 +184,7 @@ export default function Assessments() {
       {detailsAssessment && (
         <AssessmentDetailsDialog
           assessment={detailsAssessment}
+          isAdmin={isAdmin}
           onOpenChange={(open) => {
             if (!open) {
               setDetailsAssessment(undefined);
@@ -196,7 +195,7 @@ export default function Assessments() {
       )}
       <DataTable
         actionOnClick={() => {
-          if (isAdminOfActiveOrganisation) {
+          if (isAdmin) {
             setNewAssessmentOpen(true);
           } else {
             setCreateSelfAssessmentOpen(true);

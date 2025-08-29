@@ -1,9 +1,8 @@
 /** biome-ignore-all lint/suspicious/noConsole: <explanation> */
 'use client';
 
-import { useMutation } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { toast } from 'sonner';
-import { useUserContext } from '@/app/dashboard/context';
 import { api } from '../../../convex/_generated/api';
 import type { ErrorCode } from '../../../convex/errors';
 import AvatarUploader from './avatar-uploader';
@@ -15,7 +14,7 @@ export default function OrganisationImageUploader({
   imageUrl?: string;
   className?: string;
 }) {
-  const { isAdminOfActiveOrganisation } = useUserContext();
+  const isAdmin = useQuery(api.services.users.isAdminOfActiveOrganisation);
 
   const generateUploadUrl = useMutation(api.services.storage.generateUploadUrl);
   const updateActiveOrganisationImage = useMutation(
@@ -24,6 +23,10 @@ export default function OrganisationImageUploader({
   const updateActiveOrganisation = useMutation(
     api.services.organisations.updateActive
   );
+
+  if (isAdmin === undefined) {
+    return null; // TODO: Implement loading state
+  }
 
   const handleImageChange = async (image: File | null) => {
     if (image === null) {
@@ -82,7 +85,7 @@ export default function OrganisationImageUploader({
 
   return (
     <AvatarUploader
-      canChange={isAdminOfActiveOrganisation}
+      canChange={isAdmin}
       className={className}
       imageUrl={imageUrl}
       label="Organisation Image"

@@ -6,10 +6,11 @@ import {
   UserMinus02Icon,
   ZapIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
+import { useQuery } from 'convex/react';
 import Link from 'next/link';
 import { type ReactNode, useState } from 'react';
-import { useUserContext } from '@/app/dashboard/context';
 import type { Membership, User } from '@/types/convex';
+import { api } from '../../../convex/_generated/api';
 import ConfirmRemoveTeamMemberDialog from '../dialogs/confirm-remove-team-member-dialog';
 import EditTeamMemberDialog from '../dialogs/edit-team-member-dialog';
 import {
@@ -26,13 +27,18 @@ export default function MembershipDropdown({
   membership: Membership & { user: User };
   children: ReactNode;
 }) {
-  const { currentUser, isAdminOfActiveOrganisation } = useUserContext();
+  const currentUser = useQuery(api.services.users.getCurrent);
+  const isAdmin = useQuery(api.services.users.isAdminOfActiveOrganisation);
 
   const [editTeamMemberOpen, setEditTeamMemberOpen] = useState(false);
   const [confirmRemoveTeamMemberOpen, setConfirmRemoveTeamMemberOpen] =
     useState(false);
 
   const user = membership.user;
+
+  if (currentUser === undefined || isAdmin === undefined) {
+    return null; // TODO: Implement loading state
+  }
 
   return (
     <DropdownMenu>
@@ -58,7 +64,7 @@ export default function MembershipDropdown({
             View assigned actions
           </Link>
         </DropdownMenuItem>
-        {isAdminOfActiveOrganisation && currentUser._id !== user._id && (
+        {isAdmin && currentUser._id !== user._id && (
           <>
             <DropdownMenuItem
               className="gap-2 p-2"

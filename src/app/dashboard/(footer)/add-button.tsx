@@ -8,6 +8,7 @@ import {
   UserAdd01Icon,
 } from '@hugeicons-pro/core-stroke-rounded';
 import { DialogClose, DialogContent } from '@radix-ui/react-dialog';
+import { useQuery } from 'convex/react';
 import { useState } from 'react';
 import AddOrganisationDialog from '@/components/dialogs/add-organisation-dialog';
 import AddTeamMemberDialog from '@/components/dialogs/add-team-member-dialog';
@@ -22,10 +23,10 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
-import { useUserContext } from '../context';
+import { api } from '../../../../convex/_generated/api';
 
 export default function AddButton() {
-  const { isAdminOfActiveOrganisation } = useUserContext();
+  const isAdmin = useQuery(api.services.users.isAdminOfActiveOrganisation);
 
   const [open, setOpen] = useState(false);
   const [addOrganisationOpen, setAddOrganisationOpen] = useState(false);
@@ -33,6 +34,10 @@ export default function AddButton() {
     useState(false);
   const [newAssessmentOpen, setNewAssessmentOpen] = useState(false);
   const [addTeamMemberOpen, setAddTeamMemberOpen] = useState(false);
+
+  if (isAdmin === undefined) {
+    return null; // TODO: Implement loading state
+  }
 
   return (
     <div className="z-50">
@@ -94,7 +99,7 @@ export default function AddButton() {
                   'hover:before:-inset-15 before:absolute before:content-[""]'
                 )}
                 onClick={() => {
-                  if (isAdminOfActiveOrganisation) {
+                  if (isAdmin) {
                     setNewAssessmentOpen(true);
                   } else {
                     setCreateSelfAssessmentOpen(true);

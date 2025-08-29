@@ -15,7 +15,6 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import type { Membership, User } from '@/types/convex';
 import { api } from '../../../../convex/_generated/api';
-import { useUserContext } from '../context';
 
 export const columns: ColumnDef<Membership & { user: User }>[] = [
   {
@@ -65,14 +64,14 @@ export const columns: ColumnDef<Membership & { user: User }>[] = [
 ];
 
 export default function TeamMembersTable() {
-  const { isAdminOfActiveOrganisation } = useUserContext();
+  const isAdmin = useQuery(api.services.users.isAdminOfActiveOrganisation);
 
   const memberships = useQuery(
     api.services.memberships.listInActiveOrganisationWithUsers
   );
   const [addTeamMemberOpen, setAddTeamMemberOpen] = useState(false);
 
-  if (!memberships) {
+  if (memberships === undefined || isAdmin === undefined) {
     return null; // TODO: Add skeletons for memberships
   }
 
@@ -83,11 +82,7 @@ export default function TeamMembersTable() {
         open={addTeamMemberOpen}
       />
       <DataTable
-        actionOnClick={
-          isAdminOfActiveOrganisation
-            ? () => setAddTeamMemberOpen(true)
-            : undefined
-        }
+        actionOnClick={isAdmin ? () => setAddTeamMemberOpen(true) : undefined}
         actionText={'Add team member'}
         className="h-fit"
         columns={columns}

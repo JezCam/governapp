@@ -75,6 +75,7 @@ export default function UserImageUploader({
 
   return (
     <AvatarUploader
+      canChange
       className={className}
       imageUrl={imageUrl}
       label="Profile Image"
