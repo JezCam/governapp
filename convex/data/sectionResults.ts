@@ -10,3 +10,16 @@ export async function listSectionResultsByAssessmentId(
     .withIndex('by_assessment', (q) => q.eq('assessmentId', assessmentId))
     .collect();
 }
+
+export async function listSectionResultsByAssessmentAndDomainId(
+  ctx: QueryCtx | MutationCtx,
+  assessmentId: Id<'assessments'>,
+  domainId: Id<'domains'>
+) {
+  return await ctx.db
+    .query('sectionResults')
+    .withIndex('by_assessment_domain', (q) =>
+      q.eq('assessmentId', assessmentId).eq('domainId', domainId)
+    )
+    .collect();
+}

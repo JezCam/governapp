@@ -26,7 +26,7 @@ export const reportTables = {
     .index('by_assessment_domain', ['assessmentId', 'domainId']),
   questionResults: defineTable({
     averagedScore: v.number(),
-    averagedRiskLevel: v.union(...riskLevels),
+    riskLevel: v.union(...riskLevels),
     feedback: v.string(),
     assessmentId: v.id('assessments'),
     sectionId: v.id('sections'),

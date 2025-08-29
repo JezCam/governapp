@@ -1,19 +1,30 @@
 import { v } from 'convex/values';
-import type { Id } from '../_generated/dataModel';
-import { type MutationCtx, mutation, query } from '../_generated/server';
+import type { DataModel, Id } from '../_generated/dataModel';
+import {
+  type MutationCtx,
+  mutation,
+  type QueryCtx,
+  query,
+} from '../_generated/server';
 import { listDomainResultsByAssessmentId } from '../data/domainResults';
 import {
   getQuestionResponseByUserAssessmentIdAndQuestionId,
   listQuestionResponsesByAssessmentIdAndQuestionId,
   listQuestionResponsesByUserAssessmentId,
 } from '../data/questionResponses';
-import { listQuestionResultsByAssessmentId } from '../data/questionResults';
+import {
+  listQuestionResultsByAssessmentAndSectionId,
+  listQuestionResultsByAssessmentId,
+} from '../data/questionResults';
 import {
   listQuestionsByDomainId,
   listQuestionsBySectionId,
 } from '../data/questions';
 import { listResponseOptionsByQuestionId } from '../data/responseOptions';
-import { listSectionResultsByAssessmentId } from '../data/sectionResults';
+import {
+  listSectionResultsByAssessmentAndDomainId,
+  listSectionResultsByAssessmentId,
+} from '../data/sectionResults';
 import {
   listUserAssessmentsByAssessmentId,
   listUserAssessmentsByUserId,
@@ -26,6 +37,21 @@ import { getActiveOrganisationId } from './organisations';
 import { getCurrentUserId } from './users';
 
 // Helpers
+
+export async function listSelectedDomainsByAssessment(
+  ctx: QueryCtx | MutationCtx,
+  assessment: DataModel['assessments']['document']
+) {
+  const domains = (
+    await Promise.all(
+      assessment.selectedDomainIds.map((domainId) => ctx.db.get(domainId))
+    )
+  )
+    .filter((d) => d !== null)
+    .sort((a, b) => a.order - b.order);
+
+  return domains;
+}
 
 const getDueDate = (riskLevel: string) => {
   const month = 30 * 24 * 60 * 60 * 1000; // Approx month in ms
@@ -165,7 +191,7 @@ export async function generateAssessmentReportAndActions(
         sectionId: question.sectionId,
         questionId: question._id,
         averagedScore: scoreAvg,
-        averagedRiskLevel: nearestResponseOption.riskLevel,
+        riskLevel: nearestResponseOption.riskLevel,
         feedback: nearestResponseOption.actionText || '',
         nearestResponseOptionId: nearestResponseOption._id,
       });
@@ -404,13 +430,7 @@ export const getByUserAssessmentId = query({
     }
 
     // Get all domains for this assessment
-    const domainsData = (
-      await Promise.all(
-        assessment.selectedDomainIds.map((domainId) => ctx.db.get(domainId))
-      )
-    )
-      .filter((d) => d !== null)
-      .sort((a, b) => a.order - b.order);
+    const domainsData = await listSelectedDomainsByAssessment(ctx, assessment);
 
     const domains = await mapDomainsWithSections(ctx, domainsData);
 
@@ -492,6 +512,150 @@ export const getNameByUserAssesmentId = query({
     }
 
     return assessment.name;
+  },
+});
+
+export type ReportRowQuestion = DataModel['questionResults']['document'] & {
+  rowLevel: 'question';
+  question: DataModel['questions']['document'];
+  assessmentId: Id<'assessments'>;
+};
+
+export type ReportRowSection = DataModel['sectionResults']['document'] & {
+  rowLevel: 'section';
+  section: DataModel['sections']['document'];
+  assessmentId: Id<'assessments'>;
+  subRows: ReportRowQuestion[];
+};
+
+export type ReportRowDomain = DataModel['domainResults']['document'] & {
+  rowLevel: 'domain';
+  domain: DataModel['domains']['document'];
+  assessmentId: Id<'assessments'>;
+  subRows: ReportRowSection[];
+};
+
+export type ReportRowAssessment = DataModel['assessments']['document'] & {
+  rowLevel: 'assessment';
+  framework: DataModel['frameworks']['document'];
+  subRows: ReportRowDomain[];
+};
+
+export type ReportRow =
+  | ReportRowQuestion
+  | ReportRowSection
+  | ReportRowDomain
+  | ReportRowAssessment;
+
+export const getReportRows = query({
+  handler: async (ctx) => {
+    const currentUserId = await getCurrentUserId(ctx);
+
+    const userAssessments = await listUserAssessmentsByUserId(
+      ctx,
+      currentUserId
+    );
+
+    const assessmentReportRows: ReportRowAssessment[] = await Promise.all(
+      userAssessments.map(async (ua) => {
+        const assessment = await ctx.db.get(ua.assessmentId);
+        if (!assessment) {
+          throw createConvexError('ASSESSMENT_NOT_FOUND');
+        }
+
+        const framework = await ctx.db.get(assessment.frameworkId);
+        if (!framework) {
+          throw createConvexError('FRAMEWORK_NOT_FOUND');
+        }
+
+        const domainResults = await listDomainResultsByAssessmentId(
+          ctx,
+          assessment._id
+        );
+
+        const domainReportRows: ReportRowDomain[] = (
+          await Promise.all(
+            domainResults.map(async (dr) => {
+              const domain = await ctx.db.get(dr.domainId);
+
+              if (!domain) {
+                throw createConvexError('DOMAIN_NOT_FOUND');
+              }
+
+              const sectionResults =
+                await listSectionResultsByAssessmentAndDomainId(
+                  ctx,
+                  assessment._id,
+                  domain._id
+                );
+
+              const sectionResultsWithSection: ReportRowSection[] = (
+                await Promise.all(
+                  sectionResults.map(async (sr) => {
+                    const section = await ctx.db.get(sr.sectionId);
+
+                    if (!section) {
+                      throw createConvexError('SECTION_NOT_FOUND');
+                    }
+
+                    const questionResults =
+                      await listQuestionResultsByAssessmentAndSectionId(
+                        ctx,
+                        assessment._id,
+                        section._id
+                      );
+
+                    const questionResultsWithQuestion: ReportRowQuestion[] = (
+                      await Promise.all(
+                        questionResults.map(async (qr) => {
+                          const question = await ctx.db.get(qr.questionId);
+
+                          if (!question) {
+                            throw createConvexError('QUESTION_NOT_FOUND');
+                          }
+
+                          return {
+                            ...qr,
+                            question,
+                            rowLevel: 'question' as const,
+                            assessmentId: assessment._id,
+                          };
+                        })
+                      )
+                    ).sort((a, b) => a.question.order - b.question.order);
+
+                    return {
+                      ...sr,
+                      section,
+                      rowLevel: 'section' as const,
+                      assessmentId: assessment._id,
+                      subRows: questionResultsWithQuestion,
+                    };
+                  })
+                )
+              ).sort((a, b) => a.section.order - b.section.order);
+
+              return {
+                ...dr,
+                domain,
+                rowLevel: 'domain' as const,
+                assessmentId: assessment._id,
+                subRows: sectionResultsWithSection,
+              };
+            })
+          )
+        ).sort((a, b) => a.domain.order - b.domain.order);
+
+        return {
+          ...assessment,
+          framework,
+          rowLevel: 'assessment' as const,
+          subRows: domainReportRows,
+        };
+      })
+    );
+
+    return assessmentReportRows;
   },
 });
 

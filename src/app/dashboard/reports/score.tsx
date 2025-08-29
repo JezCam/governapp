@@ -25,7 +25,7 @@ export default function Score({
         )}
         value={value}
       />
-      <span className="font-medium text-xs">{value}%</span>
+      <span className="font-medium text-xs">{value.toFixed(0)}%</span>
     </div>
   );
 }

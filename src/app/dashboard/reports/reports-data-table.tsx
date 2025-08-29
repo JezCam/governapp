@@ -29,8 +29,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import type { ReportsRow, ReportsRowAssessment } from '@/dummy-data/reports';
 import { cn } from '@/lib/utils';
+import type {
+  ReportRow,
+  ReportRowAssessment,
+} from '../../../../convex/services/assessments';
 import ReportsAssessmentFilter from './reports-assessment-filter';
 import ReportsRiskFilter from './reports-risk-filter';
 import {
@@ -41,8 +44,8 @@ import {
 
 interface ReportsDataTableProps {
   children?: ReactNode;
-  columns: ColumnDef<ReportsRow>[];
-  data: ReportsRowAssessment[];
+  columns: ColumnDef<ReportRow>[];
+  data: ReportRowAssessment[];
 }
 
 export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
@@ -76,7 +79,7 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onExpandedChange: setExpanded,
-    getSubRows: (row) => (row.type === 'question' ? [] : row.subRows),
+    getSubRows: (row) => (row.rowLevel === 'question' ? [] : row.subRows),
     getExpandedRowModel: getExpandedRowModel(),
     state: {
       globalFilter,
@@ -234,20 +237,21 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
                   key={row.id}
                   onClick={() => row.toggleExpanded()}
                 >
+                  {/** biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
                   {row.getVisibleCells().map((cell, index) => (
                     <TableCell
                       className={cn(
                         'relative',
-                        row.original.type === 'assessment'
+                        row.original.rowLevel === 'assessment'
                           ? 'bg-background'
                           : '',
-                        row.original.type === 'domain'
+                        row.original.rowLevel === 'domain'
                           ? 'bg-ga-blue-50 dark:bg-ga-blue-950'
                           : '',
-                        row.original.type === 'section'
+                        row.original.rowLevel === 'section'
                           ? 'bg-ga-green-50 dark:bg-ga-green-950'
                           : '',
-                        row.original.type === 'question' ? 'bg-accent' : '',
+                        row.original.rowLevel === 'question' ? 'bg-accent' : '',
                         row.depth === 3 && row.getIsExpanded()
                           ? 'content-start'
                           : ''
@@ -273,7 +277,7 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
                                   return 'secondary';
                                 default:
                               }
-                            })(row.original.type)}
+                            })(row.original.rowLevel)}
                           >
                             {getTotal(row.subRows)}
                           </Badge>

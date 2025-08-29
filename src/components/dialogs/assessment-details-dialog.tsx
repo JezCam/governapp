@@ -115,16 +115,18 @@ export default function AssessmentDetailsDialog({
             </div>
           </>
         )}
-        <Button
-          className="w-fit"
-          onClick={() =>
-            randomCompleteForTesting({ assessmentId: assessment._id })
-          }
-          size="sm"
-          variant="ghost"
-        >
-          Random complete for testing
-        </Button>
+        {assessment.status === 'not-started' && (
+          <Button
+            className="w-fit"
+            onClick={() =>
+              randomCompleteForTesting({ assessmentId: assessment._id })
+            }
+            size="sm"
+            variant="ghost"
+          >
+            Random complete for testing
+          </Button>
+        )}
       </DialogContent>
     </Dialog>
   );

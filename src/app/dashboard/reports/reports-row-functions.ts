@@ -1,9 +1,9 @@
 import type { Row, Table } from '@tanstack/react-table';
-import type { ReportsRow } from '@/dummy-data/reports';
+import type { ReportRow } from '../../../../convex/services/assessments';
 
-export const getTotal = (rows: Row<ReportsRow>[]) => {
+export const getTotal = (rows: Row<ReportRow>[]) => {
   let total = 0;
-  const countRows = (_rows: Row<ReportsRow>[]) => {
+  const countRows = (_rows: Row<ReportRow>[]) => {
     for (const row of _rows) {
       if (row.depth === 3) {
         total++;
@@ -18,8 +18,8 @@ export const getTotal = (rows: Row<ReportsRow>[]) => {
   return total;
 };
 
-export const expandToDepth = (table: Table<ReportsRow>, depth: number) => {
-  const toggleRow = (row: Row<ReportsRow>) => {
+export const expandToDepth = (table: Table<ReportRow>, depth: number) => {
+  const toggleRow = (row: Row<ReportRow>) => {
     if (row.depth >= depth) {
       return; // Skip rows that are deeper than the specified depth
     }
@@ -41,11 +41,11 @@ export const expandToDepth = (table: Table<ReportsRow>, depth: number) => {
 
 // Custom hierarchical filter function
 export const hierarchicalFilterFn = (
-  row: Row<ReportsRow>,
+  row: Row<ReportRow>,
   columnId: string,
   filterValue: unknown
 ) => {
-  const checkRowAndParents = (currentRow: Row<ReportsRow>): boolean => {
+  const checkRowAndParents = (currentRow: Row<ReportRow>): boolean => {
     // Check if current row matches the filter
     const cellValue = currentRow.getValue(columnId);
     const rowMatches = String(cellValue)
