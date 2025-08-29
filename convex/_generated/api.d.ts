@@ -14,14 +14,17 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as auth from "../auth.js";
+import type * as data_domainResults from "../data/domainResults.js";
 import type * as data_domains from "../data/domains.js";
 import type * as data_frameworks from "../data/frameworks.js";
 import type * as data_invitations from "../data/invitations.js";
 import type * as data_memberships from "../data/memberships.js";
 import type * as data_organisations from "../data/organisations.js";
 import type * as data_questionResponses from "../data/questionResponses.js";
+import type * as data_questionResults from "../data/questionResults.js";
 import type * as data_questions from "../data/questions.js";
 import type * as data_responseOptions from "../data/responseOptions.js";
+import type * as data_sectionResults from "../data/sectionResults.js";
 import type * as data_sections from "../data/sections.js";
 import type * as data_storage from "../data/storage.js";
 import type * as data_subscriptions from "../data/subscriptions.js";
@@ -56,14 +59,17 @@ import type * as services_users from "../services/users.js";
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  "data/domainResults": typeof data_domainResults;
   "data/domains": typeof data_domains;
   "data/frameworks": typeof data_frameworks;
   "data/invitations": typeof data_invitations;
   "data/memberships": typeof data_memberships;
   "data/organisations": typeof data_organisations;
   "data/questionResponses": typeof data_questionResponses;
+  "data/questionResults": typeof data_questionResults;
   "data/questions": typeof data_questions;
   "data/responseOptions": typeof data_responseOptions;
+  "data/sectionResults": typeof data_sectionResults;
   "data/sections": typeof data_sections;
   "data/storage": typeof data_storage;
   "data/subscriptions": typeof data_subscriptions;

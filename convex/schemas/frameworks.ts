@@ -44,7 +44,6 @@ export const frameworkTables = {
     name: v.string(),
     description: v.string(),
     questionsTotal: v.number(),
-    questionsOffset: v.number(),
     blackMax: v.number(),
     redMax: v.number(),
     amberMax: v.number(),

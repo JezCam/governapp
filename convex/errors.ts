@@ -23,7 +23,9 @@ export type ErrorCode =
   | 'ASSESSMENT_NOT_FOUND'
   | 'FRAMEWORK_NOT_FOUND'
   | 'USER_ASSESSMENT_NOT_FOUND'
-  | 'NOT_USER_ASSESSMENT_USER';
+  | 'NOT_USER_ASSESSMENT_USER'
+  | 'SECTION_NOT_FOUND'
+  | 'DOMAIN_NOT_FOUND';
 
 export function createConvexError(code: ErrorCode) {
   return new ConvexError(code);

@@ -10,3 +10,13 @@ export async function listQuestionsBySectionId(
     .withIndex('by_section', (q) => q.eq('sectionId', sectionId))
     .collect();
 }
+
+export async function listQuestionsByDomainId(
+  ctx: QueryCtx | MutationCtx,
+  domainId: Id<'domains'>
+) {
+  return await ctx.db
+    .query('questions')
+    .withIndex('by_domain', (q) => q.eq('domainId', domainId))
+    .collect();
+}

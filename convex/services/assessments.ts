@@ -1,11 +1,19 @@
 import { v } from 'convex/values';
-import { mutation, query } from '../_generated/server';
+import type { Id } from '../_generated/dataModel';
+import { type MutationCtx, mutation, query } from '../_generated/server';
+import { listDomainResultsByAssessmentId } from '../data/domainResults';
 import {
   getQuestionResponseByUserAssessmentIdAndQuestionId,
+  listQuestionResponsesByAssessmentIdAndQuestionId,
   listQuestionResponsesByUserAssessmentId,
 } from '../data/questionResponses';
-import { listQuestionsBySectionId } from '../data/questions';
+import { listQuestionResultsByAssessmentId } from '../data/questionResults';
+import {
+  listQuestionsByDomainId,
+  listQuestionsBySectionId,
+} from '../data/questions';
 import { listResponseOptionsByQuestionId } from '../data/responseOptions';
+import { listSectionResultsByAssessmentId } from '../data/sectionResults';
 import {
   listUserAssessmentsByAssessmentId,
   listUserAssessmentsByUserId,
@@ -16,6 +24,312 @@ import { mapDomainsWithSections } from './domains';
 import { isAdminByCurrentUserAndActiveOrganisation } from './memberships';
 import { getActiveOrganisationId } from './organisations';
 import { getCurrentUserId } from './users';
+
+// Helpers
+
+const getDueDate = (riskLevel: string) => {
+  const month = 30 * 24 * 60 * 60 * 1000; // Approx month in ms
+  switch (riskLevel) {
+    case 'black':
+      return Date.now() + month;
+    case 'red':
+      return Date.now() + 3 * month;
+    case 'amber':
+      return Date.now() + 6 * month;
+    case 'green':
+      return Date.now() + 12 * month;
+    default:
+      return Date.now() + month;
+  }
+};
+
+const getFeedbackForRiskLevel = (
+  riskLevel: string,
+  thresholds: { [key: string]: string }
+) => {
+  switch (riskLevel) {
+    case 'black':
+      return thresholds.black;
+    case 'red':
+      return thresholds.red;
+    case 'amber':
+      return thresholds.amber;
+    case 'green':
+      return thresholds.green;
+    default:
+      return '';
+  }
+};
+
+const getRiskLevel = (score: number, thresholds: { [key: string]: number }) => {
+  switch (true) {
+    case score <= thresholds.black:
+      return 'black';
+    case score <= thresholds.red:
+      return 'red';
+    case score <= thresholds.amber:
+      return 'amber';
+    default:
+      return 'green';
+  }
+};
+
+export async function generateAssessmentReportAndActions(
+  ctx: MutationCtx,
+  assessmentId: Id<'assessments'>
+) {
+  // Get the assessment
+  const assessment = await ctx.db.get(assessmentId);
+  if (!assessment) {
+    throw createConvexError('ASSESSMENT_NOT_FOUND');
+  }
+
+  const framework = await ctx.db.get(assessment.frameworkId);
+  if (!framework) {
+    throw createConvexError('FRAMEWORK_NOT_FOUND');
+  }
+
+  const domains = assessment.selectedDomainIds;
+
+  // Get all the questions for the domains
+  const questions = (
+    await Promise.all(
+      domains.map(
+        async (domainId) => await listQuestionsByDomainId(ctx, domainId)
+      )
+    )
+  ).flat();
+
+  const allResponseOptions = await Promise.all(
+    questions.map(async (question) =>
+      listResponseOptionsByQuestionId(ctx, question._id)
+    )
+  );
+
+  let assessmentMaxScore = 0;
+  let assessmentActualScore = 0;
+
+  const domainMaxScores = new Map<Id<'domains'>, number>();
+  const domainActualScores = new Map<Id<'domains'>, number>();
+
+  const sectionMaxScores = new Map<Id<'sections'>, number>();
+  const sectionActualScores = new Map<Id<'sections'>, number>();
+
+  const results = await Promise.all(
+    questions.map(async (question, i) => {
+      // For each question, get the response options
+      const responseOptions = allResponseOptions[i];
+
+      // Map responseOptionId to score for easy lookup
+      const responseOptionsScores = new Map(
+        responseOptions.map((ro) => [ro._id, ro.score])
+      );
+
+      // Get all the question responses for this question in this assessment
+      const questionResponses =
+        await listQuestionResponsesByAssessmentIdAndQuestionId(
+          ctx,
+          assessment._id,
+          question._id
+        );
+
+      // Calculate score for this question
+      const scoreSum = questionResponses.reduce((acc, qr) => {
+        const responseOptionScore = responseOptionsScores.get(
+          qr.responseOptionId
+        );
+        if (responseOptionScore !== undefined) {
+          return acc + responseOptionScore;
+        }
+        return acc;
+      }, 0);
+
+      const scoreAvg = scoreSum / questionResponses.length || 0;
+
+      // Get the nearest reponse option to the average score
+      const nearestResponseOption = responseOptions.reduce((prev, curr) =>
+        // If two options are equally near, prefer the lower score
+        {
+          const prevDistance = Math.abs(prev.score - scoreAvg);
+          const currDistance = Math.abs(curr.score - scoreAvg);
+          if (currDistance === prevDistance) {
+            return curr.score < prev.score ? curr : prev;
+          }
+          return currDistance < prevDistance ? curr : prev;
+        }
+      );
+
+      // Create the question result row
+      await ctx.db.insert('questionResults', {
+        assessmentId: assessment._id,
+        sectionId: question.sectionId,
+        questionId: question._id,
+        averagedScore: scoreAvg,
+        averagedRiskLevel: nearestResponseOption.riskLevel,
+        feedback: nearestResponseOption.actionText || '',
+        nearestResponseOptionId: nearestResponseOption._id,
+      });
+
+      if (nearestResponseOption.triggersAction) {
+        // If the response option triggers an action, create the action
+        await ctx.db.insert('actions', {
+          text: nearestResponseOption.actionText ?? '',
+          riskLevel: nearestResponseOption.riskLevel,
+          status: 'not-started',
+          dueDate: getDueDate(nearestResponseOption.riskLevel),
+          numComments: 0,
+          assessmentId: assessment._id,
+          modelSolutionUrl: question.modelSolutionUrl,
+          questionId: question._id,
+        });
+      }
+
+      if (nearestResponseOption.isValidNA) {
+        // Don't account for valid NA responses in the score calculations
+        return null;
+      }
+
+      // Get the maximum possible score for this question
+      // (i.e. the highest score of all response options multiplied by the question weight)
+      const maximumResponseScore = responseOptions.reduce(
+        (max, ro) => Math.max(max, ro.score),
+        0
+      );
+      const questionMaxScore = question.weight * maximumResponseScore;
+      const questionScore = question.weight * scoreAvg;
+
+      return {
+        questionMaxScore,
+        questionScore,
+        domainId: question.domainId,
+        sectionId: question.sectionId,
+      };
+    })
+  );
+
+  for (const result of results) {
+    if (result === null) {
+      continue;
+    } // Skip valid NA responses
+
+    const { questionMaxScore, questionScore, domainId, sectionId } = result;
+
+    assessmentMaxScore += questionMaxScore;
+    assessmentActualScore += questionScore;
+
+    // Domain scores
+    const currentDomainMaxScore = domainMaxScores.get(domainId) || 0;
+    domainMaxScores.set(domainId, currentDomainMaxScore + questionMaxScore);
+
+    const currentDomainActualScore = domainActualScores.get(domainId) || 0;
+    domainActualScores.set(domainId, currentDomainActualScore + questionScore);
+
+    // Section scores
+    const currentSectionMaxScore = sectionMaxScores.get(sectionId) || 0;
+    sectionMaxScores.set(sectionId, currentSectionMaxScore + questionMaxScore);
+
+    const currentSectionActualScore = sectionActualScores.get(sectionId) || 0;
+    sectionActualScores.set(
+      sectionId,
+      currentSectionActualScore + questionScore
+    );
+  }
+
+  // Generate the section reports
+  sectionActualScores.forEach(async (actualScore, sectionId) => {
+    const section = await ctx.db.get(sectionId);
+    if (section === null) {
+      throw createConvexError('SECTION_NOT_FOUND');
+    }
+
+    const maxScore = sectionMaxScores.get(sectionId) ?? 0;
+    const sectionCalculatedScore = (actualScore / maxScore) * 100;
+
+    const riskLevel = getRiskLevel(sectionCalculatedScore, {
+      black: section.blackMax,
+      red: section.redMax,
+      amber: section.amberMax,
+    });
+
+    const feedback = getFeedbackForRiskLevel(riskLevel, {
+      black: section.reportBlack,
+      red: section.reportRed,
+      amber: section.reportAmber,
+      green: section.reportGreen,
+    });
+
+    await ctx.db.insert('sectionResults', {
+      maxScore,
+      actualScore,
+      calculatedScore: sectionCalculatedScore,
+      riskLevel,
+      feedback,
+      assessmentId: assessment._id,
+      sectionId: section._id,
+      domainId: section.domainId,
+    });
+  });
+
+  // Generate the domain reports
+  domainActualScores.forEach(async (actualScore, domainId) => {
+    const domain = await ctx.db.get(domainId);
+    if (domain === null) {
+      throw createConvexError('DOMAIN_NOT_FOUND');
+    }
+    const maxScore = domainMaxScores.get(domainId) ?? 0;
+    const domainCalculatedScore = (actualScore / maxScore) * 100;
+
+    const riskLevel = getRiskLevel(domainCalculatedScore, {
+      black: domain.blackMax,
+      red: domain.redMax,
+      amber: domain.amberMax,
+    });
+
+    const feedback = getFeedbackForRiskLevel(riskLevel, {
+      black: domain.reportBlack,
+      red: domain.reportRed,
+      amber: domain.reportAmber,
+      green: domain.reportGreen,
+    });
+
+    await ctx.db.insert('domainResults', {
+      maxScore,
+      actualScore,
+      calculatedScore: domainCalculatedScore,
+      riskLevel,
+      feedback,
+      assessmentId: assessment._id,
+      domainId: domain._id,
+    });
+  });
+
+  const assessmentCalculatedScore =
+    (assessmentActualScore / assessmentMaxScore) * 100;
+
+  // Update the assessment with the final scores and risk level
+  const assessmentRiskLevel = getRiskLevel(assessmentCalculatedScore, {
+    black: framework.blackMax,
+    red: framework.redMax,
+    amber: framework.amberMax,
+  });
+
+  const assessmentFeedback = getFeedbackForRiskLevel(assessmentRiskLevel, {
+    black: framework.reportBlack,
+    red: framework.reportRed,
+    amber: framework.reportAmber,
+    green: framework.reportGreen,
+  });
+
+  await ctx.db.patch(assessment._id, {
+    maxScore: assessmentMaxScore,
+    actualScore: assessmentActualScore,
+    calculatedScore: assessmentCalculatedScore,
+    riskLevel: assessmentRiskLevel,
+    feedback: assessmentFeedback,
+    status: 'completed',
+    finishDate: Date.now(),
+  });
+}
 
 // Queries
 
@@ -258,7 +572,6 @@ export const deleteById = mutation({
       ctx,
       args.assessmentId
     );
-
     const questionResponses = (
       await Promise.all(
         userAssessments.map(
@@ -267,12 +580,96 @@ export const deleteById = mutation({
         )
       )
     ).flat();
+    const questionResults = await listQuestionResultsByAssessmentId(
+      ctx,
+      args.assessmentId
+    );
+    const sectionResults = await listSectionResultsByAssessmentId(
+      ctx,
+      args.assessmentId
+    );
+    const domainResults = await listDomainResultsByAssessmentId(
+      ctx,
+      args.assessmentId
+    );
 
     // Delete everything
+
+    await Promise.all(
+      questionResults.map(async (qr) => await ctx.db.delete(qr._id))
+    );
+    await Promise.all(
+      domainResults.map(async (dr) => await ctx.db.delete(dr._id))
+    );
+    await Promise.all(
+      sectionResults.map(async (sr) => await ctx.db.delete(sr._id))
+    );
     await Promise.all(
       questionResponses.map(async (qr) => await ctx.db.delete(qr._id))
     );
     await Promise.all(userAssessments.map(async (ua) => ctx.db.delete(ua._id)));
     await ctx.db.delete(args.assessmentId);
+  },
+});
+
+export const randomCompleteForTesting = mutation({
+  args: { assessmentId: v.id('assessments') },
+  handler: async (ctx, { assessmentId }) => {
+    // Generate random question responses for all questions in the assessment
+    const assessment = await ctx.db.get(assessmentId);
+    if (!assessment) {
+      throw createConvexError('ASSESSMENT_NOT_FOUND');
+    }
+
+    const userAssessments = await listUserAssessmentsByAssessmentId(
+      ctx,
+      assessmentId
+    );
+
+    const selectedDomainIds = assessment.selectedDomainIds;
+
+    const questions = (
+      await Promise.all(
+        selectedDomainIds.map(
+          async (domainId) => await listQuestionsByDomainId(ctx, domainId)
+        )
+      )
+    ).flat();
+
+    // For each user assessment, for each question, create a random response
+    await Promise.all(
+      userAssessments.map(async (ua) => {
+        await Promise.all(
+          questions.map(async (question) => {
+            // Get the response options for the question
+            const responseOptions = await listResponseOptionsByQuestionId(
+              ctx,
+              question._id
+            );
+
+            const randomIndex = Math.floor(
+              Math.random() * responseOptions.length
+            );
+            const responseOptionId = responseOptions[randomIndex]._id;
+
+            // Create the question response
+            await ctx.db.insert('questionResponses', {
+              assessmentId: assessment._id,
+              userAssessmentId: ua._id,
+              questionId: question._id,
+              responseOptionId,
+            });
+          })
+        );
+
+        // Update the userAssessment's progress
+        await ctx.db.patch(ua._id, {
+          status: 'completed',
+        });
+      })
+    );
+
+    // Generate the report and actions
+    await generateAssessmentReportAndActions(ctx, assessmentId);
   },
 });

@@ -25,3 +25,16 @@ export async function listQuestionResponsesByUserAssessmentId(
     )
     .collect();
 }
+
+export async function listQuestionResponsesByAssessmentIdAndQuestionId(
+  ctx: QueryCtx | MutationCtx,
+  assessmentId: Id<'assessments'>,
+  questionId: Id<'questions'>
+) {
+  return await ctx.db
+    .query('questionResponses')
+    .withIndex('by_assessment_question', (q) =>
+      q.eq('assessmentId', assessmentId).eq('questionId', questionId)
+    )
+    .collect();
+}

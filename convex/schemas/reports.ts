@@ -21,7 +21,9 @@ export const reportTables = {
     assessmentId: v.id('assessments'),
     domainId: v.id('domains'),
     sectionId: v.id('sections'),
-  }).index('by_assessment_domain', ['assessmentId', 'domainId']),
+  })
+    .index('by_assessment', ['assessmentId'])
+    .index('by_assessment_domain', ['assessmentId', 'domainId']),
   questionResults: defineTable({
     averagedScore: v.number(),
     averagedRiskLevel: v.union(...riskLevels),
@@ -30,5 +32,7 @@ export const reportTables = {
     sectionId: v.id('sections'),
     questionId: v.id('questions'),
     nearestResponseOptionId: v.id('responseOptions'),
-  }).index('by_assessment_section', ['assessmentId', 'sectionId']),
+  })
+    .index('by_assessment', ['assessmentId'])
+    .index('by_assessment_section', ['assessmentId', 'sectionId']),
 };

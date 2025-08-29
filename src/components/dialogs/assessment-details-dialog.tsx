@@ -1,10 +1,12 @@
 import type { DialogProps } from '@radix-ui/react-dialog';
 import type { ColumnDef } from '@tanstack/react-table';
+import { useMutation } from 'convex/react';
 import { useState } from 'react';
 import type {
   AssessmentTableRow,
   UserAssessmentWithUser,
 } from '@/types/convex';
+import { api } from '../../../convex/_generated/api';
 import DeleteAssessmentButton from '../assessments/delete-assessment-button';
 import { DataTable } from '../data-table/data-table';
 import FrameworkLabel from '../labels/framework-label';
@@ -46,6 +48,10 @@ export default function AssessmentDetailsDialog({
   assessment: AssessmentTableRow;
   isAdmin: boolean;
 }) {
+  const randomCompleteForTesting = useMutation(
+    api.services.assessments.randomCompleteForTesting
+  );
+
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   return (
@@ -83,20 +89,19 @@ export default function AssessmentDetailsDialog({
         {(isAdmin || assessment.type === 'self') && (
           <>
             <Separator />
-
             <div className="flex items-center justify-between">
-              <strong className="text-destructive">
-                {deleteConfirm
-                  ? 'Are you sure? This action is irreversible'
-                  : 'Delete assessment'}
-              </strong>
               {deleteConfirm ? (
-                <DeleteAssessmentButton
-                  assessmentId={assessment._id}
-                  onSuccess={() => rest.onOpenChange?.(false)}
-                >
-                  Yes, delete
-                </DeleteAssessmentButton>
+                <>
+                  <strong className="text-sm">
+                    Are you sure? This action can NOT be undone.
+                  </strong>
+                  <DeleteAssessmentButton
+                    assessmentId={assessment._id}
+                    onSuccess={() => rest.onOpenChange?.(false)}
+                  >
+                    Yes, delete
+                  </DeleteAssessmentButton>
+                </>
               ) : (
                 <Button
                   className="w-fit justify-self-end"
@@ -110,6 +115,16 @@ export default function AssessmentDetailsDialog({
             </div>
           </>
         )}
+        <Button
+          className="w-fit"
+          onClick={() =>
+            randomCompleteForTesting({ assessmentId: assessment._id })
+          }
+          size="sm"
+          variant="ghost"
+        >
+          Random complete for testing
+        </Button>
       </DialogContent>
     </Dialog>
   );
