@@ -36,11 +36,7 @@ import type {
 } from '../../../../convex/services/assessments';
 import ReportsAssessmentFilter from './reports-assessment-filter';
 import ReportsRiskFilter from './reports-risk-filter';
-import {
-  expandToDepth,
-  getTotal,
-  hierarchicalFilterFn,
-} from './reports-row-functions';
+import { expandToDepth, hierarchicalFilterFn } from './reports-row-functions';
 
 interface ReportsDataTableProps {
   children?: ReactNode;
@@ -138,6 +134,7 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
         </div>
         <Suspense>
           <ReportsAssessmentFilter
+            assessments={data}
             onChange={onAssessmentChange}
             value={selectedAssessmentId}
           />
@@ -188,7 +185,7 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
             </div>
           )}
         </div>
-        <Table className="relative h-full min-w-[1200px] table-fixed border-separate border-spacing-0 overflow-auto px-2 pb-2">
+        <Table className="relative h-full min-w-[1400px] table-fixed border-separate border-spacing-0 overflow-auto px-2 pb-2">
           <TableHeader className="sticky top-0 z-10 bg-accent">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
@@ -252,9 +249,7 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
                           ? 'bg-ga-green-50 dark:bg-ga-green-950'
                           : '',
                         row.original.rowLevel === 'question' ? 'bg-accent' : '',
-                        row.depth === 3 && row.getIsExpanded()
-                          ? 'content-start'
-                          : ''
+                        row.getIsExpanded() ? 'content-start' : ''
                       )}
                       key={cell.id}
                     >
@@ -273,13 +268,11 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
                                   return 'section';
                                 case 'section':
                                   return 'question';
-                                case 'question':
-                                  return 'secondary';
                                 default:
                               }
                             })(row.original.rowLevel)}
                           >
-                            {getTotal(row.subRows)}
+                            {row.subRows.length}
                           </Badge>
                         </div>
                       ) : (

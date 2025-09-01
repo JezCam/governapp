@@ -70,8 +70,11 @@ const getAssessmentColumns = (
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      const { currentUserAssessment } = row.original;
-      const assessmentStatus = row.original.status;
+      const {
+        currentUserAssessment,
+        status: assessmentStatus,
+        _id: assessmentId,
+      } = row.original;
       const userAssessmentStatus = currentUserAssessment.status;
 
       switch ([assessmentStatus, userAssessmentStatus].join(',')) {
@@ -106,7 +109,7 @@ const getAssessmentColumns = (
               <Button asChild size="sm" variant="outline">
                 <Link
                   className="flex gap-2"
-                  href={`/dashboard/reports?assessment=${currentUserAssessment._id}`}
+                  href={`/dashboard/reports?assessment=${assessmentId}`}
                 >
                   <HugeiconsIcon
                     className="text-muted-foreground"
@@ -119,7 +122,7 @@ const getAssessmentColumns = (
               <Button asChild className="!pl-2" size="sm" variant="outline">
                 <Link
                   className="flex gap-1"
-                  href={`/dashboard/actions?assessment=${currentUserAssessment._id}`}
+                  href={`/dashboard/actions?assessment=${assessmentId}`}
                 >
                   <HugeiconsIcon
                     className="text-primary"

@@ -29,22 +29,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import UserAvatarStack from '@/components/ui/user-avatar-stack';
 import type { ActionsRow, ActionsRowAssessment } from '@/dummy-data/actions';
 import { cn } from '@/lib/utils';
 import ActionsAssessmentFilter from './actions-assessment-filter';
 import ActionsAssigneeFilter from './actions-assignee-filter';
 import {
   expandToDepth,
-  getAssigneesOverview,
-  getDueDatesOverview,
   getRowRiskBackground,
-  getStatusOverview,
   getTotal,
   hierarchicalFilterFn,
 } from './actions-row-functions';
-import DueDatesOverview from './due-dates-overview';
-import StatusOverview from './status-overview';
 
 interface ActionsDataTableProps {
   children?: ReactNode;
@@ -255,54 +249,35 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
                   key={row.id}
                   onClick={() => row.toggleExpanded()}
                 >
-                  {row.getVisibleCells().map((cell, index) => {
-                    const assignees = getAssigneesOverview(row);
-
-                    return (
-                      <TableCell
-                        className={cn(
-                          'relative',
-                          getRowRiskBackground(row),
-                          row.depth === 2 && row.getIsExpanded()
-                            ? 'content-start'
-                            : ''
-                        )}
-                        key={cell.id}
-                      >
-                        {index === 0 && !!row.subRows.length ? (
-                          <div className="flex items-center justify-between">
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                            <Badge variant="actions">
-                              {getTotal(row.subRows)}
-                            </Badge>
-                          </div>
-                        ) : (
-                          flexRender(
+                  {row.getVisibleCells().map((cell, index) => (
+                    <TableCell
+                      className={cn(
+                        'relative',
+                        getRowRiskBackground(row),
+                        row.depth === 2 && row.getIsExpanded()
+                          ? 'content-start'
+                          : ''
+                      )}
+                      key={cell.id}
+                    >
+                      {index === 0 && row.subRows.length > 0 ? (
+                        <div className="flex items-center justify-between">
+                          {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
-                          )
-                        )}
-                        {/* Status overview */}
-                        {cell.column.id === 'status' &&
-                          row.subRows.length > 0 && (
-                            <StatusOverview {...getStatusOverview(row)} />
                           )}
-                        {/* Due Date overview */}
-                        {cell.column.id === 'date' &&
-                          row.subRows.length > 0 && (
-                            <DueDatesOverview {...getDueDatesOverview(row)} />
-                          )}
-                        {/* Assignee overview */}
-                        {cell.column.id === 'assignee' &&
-                          row.subRows.length > 0 && (
-                            <UserAvatarStack size={28} users={assignees} />
-                          )}
-                      </TableCell>
-                    );
-                  })}
+                          <Badge variant="actions">
+                            {getTotal(row.subRows)}
+                          </Badge>
+                        </div>
+                      ) : (
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))
             ) : (

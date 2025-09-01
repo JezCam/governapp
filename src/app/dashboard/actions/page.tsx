@@ -18,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import UserAvatarStack from '@/components/ui/user-avatar-stack';
 import {
   type ActionsRow,
   type ActionsRowAction,
@@ -25,7 +26,14 @@ import {
 } from '@/dummy-data/actions';
 import { cn } from '@/lib/utils';
 import { ActionsDataTable } from './actions-data-table';
+import {
+  getAssigneesOverview,
+  getDueDatesOverview,
+  getStatusOverview,
+} from './actions-row-functions';
+import DueDatesOverview from './due-dates-overview';
 import ProgressUpdatesSheet from './progress-updates-sheet';
+import StatusOverview from './status-overview';
 
 const getActionsColumns = (
   onOpenProgressUpdates: (action: ActionsRowAction) => void,
@@ -128,6 +136,7 @@ const getActionsColumns = (
           </div>
         );
       }
+      return <StatusOverview {...getStatusOverview(row)} />;
     },
   },
   {
@@ -137,16 +146,6 @@ const getActionsColumns = (
     accessorKey: 'dueDate',
     header: ({ column }) => <SortButton column={column}>Due Date</SortButton>,
     cell: ({ row }) => {
-      if (row.original.type === 'assessment') {
-        // return <DueDatesOverview actionDueSummary={row.original.dueSummary} />;
-        // <span className="font-medium text-xs">
-        //   {row.original.assessmentType === 'self' ? 'Completed' : 'Closed'}{' '}
-        //   {formatDateTime(row.original.date.getTime())}
-        // </span>
-      }
-      if (row.original.type === 'risk') {
-        // return <DueDatesOverview actionDueSummary={row.original.dueSummary} />;
-      }
       if (row.original.type === 'action') {
         const dueDate = row.original.dueDate;
         return (
@@ -155,6 +154,7 @@ const getActionsColumns = (
           </div>
         );
       }
+      return <DueDatesOverview {...getDueDatesOverview(row)} />;
     },
   },
   {
@@ -164,12 +164,6 @@ const getActionsColumns = (
     header: 'Assignee/s',
     accessorKey: 'assignee.userId',
     cell: ({ row }) => {
-      if (row.original.type === 'assessment') {
-        return;
-      }
-      if (row.original.type === 'risk') {
-        return;
-      }
       if (row.original.type === 'action') {
         // const assignee = row.original.assignee;
         return (
@@ -178,6 +172,7 @@ const getActionsColumns = (
           </div>
         );
       }
+      return <UserAvatarStack size={28} users={getAssigneesOverview(row)} />;
     },
   },
   {

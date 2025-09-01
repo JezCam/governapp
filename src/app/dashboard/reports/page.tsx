@@ -67,7 +67,7 @@ const columns: ColumnDef<ReportRow>[] = [
           );
         case 'domain':
           return (
-            <div className="flex gap-2">
+            <div className="flex min-h-11 items-center gap-2">
               <ExpandChevron
                 className="mt-0.75 ml-6 shrink-0"
                 expanded={row.getIsExpanded()}
@@ -80,7 +80,7 @@ const columns: ColumnDef<ReportRow>[] = [
           );
         case 'section':
           return (
-            <div className="flex gap-2">
+            <div className="flex min-h-11 items-center gap-2">
               <ExpandChevron
                 className="mt-0.75 ml-12 shrink-0"
                 expanded={row.getIsExpanded()}
@@ -95,7 +95,7 @@ const columns: ColumnDef<ReportRow>[] = [
           const expanded = row.getIsExpanded();
 
           return (
-            <div className="flex w-full gap-2">
+            <div className={cn('flex w-full gap-2', expanded ? 'mt-3' : '')}>
               <ExpandChevron
                 className="mt-0.5 ml-18 shrink-0"
                 expanded={expanded}
@@ -130,19 +130,17 @@ const columns: ColumnDef<ReportRow>[] = [
     header: ({ column }) => <SortButton column={column}>Score</SortButton>,
     cell: ({ row }) => {
       switch (row.original.rowLevel) {
-        case 'assessment':
-          return (
-            <Score value={row.original.calculatedScore} variant="assessment" />
-          );
-        case 'domain':
-          return (
-            <Score value={row.original.calculatedScore} variant="domain" />
-          );
-        case 'section':
-          return (
-            <Score value={row.original.calculatedScore} variant="section" />
-          );
+        case 'question':
+          return null;
         default:
+          return (
+            <div className="flex min-h-11 items-center">
+              <Score
+                value={row.original.calculatedScore}
+                variant={row.original.rowLevel}
+              />
+            </div>
+          );
       }
     },
   },
@@ -157,7 +155,11 @@ const columns: ColumnDef<ReportRow>[] = [
     size: 10,
     maxSize: 10,
     header: ({ column }) => <SortButton column={column}>Risk</SortButton>,
-    cell: ({ row }) => <Badge variant={row.original.riskLevel} />,
+    cell: ({ row }) => (
+      <div className="flex min-h-11 items-center">
+        <Badge variant={row.original.riskLevel} />
+      </div>
+    ),
   },
   {
     size: 40,
@@ -168,7 +170,7 @@ const columns: ColumnDef<ReportRow>[] = [
       <div
         className={cn(
           'whitespace-pre-wrap',
-          row.getIsExpanded() ? '' : 'line-clamp-1'
+          row.getIsExpanded() ? 'mt-3 mb-3' : 'line-clamp-1'
         )}
       >
         {row.original.feedback}

@@ -8,12 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { assessmentReportsRows } from '@/dummy-data/reports';
+import type { Assessment } from '@/types/convex';
 
 export default function ActionsAssessmentFilter({
+  assessments,
   value,
   onChange,
-}: DataTableFilterProps) {
+}: DataTableFilterProps & { assessments: Assessment[] }) {
   return (
     <Select onValueChange={onChange} value={value}>
       <SelectTrigger className="w-fit">
@@ -22,9 +23,9 @@ export default function ActionsAssessmentFilter({
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Assessment</SelectLabel>
-          {assessmentReportsRows.map((row) => (
-            <SelectItem key={row.assessment.id} value={row.assessment.id}>
-              <span className="font-medium">{row.assessment.name}</span>
+          {assessments.map((assessment) => (
+            <SelectItem key={assessment._id} value={assessment._id}>
+              <span className="font-medium">{assessment.name}</span>
             </SelectItem>
           ))}
         </SelectGroup>

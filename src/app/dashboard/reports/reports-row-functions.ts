@@ -1,23 +1,6 @@
 import type { Row, Table } from '@tanstack/react-table';
 import type { ReportRow } from '../../../../convex/services/assessments';
 
-export const getTotal = (rows: Row<ReportRow>[]) => {
-  let total = 0;
-  const countRows = (_rows: Row<ReportRow>[]) => {
-    for (const row of _rows) {
-      if (row.depth === 3) {
-        total++;
-      }
-      if (row.subRows && row.subRows.length > 0) {
-        countRows(row.subRows);
-      }
-    }
-  };
-  countRows(rows);
-
-  return total;
-};
-
 export const expandToDepth = (table: Table<ReportRow>, depth: number) => {
   const toggleRow = (row: Row<ReportRow>) => {
     if (row.depth >= depth) {
