@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { assessmentStatuses } from '@/dummy-data/assessments';
+import { assessmentStatuses } from '../../../../convex/schemas/assessments';
 
 export default function AssessmentsStatusFilter(props: DataTableFilterProps) {
   const [value, setValue] = useState<string>(props.value || '');

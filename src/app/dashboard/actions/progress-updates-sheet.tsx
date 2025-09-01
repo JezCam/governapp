@@ -9,7 +9,6 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Textarea } from '@/components/ui/textarea';
-import { teamMembers } from '@/dummy-data/team';
 
 export default function ProgressUpdatesSheet(
   props: React.ComponentProps<typeof SheetPrimitive.Root>
@@ -22,10 +21,10 @@ export default function ProgressUpdatesSheet(
         </SheetHeader>
         <div className="flex h-full flex-col gap-4 overflow-auto px-4 pb-4">
           <div className="flex h-full flex-col gap-8 overflow-auto">
-            {teamMembers.map((teamMember) => (
+            {/* {teamMembers.map((teamMember) => (
               <div className="flex flex-col gap-1" key={teamMember.userId}>
                 <div className="flex items-center gap-2">
-                  {/* <UserLabel user={teamMember} /> */}
+                  <UserLabel user={teamMember} />
                   <span className="text-muted-foreground text-sm">
                     • 2d ago
                   </span>
@@ -35,7 +34,7 @@ export default function ProgressUpdatesSheet(
                   do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                 </span>
               </div>
-            ))}
+            ))} */}
           </div>
           <div className="flex h-fit flex-col items-end gap-2">
             <Textarea

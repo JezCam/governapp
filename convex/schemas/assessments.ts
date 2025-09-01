@@ -1,20 +1,22 @@
 import { defineTable } from 'convex/server';
 import { v } from 'convex/values';
-import { riskLevels } from './frameworks';
+import { risks } from './frameworks';
+
+export const assessmentStatuses = [
+  'not-started',
+  'in-progress',
+  'completed',
+] as const;
 
 export const assessmentTables = {
   assessments: defineTable({
     name: v.string(),
-    status: v.union(
-      v.literal('not-started'),
-      v.literal('in-progress'),
-      v.literal('completed')
-    ),
+    status: v.union(...assessmentStatuses.map(v.literal)),
     type: v.union(v.literal('self'), v.literal('board')),
     maxScore: v.number(),
     actualScore: v.number(),
     calculatedScore: v.number(),
-    riskLevel: v.optional(v.union(...riskLevels)),
+    risk: v.optional(v.union(...risks.map(v.literal))),
     feedback: v.optional(v.string()),
     startDate: v.number(),
     dueDate: v.number(),
@@ -28,11 +30,7 @@ export const assessmentTables = {
     .index('by_organisation', ['organisationId'])
     .index('by_organisation_status', ['organisationId', 'status']),
   userAssessments: defineTable({
-    status: v.union(
-      v.literal('not-started'),
-      v.literal('in-progress'),
-      v.literal('completed')
-    ),
+    status: v.union(...assessmentStatuses.map(v.literal)),
     startDate: v.number(),
     finishDate: v.optional(v.number()),
     questionIndex: v.number(),

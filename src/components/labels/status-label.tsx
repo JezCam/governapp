@@ -1,14 +1,25 @@
-import { HugeiconsIcon } from "@hugeicons/react";
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
   CheckmarkCircle03Icon,
   DashedLineCircleIcon,
   Progress03Icon,
   UnavailableIcon,
-} from "@hugeicons-pro/core-stroke-rounded";
-import type { Status } from "@/dummy-data/status";
+} from '@hugeicons-pro/core-stroke-rounded';
 
-export default function StatusLabel({ status }: { status: Status }) {
-  if (status === "not-started") {
+export const statuses = [
+  'not-started' as const,
+  'in-progress' as const,
+  'closed' as const,
+  'blocked' as const,
+  'completed' as const,
+];
+
+export default function StatusLabel({
+  status,
+}: {
+  status: (typeof statuses)[number];
+}) {
+  if (status === 'not-started') {
     return (
       <>
         <HugeiconsIcon
@@ -20,7 +31,7 @@ export default function StatusLabel({ status }: { status: Status }) {
       </>
     );
   }
-  if (status === "in-progress") {
+  if (status === 'in-progress') {
     return (
       <>
         <HugeiconsIcon
@@ -31,7 +42,7 @@ export default function StatusLabel({ status }: { status: Status }) {
       </>
     );
   }
-  if (status === "closed") {
+  if (status === 'closed') {
     return (
       <>
         <HugeiconsIcon
@@ -43,7 +54,7 @@ export default function StatusLabel({ status }: { status: Status }) {
       </>
     );
   }
-  if (status === "blocked") {
+  if (status === 'blocked') {
     return (
       <>
         <HugeiconsIcon
@@ -55,7 +66,7 @@ export default function StatusLabel({ status }: { status: Status }) {
       </>
     );
   }
-  if (status === "completed") {
+  if (status === 'completed') {
     return (
       <>
         <HugeiconsIcon

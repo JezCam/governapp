@@ -13,7 +13,7 @@ export default function UserLabel({
   user,
   className,
 }: {
-  user: User;
+  user?: User | null;
   className?: string;
 }) {
   const currentUser = useQuery(api.services.users.getCurrent);

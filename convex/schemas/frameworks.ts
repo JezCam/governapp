@@ -1,12 +1,7 @@
 import { defineTable } from 'convex/server';
 import { v } from 'convex/values';
 
-export const riskLevels = [
-  v.literal('black'),
-  v.literal('red'),
-  v.literal('amber'),
-  v.literal('green'),
-];
+export const risks = ['black', 'red', 'amber', 'green'] as const;
 
 export const frameworkTables = {
   frameworks: defineTable({
@@ -72,7 +67,7 @@ export const frameworkTables = {
   responseOptions: defineTable({
     text: v.string(),
     score: v.number(),
-    riskLevel: v.union(...riskLevels),
+    risk: v.union(...risks.map(v.literal)),
     order: v.number(),
     isValidNA: v.boolean(),
     triggersAction: v.boolean(),

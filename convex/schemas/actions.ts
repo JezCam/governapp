@@ -1,17 +1,19 @@
 import { defineTable } from 'convex/server';
 import { v } from 'convex/values';
-import { riskLevels } from './frameworks';
+import { risks } from './frameworks';
+
+export const statuses = [
+  'not-started',
+  'in-progress',
+  'completed',
+  'blocked',
+] as const;
 
 export const actionTables = {
   actions: defineTable({
     text: v.string(),
-    riskLevel: v.union(...riskLevels),
-    status: v.union(
-      v.literal('not-started'),
-      v.literal('in-progress'),
-      v.literal('completed'),
-      v.literal('blocked')
-    ),
+    risk: v.union(...risks.map(v.literal)),
+    status: v.union(...statuses.map(v.literal)),
     dueDate: v.number(),
     numComments: v.number(),
     assigneeUserId: v.optional(v.id('users')),
@@ -19,7 +21,9 @@ export const actionTables = {
     modelSolutionUrl: v.optional(v.string()),
     modelSolutionFilename: v.optional(v.string()),
     questionId: v.id('questions'),
-  }).index('by_assessment', ['assessmentId']),
+  })
+    .index('by_assessment', ['assessmentId'])
+    .index('by_assessment_risk', ['assessmentId', 'risk']),
   actionComments: defineTable({
     content: v.string(),
     userId: v.id('users'),

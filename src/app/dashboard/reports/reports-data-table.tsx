@@ -34,7 +34,7 @@ import type {
   ReportRow,
   ReportRowAssessment,
 } from '../../../../convex/services/assessments';
-import ReportsAssessmentFilter from './reports-assessment-filter';
+import AssessmentFilter from '../../../components/data-table/assessment-filter';
 import ReportsRiskFilter from './reports-risk-filter';
 import { expandToDepth, hierarchicalFilterFn } from './reports-row-functions';
 
@@ -133,7 +133,7 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
           </div>
         </div>
         <Suspense>
-          <ReportsAssessmentFilter
+          <AssessmentFilter
             assessments={data}
             onChange={onAssessmentChange}
             value={selectedAssessmentId}

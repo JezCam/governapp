@@ -1,12 +1,12 @@
 'use client';
 
 import type { DialogProps } from '@radix-ui/react-dialog';
-import type { ActionsRowAction } from '@/dummy-data/actions';
+import type { ActionRowAction } from '../../../convex/services/assessments';
 import EditActionForm from '../forms/edit-action-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 
 export default function EditActionDialog(
-  props: DialogProps & { action?: ActionsRowAction }
+  props: DialogProps & { action?: ActionRowAction }
 ) {
   return (
     <Dialog onOpenChange={props.onOpenChange} open={props.open}>

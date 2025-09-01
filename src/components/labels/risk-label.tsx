@@ -3,9 +3,9 @@ import {
   Alert02Icon,
   CheckmarkBadge03Icon,
 } from '@hugeicons-pro/core-stroke-rounded';
-import type { Risk } from '@/dummy-data/risk';
+import type { risks } from '../../../convex/schemas/frameworks';
 
-export default function RiskLabel({ risk }: { risk: Risk }) {
+export default function RiskLabel({ risk }: { risk: (typeof risks)[number] }) {
   if (risk === 'green') {
     return (
       <>

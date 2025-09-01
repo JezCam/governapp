@@ -6,6 +6,7 @@ import {
   type QueryCtx,
   query,
 } from '../_generated/server';
+import { listActionsByAssessmentId } from '../data/actions';
 import { listDomainResultsByAssessmentId } from '../data/domainResults';
 import {
   getQuestionResponseByUserAssessmentIdAndQuestionId,
@@ -31,6 +32,7 @@ import {
   mapUserAssessmentsWithUser,
 } from '../data/userAssessments';
 import { createConvexError } from '../errors';
+import { risks } from '../schemas/frameworks';
 import { mapDomainsWithSections } from './domains';
 import { isAdminByCurrentUserAndActiveOrganisation } from './memberships';
 import { getActiveOrganisationId } from './organisations';
@@ -53,9 +55,9 @@ export async function listSelectedDomainsByAssessment(
   return domains;
 }
 
-const getDueDate = (riskLevel: string) => {
+const getDueDate = (risk: string) => {
   const month = 30 * 24 * 60 * 60 * 1000; // Approx month in ms
-  switch (riskLevel) {
+  switch (risk) {
     case 'black':
       return Date.now() + month;
     case 'red':
@@ -69,11 +71,11 @@ const getDueDate = (riskLevel: string) => {
   }
 };
 
-const getFeedbackForRiskLevel = (
-  riskLevel: string,
+const getFeedbackForRisk = (
+  risk: string,
   thresholds: { [key: string]: string }
 ) => {
-  switch (riskLevel) {
+  switch (risk) {
     case 'black':
       return thresholds.black;
     case 'red':
@@ -87,7 +89,7 @@ const getFeedbackForRiskLevel = (
   }
 };
 
-const getRiskLevel = (score: number, thresholds: { [key: string]: number }) => {
+const getRisk = (score: number, thresholds: { [key: string]: number }) => {
   switch (true) {
     case score <= thresholds.black:
       return 'black';
@@ -191,7 +193,7 @@ export async function generateAssessmentReportAndActions(
         sectionId: question.sectionId,
         questionId: question._id,
         averagedScore: scoreAvg,
-        riskLevel: nearestResponseOption.riskLevel,
+        risk: nearestResponseOption.risk,
         feedback: nearestResponseOption.actionText || '',
         nearestResponseOptionId: nearestResponseOption._id,
       });
@@ -200,9 +202,9 @@ export async function generateAssessmentReportAndActions(
         // If the response option triggers an action, create the action
         await ctx.db.insert('actions', {
           text: nearestResponseOption.actionText ?? '',
-          riskLevel: nearestResponseOption.riskLevel,
+          risk: nearestResponseOption.risk,
           status: 'not-started',
-          dueDate: getDueDate(nearestResponseOption.riskLevel),
+          dueDate: getDueDate(nearestResponseOption.risk),
           numComments: 0,
           assessmentId: assessment._id,
           modelSolutionUrl: question.modelSolutionUrl,
@@ -271,13 +273,13 @@ export async function generateAssessmentReportAndActions(
     const maxScore = sectionMaxScores.get(sectionId) ?? 0;
     const sectionCalculatedScore = (actualScore / maxScore) * 100;
 
-    const riskLevel = getRiskLevel(sectionCalculatedScore, {
+    const risk = getRisk(sectionCalculatedScore, {
       black: section.blackMax,
       red: section.redMax,
       amber: section.amberMax,
     });
 
-    const feedback = getFeedbackForRiskLevel(riskLevel, {
+    const feedback = getFeedbackForRisk(risk, {
       black: section.reportBlack,
       red: section.reportRed,
       amber: section.reportAmber,
@@ -288,7 +290,7 @@ export async function generateAssessmentReportAndActions(
       maxScore,
       actualScore,
       calculatedScore: sectionCalculatedScore,
-      riskLevel,
+      risk,
       feedback,
       assessmentId: assessment._id,
       sectionId: section._id,
@@ -305,13 +307,13 @@ export async function generateAssessmentReportAndActions(
     const maxScore = domainMaxScores.get(domainId) ?? 0;
     const domainCalculatedScore = (actualScore / maxScore) * 100;
 
-    const riskLevel = getRiskLevel(domainCalculatedScore, {
+    const risk = getRisk(domainCalculatedScore, {
       black: domain.blackMax,
       red: domain.redMax,
       amber: domain.amberMax,
     });
 
-    const feedback = getFeedbackForRiskLevel(riskLevel, {
+    const feedback = getFeedbackForRisk(risk, {
       black: domain.reportBlack,
       red: domain.reportRed,
       amber: domain.reportAmber,
@@ -322,7 +324,7 @@ export async function generateAssessmentReportAndActions(
       maxScore,
       actualScore,
       calculatedScore: domainCalculatedScore,
-      riskLevel,
+      risk,
       feedback,
       assessmentId: assessment._id,
       domainId: domain._id,
@@ -333,13 +335,13 @@ export async function generateAssessmentReportAndActions(
     (assessmentActualScore / assessmentMaxScore) * 100;
 
   // Update the assessment with the final scores and risk level
-  const assessmentRiskLevel = getRiskLevel(assessmentCalculatedScore, {
+  const assessmentRisk = getRisk(assessmentCalculatedScore, {
     black: framework.blackMax,
     red: framework.redMax,
     amber: framework.amberMax,
   });
 
-  const assessmentFeedback = getFeedbackForRiskLevel(assessmentRiskLevel, {
+  const assessmentFeedback = getFeedbackForRisk(assessmentRisk, {
     black: framework.reportBlack,
     red: framework.reportRed,
     amber: framework.reportAmber,
@@ -350,7 +352,7 @@ export async function generateAssessmentReportAndActions(
     maxScore: assessmentMaxScore,
     actualScore: assessmentActualScore,
     calculatedScore: assessmentCalculatedScore,
-    riskLevel: assessmentRiskLevel,
+    risk: assessmentRisk,
     feedback: assessmentFeedback,
     status: 'completed',
     finishDate: Date.now(),
@@ -547,7 +549,7 @@ export type ReportRow =
   | ReportRowDomain
   | ReportRowAssessment;
 
-export const getReportRows = query({
+export const listReportRows = query({
   handler: async (ctx) => {
     const currentUserId = await getCurrentUserId(ctx);
 
@@ -659,6 +661,100 @@ export const getReportRows = query({
   },
 });
 
+export type ActionRowAction = DataModel['actions']['document'] & {
+  rowLevel: 'action';
+  assignee: DataModel['users']['document'] | null;
+  assessmentId: Id<'assessments'>;
+};
+
+export type ActionRowRisk = {
+  rowLevel: 'risk';
+  assessmentId: Id<'assessments'>;
+  risk: 'black' | 'red' | 'amber' | 'green';
+  subRows: ActionRowAction[];
+};
+
+export type ActionRowAssessment = DataModel['assessments']['document'] & {
+  rowLevel: 'assessment';
+  framework: DataModel['frameworks']['document'];
+  subRows: ActionRowRisk[];
+};
+
+export type ActionRow = ActionRowAction | ActionRowRisk | ActionRowAssessment;
+
+export const listActionRows = query({
+  handler: async (ctx) => {
+    const currentUserId = await getCurrentUserId(ctx);
+
+    const userAssessments = await listUserAssessmentsByUserId(
+      ctx,
+      currentUserId
+    );
+
+    const assessmentActionRows: ActionRowAssessment[] = await Promise.all(
+      userAssessments.map(async (userAssessment) => {
+        const assessment = await ctx.db.get(userAssessment.assessmentId);
+        if (!assessment) {
+          throw createConvexError('ASSESSMENT_NOT_FOUND');
+        }
+
+        const framework = await ctx.db.get(assessment.frameworkId);
+        if (!framework) {
+          throw createConvexError('FRAMEWORK_NOT_FOUND');
+        }
+
+        const actions = await listActionsByAssessmentId(ctx, assessment._id);
+
+        const actionsWithAssignee = await Promise.all(
+          actions.map(async (action) => {
+            if (action.assigneeUserId) {
+              const assignee = await ctx.db.get(action.assigneeUserId);
+              return { ...action, assignee };
+            }
+            return { ...action, assignee: null };
+          })
+        );
+
+        const riskActionRows: ActionRowRisk[] = risks
+          .map((risk) => {
+            const actionsForRisk = actionsWithAssignee.filter(
+              (action) => action.risk === risk
+            );
+
+            if (actionsForRisk.length === 0) {
+              return null;
+            }
+
+            const actionActionRows: ActionRowAction[] = actionsForRisk.map(
+              (action) => ({
+                ...action,
+                rowLevel: 'action' as const,
+                assessmentId: assessment._id,
+              })
+            );
+
+            return {
+              rowLevel: 'risk' as const,
+              assessmentId: assessment._id,
+              risk,
+              subRows: actionActionRows,
+            };
+          })
+          .filter((row) => row !== null);
+
+        return {
+          ...assessment,
+          framework,
+          rowLevel: 'assessment' as const,
+          subRows: riskActionRows,
+        };
+      })
+    );
+
+    return assessmentActionRows;
+  },
+});
+
 // Mutations
 
 export const create = mutation({
@@ -757,6 +853,8 @@ export const deleteById = mutation({
       args.assessmentId
     );
 
+    const actions = await listActionsByAssessmentId(ctx, args.assessmentId);
+
     // Delete everything
 
     await Promise.all(
@@ -771,6 +869,7 @@ export const deleteById = mutation({
     await Promise.all(
       questionResponses.map(async (qr) => await ctx.db.delete(qr._id))
     );
+    await Promise.all(actions.map(async (a) => await ctx.db.delete(a._id)));
     await Promise.all(userAssessments.map(async (ua) => ctx.db.delete(ua._id)));
     await ctx.db.delete(args.assessmentId);
   },

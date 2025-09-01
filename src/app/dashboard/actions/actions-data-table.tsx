@@ -18,6 +18,7 @@ import { SearchIcon, XIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
+import AssessmentFilter from '@/components/data-table/assessment-filter';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,9 +30,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import type { ActionsRow, ActionsRowAssessment } from '@/dummy-data/actions';
 import { cn } from '@/lib/utils';
-import ActionsAssessmentFilter from './actions-assessment-filter';
+import type {
+  ActionRow,
+  ActionRowAssessment,
+} from '../../../../convex/services/assessments';
 import ActionsAssigneeFilter from './actions-assignee-filter';
 import {
   expandToDepth,
@@ -42,8 +45,8 @@ import {
 
 interface ActionsDataTableProps {
   children?: ReactNode;
-  columns: ColumnDef<ActionsRow>[];
-  data: ActionsRowAssessment[];
+  columns: ColumnDef<ActionRow>[];
+  data: ActionRowAssessment[];
 }
 
 export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
@@ -84,7 +87,7 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onExpandedChange: setExpanded,
-    getSubRows: (row) => (row.type === 'action' ? [] : row.subRows),
+    getSubRows: (row) => (row.rowLevel === 'action' ? [] : row.subRows),
     getExpandedRowModel: getExpandedRowModel(),
     state: {
       globalFilter,
@@ -149,7 +152,8 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
             <SearchIcon size={16} />
           </div>
         </div>
-        <ActionsAssessmentFilter
+        <AssessmentFilter
+          assessments={data}
           onChange={onAssessmentChange}
           value={selectedAssessmentId}
         />

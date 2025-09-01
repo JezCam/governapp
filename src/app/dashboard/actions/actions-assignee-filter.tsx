@@ -6,12 +6,11 @@ import {
   Select,
   SelectContent,
   SelectGroup,
-  SelectItem,
+  // SelectItem,
   SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { teamMembers } from '@/dummy-data/team';
 
 export default function ActionsAssigneeFilter({
   value,
@@ -25,15 +24,15 @@ export default function ActionsAssigneeFilter({
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Assignee</SelectLabel>
-          {teamMembers.map((teamMember) => (
+          {/* {teamMembers.map((teamMember) => (
             <SelectItem
               className="gap-1.5"
               key={teamMember.userId}
               value={teamMember.userId}
             >
-              {/* <UserLabel user={teamMember} /> */}
+              <UserLabel user={teamMember} />
             </SelectItem>
-          ))}
+          ))} */}
         </SelectGroup>
       </SelectContent>
     </Select>

@@ -3,12 +3,13 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Comment01Icon, Edit04Icon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
+import { useQuery } from 'convex/react';
 import { Suspense, useState } from 'react';
 import DueDateLabel from '@/app/dashboard/actions/due-date';
 import EditActionDialog from '@/components/dialogs/edit-action-dialog';
 import ExpandChevron from '@/components/expand-chevron';
 import FrameworkLabel from '@/components/labels/framework-label';
-// import UserLabel from '@/components/labels/user-label'; TODO: Implement
+import UserLabel from '@/components/labels/user-label';
 import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,12 +20,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import UserAvatarStack from '@/components/ui/user-avatar-stack';
-import {
-  type ActionsRow,
-  type ActionsRowAction,
-  assessmentActionsRows,
-} from '@/dummy-data/actions';
 import { cn } from '@/lib/utils';
+import { api } from '../../../../convex/_generated/api';
+import type {
+  ActionRow,
+  ActionRowAction,
+} from '../../../../convex/services/assessments';
 import { ActionsDataTable } from './actions-data-table';
 import {
   getAssigneesOverview,
@@ -36,17 +37,17 @@ import ProgressUpdatesSheet from './progress-updates-sheet';
 import StatusOverview from './status-overview';
 
 const getActionsColumns = (
-  onOpenProgressUpdates: (action: ActionsRowAction) => void,
-  onEditAction: (action: ActionsRowAction) => void
-): ColumnDef<ActionsRow>[] => [
+  onOpenProgressUpdates: (action: ActionRowAction) => void,
+  onEditAction: (action: ActionRowAction) => void
+): ColumnDef<ActionRow>[] => [
   {
     id: 'first',
     size: 40,
     maxSize: 40,
     accessorFn: (row) => {
-      switch (row.type) {
+      switch (row.rowLevel) {
         case 'assessment':
-          return row.assessment.name;
+          return row.name;
         case 'risk':
           return row.risk;
         case 'action':
@@ -55,9 +56,9 @@ const getActionsColumns = (
       }
     },
     filterFn: (row, _, filterValue) => {
-      switch (row.original.type) {
+      switch (row.original.rowLevel) {
         case 'assessment':
-          return row.original.assessment.id === filterValue;
+          return row.original._id === filterValue;
         case 'risk':
         case 'action':
           return row.original.assessmentId === filterValue;
@@ -67,7 +68,7 @@ const getActionsColumns = (
     },
     header: undefined,
     cell: ({ row }) => {
-      switch (row.original.type) {
+      switch (row.original.rowLevel) {
         case 'assessment':
           return (
             <div className="flex gap-2">
@@ -77,10 +78,10 @@ const getActionsColumns = (
               />
               <div className="flex w-full flex-col">
                 <span className="line-clamp-1 truncate font-medium text-base">
-                  {row.original.assessment.name}
+                  {row.original.name}
                 </span>
                 <FrameworkLabel
-                  name={row.original.assessment.framework}
+                  name={row.original.framework.name}
                   variant="framework"
                 />
               </div>
@@ -122,14 +123,14 @@ const getActionsColumns = (
     maxSize: 15,
     id: 'status',
     accessorFn: (row) => {
-      if (row.type === 'action') {
+      if (row.rowLevel === 'action') {
         return row.status;
       }
       return null;
     },
     header: ({ column }) => <SortButton column={column}>Status</SortButton>,
     cell: ({ row }) => {
-      if (row.original.type === 'action') {
+      if (row.original.rowLevel === 'action') {
         return (
           <div className="flex h-7 items-center">
             <Badge variant={row.original.status} />
@@ -146,8 +147,8 @@ const getActionsColumns = (
     accessorKey: 'dueDate',
     header: ({ column }) => <SortButton column={column}>Due Date</SortButton>,
     cell: ({ row }) => {
-      if (row.original.type === 'action') {
-        const dueDate = row.original.dueDate;
+      if (row.original.rowLevel === 'action') {
+        const dueDate = new Date(row.original.dueDate);
         return (
           <div className="flex h-7 items-center">
             <DueDateLabel dueDate={dueDate} />
@@ -164,11 +165,11 @@ const getActionsColumns = (
     header: 'Assignee/s',
     accessorKey: 'assignee.userId',
     cell: ({ row }) => {
-      if (row.original.type === 'action') {
-        // const assignee = row.original.assignee;
+      if (row.original.rowLevel === 'action') {
+        const assignee = row.original.assignee;
         return (
           <div className="flex h-7 items-center">
-            {/* <UserLabel user={assignee} /> */}
+            <UserLabel user={assignee} />
           </div>
         );
       }
@@ -185,68 +186,70 @@ const getActionsColumns = (
     maxSize: 7.5,
     id: 'menu',
     cell: ({ row }) => {
-      if (row.original.type === 'assessment') {
-        return;
-      }
-      if (row.original.type === 'risk') {
-        return;
-      }
-      if (row.original.type === 'action') {
-        return (
-          <div className="flex items-center justify-end gap-1">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    className="relative float-right size-7"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEditAction(row.original as ActionsRowAction);
-                    }}
-                    size="icon"
-                    variant="outline"
-                  >
-                    <HugeiconsIcon icon={Edit04Icon} />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Edit action</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    className="relative float-right size-7"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onOpenProgressUpdates(row.original as ActionsRowAction);
-                    }}
-                    size="icon"
-                    variant="outline"
-                  >
-                    <HugeiconsIcon icon={Comment01Icon} />
-                    <div className="-top-1.5 -right-1.5 absolute flex size-4 items-center justify-center rounded-full bg-red-500 font-bold text-white text-xs">
-                      5
-                    </div>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Progress updates</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        );
+      switch (row.original.rowLevel) {
+        case 'action':
+          return (
+            <div className="flex items-center justify-end gap-1">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      className="relative float-right size-7"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEditAction(row.original as ActionRowAction);
+                      }}
+                      size="icon"
+                      variant="outline"
+                    >
+                      <HugeiconsIcon icon={Edit04Icon} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Edit action</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      className="relative float-right size-7"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenProgressUpdates(row.original as ActionRowAction);
+                      }}
+                      size="icon"
+                      variant="outline"
+                    >
+                      <HugeiconsIcon icon={Comment01Icon} />
+                      <div className="-top-1.5 -right-1.5 absolute flex size-4 items-center justify-center rounded-full bg-red-500 font-bold text-white text-xs">
+                        5
+                      </div>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Progress updates</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          );
+        default:
       }
     },
   },
 ];
 
 export default function Actions() {
+  const actionRows = useQuery(api.services.assessments.listActionRows);
+
   const [progressUpdatesAction, setProgressUpdatesAction] =
-    useState<ActionsRowAction>();
-  const [editAction, setEditAction] = useState<ActionsRowAction>();
+    useState<ActionRowAction>();
+  const [editAction, setEditAction] = useState<ActionRowAction>();
 
   const actionsColumns = getActionsColumns(
-    (action: ActionsRowAction) => setProgressUpdatesAction(action),
-    (action: ActionsRowAction) => setEditAction(action)
+    (action: ActionRowAction) => setProgressUpdatesAction(action),
+    (action: ActionRowAction) => setEditAction(action)
   );
+
+  if (actionRows === undefined) {
+    return null; // TODO: Add a skeleton loader
+  }
 
   return (
     <div className="size-full p-4">
@@ -269,10 +272,7 @@ export default function Actions() {
         open={!!editAction}
       />
       <Suspense>
-        <ActionsDataTable
-          columns={actionsColumns}
-          data={assessmentActionsRows}
-        />
+        <ActionsDataTable columns={actionsColumns} data={actionRows} />
       </Suspense>
     </div>
   );

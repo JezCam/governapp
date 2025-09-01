@@ -7,9 +7,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
-import { actionStatuses } from '@/dummy-data/actions';
-import { assessmentStatuses } from '@/dummy-data/assessments';
-import { teamMembers } from '@/dummy-data/team';
+import { statuses } from '../../../convex/schemas/actions';
+import { assessmentStatuses } from '../../../convex/schemas/assessments';
 import DatePicker from '../date-picker';
 import StatusLabel from '../labels/status-label';
 // import UserLabel from '../labels/user-label'; TODO: Implement
@@ -32,7 +31,7 @@ import FormButtons from './form-buttons';
 import type { FormProps } from './types';
 
 const formSchema = z.object({
-  status: z.enum(actionStatuses, { message: 'Please select a status' }),
+  status: z.enum(statuses, { message: 'Please select a status' }),
   dueDate: z.string().min(1, 'Please select a due date'),
   assignee: z.string().min(1, 'Please select an assignee'),
 });
@@ -141,14 +140,14 @@ export default function EditActionForm(props: FormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {teamMembers.map((teamMember) => (
+                  {/* {teamMembers.map((teamMember) => (
                     <SelectItem
                       key={teamMember.userId}
                       value={teamMember.userId}
                     >
-                      {/* <UserLabel user={teamMember} /> */}
+                      <UserLabel user={teamMember} />
                     </SelectItem>
-                  ))}
+                  ))} */}
                 </SelectContent>
               </Select>
               <FormMessage />

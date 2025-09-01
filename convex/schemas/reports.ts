@@ -1,13 +1,13 @@
 import { defineTable } from 'convex/server';
 import { v } from 'convex/values';
-import { riskLevels } from './frameworks';
+import { risks } from './frameworks';
 
 export const reportTables = {
   domainResults: defineTable({
     maxScore: v.number(),
     actualScore: v.number(),
     calculatedScore: v.number(),
-    riskLevel: v.union(...riskLevels),
+    risk: v.union(...risks.map(v.literal)),
     feedback: v.string(),
     assessmentId: v.id('assessments'),
     domainId: v.id('domains'),
@@ -16,7 +16,7 @@ export const reportTables = {
     maxScore: v.number(),
     actualScore: v.number(),
     calculatedScore: v.number(),
-    riskLevel: v.union(...riskLevels),
+    risk: v.union(...risks.map(v.literal)),
     feedback: v.string(),
     assessmentId: v.id('assessments'),
     domainId: v.id('domains'),
@@ -26,7 +26,7 @@ export const reportTables = {
     .index('by_assessment_domain', ['assessmentId', 'domainId']),
   questionResults: defineTable({
     averagedScore: v.number(),
-    riskLevel: v.union(...riskLevels),
+    risk: v.union(...risks.map(v.literal)),
     feedback: v.string(),
     assessmentId: v.id('assessments'),
     sectionId: v.id('sections'),

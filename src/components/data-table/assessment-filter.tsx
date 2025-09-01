@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/select';
 import type { Assessment } from '@/types/convex';
 
-export default function ActionsAssessmentFilter({
+export default function AssessmentFilter({
   assessments,
   value,
   onChange,

@@ -1,11 +1,11 @@
 import type { Row, Table } from '@tanstack/react-table';
-import type { ActionsRow } from '@/dummy-data/actions';
-import { type TeamMember, teamMembers } from '@/dummy-data/team';
 import { categoriseDueDate } from '@/lib/utils';
+import type { User } from '@/types/convex';
+import type { ActionRow } from '../../../../convex/services/assessments';
 
-export const getTotal = (rows: Row<ActionsRow>[]) => {
+export const getTotal = (rows: Row<ActionRow>[]) => {
   let total = 0;
-  const countRows = (_rows: Row<ActionsRow>[]) => {
+  const countRows = (_rows: Row<ActionRow>[]) => {
     for (const row of _rows) {
       if (row.depth === 2) {
         total++;
@@ -20,11 +20,11 @@ export const getTotal = (rows: Row<ActionsRow>[]) => {
   return total;
 };
 
-export const getStatusOverview = (row: Row<ActionsRow>) => {
+export const getStatusOverview = (row: Row<ActionRow>) => {
   let total = 0;
   let completed = 0;
   let inProgress = 0;
-  const countProgress = (_row: Row<ActionsRow>) => {
+  const countProgress = (_row: Row<ActionRow>) => {
     if (_row.depth === 2) {
       total++;
       if (_row.getValue('status') === 'completed') {
@@ -44,15 +44,15 @@ export const getStatusOverview = (row: Row<ActionsRow>) => {
   return { total, completed, inProgress };
 };
 
-export const getDueDatesOverview = (row: Row<ActionsRow>) => {
+export const getDueDatesOverview = (row: Row<ActionRow>) => {
   let total = 0;
   let overdue = 0;
   let soon = 0;
-  const countDueDates = (_row: Row<ActionsRow>) => {
-    if (_row.depth === 2) {
+  const countDueDates = (_row: Row<ActionRow>) => {
+    if (_row.original.rowLevel === 'action') {
       total++;
-      const dueDate = _row.getValue('date');
-      const { category } = categoriseDueDate(dueDate as Date);
+      const dueDate = new Date(_row.original.dueDate);
+      const { category } = categoriseDueDate(dueDate);
       if (category === 'overdue') {
         overdue++;
       } else if (category === 'soon') {
@@ -69,14 +69,12 @@ export const getDueDatesOverview = (row: Row<ActionsRow>) => {
   return { total, overdue, soon };
 };
 
-export const getAssigneesOverview = (row: Row<ActionsRow>) => {
-  const assignees: TeamMember[] = [];
-  const collectAssignees = (_row: Row<ActionsRow>) => {
-    if (_row.depth === 2) {
-      const assignee = teamMembers.find(
-        (teamMember) => teamMember.userId === _row.getValue('assignee')
-      );
-      if (assignee && !assignees.some((a) => a.userId === assignee.userId)) {
+export const getAssigneesOverview = (row: Row<ActionRow>) => {
+  const assignees: User[] = [];
+  const collectAssignees = (_row: Row<ActionRow>) => {
+    if (_row.original.rowLevel === 'action') {
+      const assignee = _row.original.assignee;
+      if (assignee && !assignees.some((a) => a._id === assignee._id)) {
         assignees.push(assignee);
       }
     }
@@ -90,8 +88,8 @@ export const getAssigneesOverview = (row: Row<ActionsRow>) => {
   return assignees;
 };
 
-export const expandToDepth = (table: Table<ActionsRow>, depth: number) => {
-  const toggleRow = (row: Row<ActionsRow>) => {
+export const expandToDepth = (table: Table<ActionRow>, depth: number) => {
+  const toggleRow = (row: Row<ActionRow>) => {
     if (row.depth >= depth) {
       return; // Skip rows that are deeper than the specified depth
     }
@@ -113,7 +111,7 @@ export const expandToDepth = (table: Table<ActionsRow>, depth: number) => {
 
 // Custom hierarchical filter function
 export const hierarchicalFilterFn = (
-  row: Row<ActionsRow>,
+  row: Row<ActionRow>,
   columnId: string,
   filterValue: unknown
 ) => {
@@ -122,7 +120,7 @@ export const hierarchicalFilterFn = (
     return false; // Skip filtering for non-leaf nodes
   }
 
-  const checkRowAndParents = (currentRow: Row<ActionsRow>): boolean => {
+  const checkRowAndParents = (currentRow: Row<ActionRow>): boolean => {
     // Check if current row matches the filter
     const cellValue = currentRow.getValue(columnId);
     const rowMatches = String(cellValue)
@@ -150,7 +148,7 @@ export const hierarchicalFilterFn = (
   return checkRowAndParents(row);
 };
 
-export const getRowRiskBackground = (row: Row<ActionsRow>) => {
+export const getRowRiskBackground = (row: Row<ActionRow>) => {
   let risk: string | undefined;
   if (row.depth === 0) {
     return 'bg-background';

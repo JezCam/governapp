@@ -37,6 +37,7 @@ export type UserAssessment = DataModel['userAssessments']['document'];
 export type UserAssessmentWithUser = UserAssessment & {
   user: User;
 };
+
 export type AssessmentTableRow = Awaited<
   typeof api.services.assessments.listForActiveOrganisation._returnType
 >[number];

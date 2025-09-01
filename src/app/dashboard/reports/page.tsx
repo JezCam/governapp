@@ -148,7 +148,7 @@ const columns: ColumnDef<ReportRow>[] = [
     id: 'risk',
     accessorFn: (row) => {
       if (row.rowLevel === 'assessment') {
-        return row.riskLevel;
+        return row.risk;
       }
     },
     filterFn: hierarchicalFilterFn,
@@ -157,7 +157,7 @@ const columns: ColumnDef<ReportRow>[] = [
     header: ({ column }) => <SortButton column={column}>Risk</SortButton>,
     cell: ({ row }) => (
       <div className="flex min-h-11 items-center">
-        <Badge variant={row.original.riskLevel} />
+        <Badge variant={row.original.risk} />
       </div>
     ),
   },
@@ -180,7 +180,7 @@ const columns: ColumnDef<ReportRow>[] = [
 ];
 
 export default function Reports() {
-  const reportRows = useQuery(api.services.assessments.getReportRows);
+  const reportRows = useQuery(api.services.assessments.listReportRows);
 
   if (reportRows === undefined) {
     return null; // TODO: Add a skeleton loader

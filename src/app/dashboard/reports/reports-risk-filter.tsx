@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { risks } from '@/dummy-data/risk';
+import { risks } from '../../../../convex/schemas/frameworks';
 
 export default function ReportsRiskFilter(props: DataTableFilterProps) {
   const [value, setValue] = useState<string>(props.value || '');
