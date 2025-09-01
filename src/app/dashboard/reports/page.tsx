@@ -2,7 +2,6 @@
 
 import type { ColumnDef } from '@tanstack/react-table';
 import { useQuery } from 'convex/react';
-import { Suspense } from 'react';
 import ExpandChevron from '@/components/expand-chevron';
 import FrameworkLabel from '@/components/labels/framework-label';
 import SortButton from '@/components/sort-button';
@@ -188,9 +187,7 @@ export default function Reports() {
 
   return (
     <div className="size-full p-4">
-      <Suspense>
-        <ReportsDataTable columns={columns} data={reportRows} />
-      </Suspense>
+      <ReportsDataTable columns={columns} data={reportRows} />
     </div>
   );
 }

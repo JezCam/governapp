@@ -1,7 +1,7 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { DashedLineCircleIcon } from '@hugeicons-pro/core-stroke-rounded';
 import type { User } from '@/types/convex';
-// import UserAvatar from '../user-avatar';
+import UserAvatar from '../avatars/user-avatar';
 import { AvatarStack } from './kibo-ui/avatar-stack';
 import {
   Tooltip,
@@ -35,7 +35,7 @@ export default function UserAvatarStack({
         {users.map((user) => (
           <Tooltip key={user._id}>
             <TooltipTrigger className="size-full">
-              {/* <UserAvatar user={user} /> */}
+              <UserAvatar user={user} />
             </TooltipTrigger>
             <TooltipContent>{user.name}</TooltipContent>
           </Tooltip>

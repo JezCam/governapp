@@ -11,7 +11,7 @@ import { statuses } from '../../../convex/schemas/actions';
 import { assessmentStatuses } from '../../../convex/schemas/assessments';
 import DatePicker from '../date-picker';
 import StatusLabel from '../labels/status-label';
-// import UserLabel from '../labels/user-label'; TODO: Implement
+import UsersSelect from '../memberships/users-select';
 import {
   Form,
   FormControl,
@@ -133,23 +133,11 @@ export default function EditActionForm(props: FormProps) {
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>Assignee</FormLabel>
-              <Select defaultValue={field.value} onValueChange={field.onChange}>
-                <FormControl>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select an assignee" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {/* {teamMembers.map((teamMember) => (
-                    <SelectItem
-                      key={teamMember.userId}
-                      value={teamMember.userId}
-                    >
-                      <UserLabel user={teamMember} />
-                    </SelectItem>
-                  ))} */}
-                </SelectContent>
-              </Select>
+              <UsersSelect
+                className="w-full"
+                defaultValue={field.value}
+                onValueChange={field.onChange}
+              />
               <FormMessage />
             </FormItem>
           )}

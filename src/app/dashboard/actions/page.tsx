@@ -4,7 +4,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Comment01Icon, Edit04Icon } from '@hugeicons-pro/core-stroke-rounded';
 import type { ColumnDef } from '@tanstack/react-table';
 import { useQuery } from 'convex/react';
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 import DueDateLabel from '@/app/dashboard/actions/due-date';
 import EditActionDialog from '@/components/dialogs/edit-action-dialog';
 import ExpandChevron from '@/components/expand-chevron';
@@ -271,9 +271,7 @@ export default function Actions() {
         }}
         open={!!editAction}
       />
-      <Suspense>
-        <ActionsDataTable columns={actionsColumns} data={actionRows} />
-      </Suspense>
+      <ActionsDataTable columns={actionsColumns} data={actionRows} />
     </div>
   );
 }

@@ -19,6 +19,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import AssessmentFilter from '@/components/data-table/assessment-filter';
+import UsersSelect from '@/components/memberships/users-select';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,7 +36,6 @@ import type {
   ActionRow,
   ActionRowAssessment,
 } from '../../../../convex/services/assessments';
-import ActionsAssigneeFilter from './actions-assignee-filter';
 import {
   expandToDepth,
   getRowRiskBackground,
@@ -157,8 +157,8 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
           onChange={onAssessmentChange}
           value={selectedAssessmentId}
         />
-        <ActionsAssigneeFilter
-          onChange={onAssigneeChange}
+        <UsersSelect
+          onValueChange={onAssigneeChange}
           value={selectedAssigneeId}
         />
         <Button
