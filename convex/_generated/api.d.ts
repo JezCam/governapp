@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as auth from "../auth.js";
+import type * as data_actionComments from "../data/actionComments.js";
 import type * as data_actions from "../data/actions.js";
 import type * as data_domainResults from "../data/domainResults.js";
 import type * as data_domains from "../data/domains.js";
@@ -38,6 +39,7 @@ import type * as schemas_assessments from "../schemas/assessments.js";
 import type * as schemas_frameworks from "../schemas/frameworks.js";
 import type * as schemas_organisations from "../schemas/organisations.js";
 import type * as schemas_reports from "../schemas/reports.js";
+import type * as services_actionComments from "../services/actionComments.js";
 import type * as services_actions from "../services/actions.js";
 import type * as services_assessments from "../services/assessments.js";
 import type * as services_domains from "../services/domains.js";
@@ -61,6 +63,7 @@ import type * as services_users from "../services/users.js";
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  "data/actionComments": typeof data_actionComments;
   "data/actions": typeof data_actions;
   "data/domainResults": typeof data_domainResults;
   "data/domains": typeof data_domains;
@@ -85,6 +88,7 @@ declare const fullApi: ApiFromModules<{
   "schemas/frameworks": typeof schemas_frameworks;
   "schemas/organisations": typeof schemas_organisations;
   "schemas/reports": typeof schemas_reports;
+  "services/actionComments": typeof services_actionComments;
   "services/actions": typeof services_actions;
   "services/assessments": typeof services_assessments;
   "services/domains": typeof services_domains;

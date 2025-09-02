@@ -205,10 +205,10 @@ export async function generateAssessmentReportAndActions(
           risk: nearestResponseOption.risk,
           status: 'not-started',
           dueDate: getDueDate(nearestResponseOption.risk),
-          numComments: 0,
           assessmentId: assessment._id,
           modelSolutionUrl: question.modelSolutionUrl,
           questionId: question._id,
+          numComments: 0,
         });
       }
 
@@ -558,104 +558,110 @@ export const listReportRows = query({
       currentUserId
     );
 
-    const assessmentReportRows: ReportRowAssessment[] = await Promise.all(
-      userAssessments.map(async (ua) => {
-        const assessment = await ctx.db.get(ua.assessmentId);
-        if (!assessment) {
-          throw createConvexError('ASSESSMENT_NOT_FOUND');
-        }
+    const assessmentReportRows: ReportRowAssessment[] = (
+      await Promise.all(
+        userAssessments.map(async (ua) => {
+          const assessment = await ctx.db.get(ua.assessmentId);
+          if (!assessment) {
+            throw createConvexError('ASSESSMENT_NOT_FOUND');
+          }
 
-        const framework = await ctx.db.get(assessment.frameworkId);
-        if (!framework) {
-          throw createConvexError('FRAMEWORK_NOT_FOUND');
-        }
+          if (assessment.status !== 'completed') {
+            return null;
+          }
 
-        const domainResults = await listDomainResultsByAssessmentId(
-          ctx,
-          assessment._id
-        );
+          const framework = await ctx.db.get(assessment.frameworkId);
+          if (!framework) {
+            throw createConvexError('FRAMEWORK_NOT_FOUND');
+          }
 
-        const domainReportRows: ReportRowDomain[] = (
-          await Promise.all(
-            domainResults.map(async (dr) => {
-              const domain = await ctx.db.get(dr.domainId);
+          const domainResults = await listDomainResultsByAssessmentId(
+            ctx,
+            assessment._id
+          );
 
-              if (!domain) {
-                throw createConvexError('DOMAIN_NOT_FOUND');
-              }
+          const domainReportRows: ReportRowDomain[] = (
+            await Promise.all(
+              domainResults.map(async (dr) => {
+                const domain = await ctx.db.get(dr.domainId);
 
-              const sectionResults =
-                await listSectionResultsByAssessmentAndDomainId(
-                  ctx,
-                  assessment._id,
-                  domain._id
-                );
+                if (!domain) {
+                  throw createConvexError('DOMAIN_NOT_FOUND');
+                }
 
-              const sectionResultsWithSection: ReportRowSection[] = (
-                await Promise.all(
-                  sectionResults.map(async (sr) => {
-                    const section = await ctx.db.get(sr.sectionId);
+                const sectionResults =
+                  await listSectionResultsByAssessmentAndDomainId(
+                    ctx,
+                    assessment._id,
+                    domain._id
+                  );
 
-                    if (!section) {
-                      throw createConvexError('SECTION_NOT_FOUND');
-                    }
+                const sectionResultsWithSection: ReportRowSection[] = (
+                  await Promise.all(
+                    sectionResults.map(async (sr) => {
+                      const section = await ctx.db.get(sr.sectionId);
 
-                    const questionResults =
-                      await listQuestionResultsByAssessmentAndSectionId(
-                        ctx,
-                        assessment._id,
-                        section._id
-                      );
+                      if (!section) {
+                        throw createConvexError('SECTION_NOT_FOUND');
+                      }
 
-                    const questionResultsWithQuestion: ReportRowQuestion[] = (
-                      await Promise.all(
-                        questionResults.map(async (qr) => {
-                          const question = await ctx.db.get(qr.questionId);
+                      const questionResults =
+                        await listQuestionResultsByAssessmentAndSectionId(
+                          ctx,
+                          assessment._id,
+                          section._id
+                        );
 
-                          if (!question) {
-                            throw createConvexError('QUESTION_NOT_FOUND');
-                          }
+                      const questionResultsWithQuestion: ReportRowQuestion[] = (
+                        await Promise.all(
+                          questionResults.map(async (qr) => {
+                            const question = await ctx.db.get(qr.questionId);
 
-                          return {
-                            ...qr,
-                            question,
-                            rowLevel: 'question' as const,
-                            assessmentId: assessment._id,
-                          };
-                        })
-                      )
-                    ).sort((a, b) => a.question.order - b.question.order);
+                            if (!question) {
+                              throw createConvexError('QUESTION_NOT_FOUND');
+                            }
 
-                    return {
-                      ...sr,
-                      section,
-                      rowLevel: 'section' as const,
-                      assessmentId: assessment._id,
-                      subRows: questionResultsWithQuestion,
-                    };
-                  })
-                )
-              ).sort((a, b) => a.section.order - b.section.order);
+                            return {
+                              ...qr,
+                              question,
+                              rowLevel: 'question' as const,
+                              assessmentId: assessment._id,
+                            };
+                          })
+                        )
+                      ).sort((a, b) => a.question.order - b.question.order);
 
-              return {
-                ...dr,
-                domain,
-                rowLevel: 'domain' as const,
-                assessmentId: assessment._id,
-                subRows: sectionResultsWithSection,
-              };
-            })
-          )
-        ).sort((a, b) => a.domain.order - b.domain.order);
+                      return {
+                        ...sr,
+                        section,
+                        rowLevel: 'section' as const,
+                        assessmentId: assessment._id,
+                        subRows: questionResultsWithQuestion,
+                      };
+                    })
+                  )
+                ).sort((a, b) => a.section.order - b.section.order);
 
-        return {
-          ...assessment,
-          framework,
-          rowLevel: 'assessment' as const,
-          subRows: domainReportRows,
-        };
-      })
-    );
+                return {
+                  ...dr,
+                  domain,
+                  rowLevel: 'domain' as const,
+                  assessmentId: assessment._id,
+                  subRows: sectionResultsWithSection,
+                };
+              })
+            )
+          ).sort((a, b) => a.domain.order - b.domain.order);
+
+          return {
+            ...assessment,
+            framework,
+            rowLevel: 'assessment' as const,
+            subRows: domainReportRows,
+          };
+        })
+      )
+    ).filter((a) => a !== null);
 
     return assessmentReportRows;
   },
@@ -691,65 +697,77 @@ export const listActionRows = query({
       currentUserId
     );
 
-    const assessmentActionRows: ActionRowAssessment[] = await Promise.all(
-      userAssessments.map(async (userAssessment) => {
-        const assessment = await ctx.db.get(userAssessment.assessmentId);
-        if (!assessment) {
-          throw createConvexError('ASSESSMENT_NOT_FOUND');
-        }
+    const assessmentActionRows: ActionRowAssessment[] = (
+      await Promise.all(
+        userAssessments.map(async (userAssessment) => {
+          const assessment = await ctx.db.get(userAssessment.assessmentId);
+          if (!assessment) {
+            throw createConvexError('ASSESSMENT_NOT_FOUND');
+          }
 
-        const framework = await ctx.db.get(assessment.frameworkId);
-        if (!framework) {
-          throw createConvexError('FRAMEWORK_NOT_FOUND');
-        }
+          if (assessment.status !== 'completed') {
+            return null;
+          }
 
-        const actions = await listActionsByAssessmentId(ctx, assessment._id);
+          const framework = await ctx.db.get(assessment.frameworkId);
+          if (!framework) {
+            throw createConvexError('FRAMEWORK_NOT_FOUND');
+          }
 
-        const actionsWithAssignee = await Promise.all(
-          actions.map(async (action) => {
-            if (action.assigneeUserId) {
-              const assignee = await ctx.db.get(action.assigneeUserId);
-              return { ...action, assignee };
-            }
-            return { ...action, assignee: null };
-          })
-        );
+          const actions = await listActionsByAssessmentId(ctx, assessment._id);
 
-        const riskActionRows: ActionRowRisk[] = risks
-          .map((risk) => {
-            const actionsForRisk = actionsWithAssignee.filter(
-              (action) => action.risk === risk
-            );
-
-            if (actionsForRisk.length === 0) {
-              return null;
-            }
-
-            const actionActionRows: ActionRowAction[] = actionsForRisk.map(
-              (action) => ({
+          const actionsWithAssigneeAndComments = await Promise.all(
+            actions.map(async (action) => {
+              if (action.assigneeUserId) {
+                const assignee = await ctx.db.get(action.assigneeUserId);
+                return {
+                  ...action,
+                  assignee,
+                };
+              }
+              return {
                 ...action,
-                rowLevel: 'action' as const,
+                assignee: null,
+              };
+            })
+          );
+
+          const riskActionRows: ActionRowRisk[] = risks
+            .map((risk) => {
+              const actionsForRisk = actionsWithAssigneeAndComments.filter(
+                (action) => action.risk === risk
+              );
+
+              if (actionsForRisk.length === 0) {
+                return null;
+              }
+
+              const actionActionRows: ActionRowAction[] = actionsForRisk.map(
+                (action) => ({
+                  ...action,
+                  rowLevel: 'action' as const,
+                  assessmentId: assessment._id,
+                })
+              );
+
+              return {
+                rowLevel: 'risk' as const,
                 assessmentId: assessment._id,
-              })
-            );
+                risk,
+                subRows: actionActionRows,
+              };
+            })
+            .filter((row) => row !== null);
 
-            return {
-              rowLevel: 'risk' as const,
-              assessmentId: assessment._id,
-              risk,
-              subRows: actionActionRows,
-            };
-          })
-          .filter((row) => row !== null);
-
-        return {
-          ...assessment,
-          framework,
-          rowLevel: 'assessment' as const,
-          subRows: riskActionRows,
-        };
-      })
-    );
+          return {
+            ...assessment,
+            framework,
+            rowLevel: 'assessment' as const,
+            subRows: riskActionRows,
+          };
+        })
+      )
+    ).filter((a) => a !== null);
 
     return assessmentActionRows;
   },

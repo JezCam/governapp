@@ -163,7 +163,7 @@ const getActionsColumns = (
     maxSize: 19,
     id: 'assignee',
     header: 'Assignee/s',
-    accessorKey: 'assignee.userId',
+    accessorKey: 'assignee._id',
     cell: ({ row }) => {
       if (row.original.rowLevel === 'action') {
         const assignee = row.original.assignee;
@@ -219,9 +219,11 @@ const getActionsColumns = (
                       variant="outline"
                     >
                       <HugeiconsIcon icon={Comment01Icon} />
-                      <div className="-top-1.5 -right-1.5 absolute flex size-4 items-center justify-center rounded-full bg-red-500 font-bold text-white text-xs">
-                        5
-                      </div>
+                      {row.original.numComments > 0 && (
+                        <div className="-top-1.5 -right-1.5 absolute flex size-4 items-center justify-center rounded-full bg-red-500 font-bold text-white text-xs">
+                          {row.original.numComments}
+                        </div>
+                      )}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Progress updates</TooltipContent>
@@ -238,13 +240,13 @@ const getActionsColumns = (
 export default function Actions() {
   const actionRows = useQuery(api.services.assessments.listActionRows);
 
-  const [progressUpdatesAction, setProgressUpdatesAction] =
+  const [progressUpdatesActionId, setProgressUpdatesAction] =
     useState<ActionRowAction>();
   const [editAction, setEditAction] = useState<ActionRowAction>();
 
   const actionsColumns = getActionsColumns(
-    (action: ActionRowAction) => setProgressUpdatesAction(action),
-    (action: ActionRowAction) => setEditAction(action)
+    setProgressUpdatesAction,
+    setEditAction
   );
 
   if (actionRows === undefined) {
@@ -254,13 +256,14 @@ export default function Actions() {
   return (
     <div className="size-full p-4">
       <ProgressUpdatesSheet
+        actionId={progressUpdatesActionId?._id}
         modal={false}
         onOpenChange={(open) => {
           if (!open) {
             setProgressUpdatesAction(undefined);
           }
         }}
-        open={!!progressUpdatesAction}
+        open={!!progressUpdatesActionId}
       />
       <EditActionDialog
         action={editAction}

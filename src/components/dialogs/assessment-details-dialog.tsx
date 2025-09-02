@@ -93,24 +93,36 @@ export default function AssessmentDetailsDialog({
               {deleteConfirm ? (
                 <>
                   <strong className="text-sm">
-                    Are you sure? This action can NOT be undone.
+                    Are you sure? This cannot be undone
                   </strong>
-                  <DeleteAssessmentButton
-                    assessmentId={assessment._id}
-                    onSuccess={() => rest.onOpenChange?.(false)}
-                  >
-                    Yes, delete
-                  </DeleteAssessmentButton>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => setDeleteConfirm(false)}
+                      size="sm"
+                      variant="secondary"
+                    >
+                      Cancel
+                    </Button>
+                    <DeleteAssessmentButton
+                      assessmentId={assessment._id}
+                      onSuccess={() => rest.onOpenChange?.(false)}
+                    >
+                      Yes, delete
+                    </DeleteAssessmentButton>
+                  </div>
                 </>
               ) : (
-                <Button
-                  className="w-fit justify-self-end"
-                  onClick={() => setDeleteConfirm(true)}
-                  size="sm"
-                  variant="destructive"
-                >
-                  Delete assessment
-                </Button>
+                <>
+                  <strong className="text-sm">Delete this assessment</strong>
+                  <Button
+                    className="w-fit"
+                    onClick={() => setDeleteConfirm(true)}
+                    size="sm"
+                    variant="destructive"
+                  >
+                    Delete
+                  </Button>
+                </>
               )}
             </div>
           </>
@@ -118,9 +130,10 @@ export default function AssessmentDetailsDialog({
         {assessment.status === 'not-started' && (
           <Button
             className="w-fit"
-            onClick={() =>
-              randomCompleteForTesting({ assessmentId: assessment._id })
-            }
+            onClick={() => {
+              randomCompleteForTesting({ assessmentId: assessment._id });
+              rest.onOpenChange?.(false);
+            }}
             size="sm"
             variant="ghost"
           >

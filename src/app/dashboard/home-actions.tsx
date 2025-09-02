@@ -11,15 +11,23 @@ import {
   ArrowUpRight03Icon,
   PlusSignIcon,
 } from '@hugeicons-pro/core-stroke-rounded';
+import { useQuery } from 'convex/react';
 import Link from 'next/link';
 import { useState } from 'react';
 import AddTeamMemberDialog from '@/components/dialogs/add-team-member-dialog';
 import NewAssessmentDialog from '@/components/dialogs/new-assessment-dialog';
 import { Button } from '@/components/ui/button';
+import { api } from '../../../convex/_generated/api';
 
 export default function HomeActions() {
+  const currentUserId = useQuery(api.services.users.getCurrentId);
+
   const [newAssessmentOpen, setNewAssessmentOpen] = useState(false);
   const [addTeamMemberOpen, setAddTeamMemberOpen] = useState(false);
+
+  if (currentUserId === undefined) {
+    return null; // TODO: Add skeleton for home actions
+  }
 
   return (
     <>
@@ -110,7 +118,7 @@ export default function HomeActions() {
           className="group h-fit flex-col justify-start gap-2 rounded-2xl p-2 hover:border-ga-purple-300 hover:bg-background dark:hover:border-ga-purple-800"
           variant="outline"
         >
-          <Link href="/dashboard/actions?assignee=0">
+          <Link href={`/dashboard/actions?assignee=${currentUserId}`}>
             <div className="relative flex w-full items-center justify-center overflow-hidden rounded-md border bg-accent py-8">
               <div className="group-hover:-translate-y-1 relative flex size-18 shrink-0 items-center justify-center rounded-lg border border-ga-purple-300 bg-gradient-to-b from-ga-purple-100 to-ga-purple-200 shadow-highlight transition-transform group-hover:scale-105 dark:border-ga-purple-900 dark:from-ga-purple-950 dark:to-gray-900 dark:shadow-sm">
                 <HugeiconsIcon
