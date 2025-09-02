@@ -41,3 +41,7 @@ export type UserAssessmentWithUser = UserAssessment & {
 export type AssessmentTableRow = Awaited<
   typeof api.services.assessments.listForActiveOrganisation._returnType
 >[number];
+
+// Actions domain
+
+export type Action = DataModel['actions']['document'];

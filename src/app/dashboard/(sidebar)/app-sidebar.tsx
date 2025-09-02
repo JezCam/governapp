@@ -36,7 +36,7 @@ export default function AppSidebar() {
             />
           </div>
           <span
-            className="font-extrabold font-m-plus-rounded-1c text-ga-purple-800 text-lg transition-opacity group-data-[collapsible=icon]:opacity-0 dark:text-white"
+            className="font-extrabold font-m-plus-rounded-1c text-ga-purple-800 text-xl transition-opacity group-data-[collapsible=icon]:opacity-0 dark:text-white"
             style={{ fontFamily: 'var(--font-m-plus-rounded-1c' }}
           >
             GovernApp

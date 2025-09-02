@@ -37,7 +37,7 @@ export default function UserAvatarStack({
             <TooltipTrigger className="size-full">
               <UserAvatar user={user} />
             </TooltipTrigger>
-            <TooltipContent>{user.name}</TooltipContent>
+            <TooltipContent>{`${user.firstName} ${user.lastName}`}</TooltipContent>
           </Tooltip>
         ))}
       </AvatarStack>

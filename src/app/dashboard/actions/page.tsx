@@ -90,7 +90,7 @@ const getActionsColumns = (
         case 'risk':
           return (
             <div className="flex items-center gap-2">
-              <ExpandChevron className="ml-6" expanded={row.getIsExpanded()} />
+              <ExpandChevron className="ml-3" expanded={row.getIsExpanded()} />
               <Badge variant={row.original.risk} />
             </div>
           );
@@ -98,9 +98,9 @@ const getActionsColumns = (
           const expanded = row.getIsExpanded();
 
           return (
-            <div className="flex w-full gap-2">
+            <div className={cn('flex w-full gap-2', expanded ? 'my-1' : '')}>
               <ExpandChevron
-                className="mt-0.5 ml-12 shrink-0"
+                className="mt-0.5 ml-6 shrink-0"
                 expanded={expanded}
               />
               <span
@@ -119,8 +119,8 @@ const getActionsColumns = (
     },
   },
   {
-    size: 15,
-    maxSize: 15,
+    size: 13,
+    maxSize: 13,
     id: 'status',
     accessorFn: (row) => {
       if (row.rowLevel === 'action') {
@@ -142,8 +142,8 @@ const getActionsColumns = (
   },
   {
     id: 'date',
-    size: 15,
-    maxSize: 15,
+    size: 13,
+    maxSize: 13,
     accessorKey: 'dueDate',
     header: ({ column }) => <SortButton column={column}>Due Date</SortButton>,
     cell: ({ row }) => {
@@ -159,8 +159,8 @@ const getActionsColumns = (
     },
   },
   {
-    size: 15,
-    maxSize: 15,
+    size: 19,
+    maxSize: 19,
     id: 'assignee',
     header: 'Assignee/s',
     accessorKey: 'assignee.userId',

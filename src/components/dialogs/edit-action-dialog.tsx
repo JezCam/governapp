@@ -8,6 +8,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 export default function EditActionDialog(
   props: DialogProps & { action?: ActionRowAction }
 ) {
+  if (!props.action) {
+    return null;
+  }
+
   return (
     <Dialog onOpenChange={props.onOpenChange} open={props.open}>
       <DialogContent>
@@ -18,6 +22,7 @@ export default function EditActionDialog(
           {props.action?.text}
         </p>
         <EditActionForm
+          action={props.action}
           formButtonProps={{ onPrevious: () => props.onOpenChange?.(false) }}
           onSuccess={() => props.onOpenChange?.(false)}
         />
