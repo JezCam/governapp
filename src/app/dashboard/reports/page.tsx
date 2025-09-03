@@ -180,11 +180,7 @@ const columns: ColumnDef<ReportRow>[] = [
   },
   {
     id: 'risk',
-    accessorFn: (row) => {
-      if (row.rowLevel === 'assessment') {
-        return row.risk;
-      }
-    },
+    accessorKey: 'risk',
     filterFn: hierarchicalFilterFn,
     size: 10,
     maxSize: 10,

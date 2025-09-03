@@ -117,6 +117,9 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
   const onStatusChange = (value: string) => {
     setSelectedStatus(value);
     table.getColumn('status')?.setFilterValue(value);
+    if (value) {
+      expandToDepth(table, 2);
+    }
   };
 
   const onAssigneeChange = (value: string) => {

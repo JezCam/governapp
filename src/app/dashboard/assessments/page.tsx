@@ -58,7 +58,9 @@ const getAssessmentColumns = (
     size: 20,
     maxSize: 20,
     accessorKey: 'dueDate',
-    header: ({ column }) => <SortButton column={column}>Due Date</SortButton>,
+    header: ({ column }) => (
+      <SortButton column={column}>Due/Close Date</SortButton>
+    ),
     cell: ({ row }) => {
       const dueDate = row.original.dueDate;
       return formatDateTime(new Date(dueDate).getTime());

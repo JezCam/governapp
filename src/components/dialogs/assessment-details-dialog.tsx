@@ -66,14 +66,16 @@ export default function AssessmentDetailsDialog({
             <div className="flex w-full flex-col gap-1.5">
               <Label>Score</Label>
               <div className="flex w-full items-center gap-2">
-                <Progress value={62} />
-                <span className="font-medium text-sm">62%</span>
+                <Progress value={assessment.calculatedScore} />
+                <span className="font-medium text-sm">
+                  {assessment.calculatedScore.toFixed(0)}%
+                </span>
               </div>
             </div>
             <Separator orientation="vertical" />
             <div className="flex flex-col gap-1.5">
               <Label>Risk Level</Label>
-              <Badge variant="amber" />
+              <Badge variant={assessment.risk} />
             </div>
           </div>
         )}
