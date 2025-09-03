@@ -520,7 +520,9 @@ export const getNameByUserAssesmentId = query({
 export type ReportRowQuestion = DataModel['questionResults']['document'] & {
   rowLevel: 'question';
   question: DataModel['questions']['document'];
+  responseOptions: DataModel['responseOptions']['document'][];
   assessmentId: Id<'assessments'>;
+  questionNumber: number;
 };
 
 export type ReportRowSection = DataModel['sectionResults']['document'] & {
@@ -621,15 +623,27 @@ export const listReportRows = query({
                               throw createConvexError('QUESTION_NOT_FOUND');
                             }
 
+                            const responseOptions =
+                              await listResponseOptionsByQuestionId(
+                                ctx,
+                                question._id
+                              );
+
                             return {
                               ...qr,
                               question,
+                              responseOptions,
                               rowLevel: 'question' as const,
                               assessmentId: assessment._id,
                             };
                           })
                         )
-                      ).sort((a, b) => a.question.order - b.question.order);
+                      )
+                        .sort((a, b) => a.question.order - b.question.order)
+                        .map((qr, i) => ({
+                          ...qr,
+                          questionNumber: i + 1,
+                        }));
 
                       return {
                         ...sr,

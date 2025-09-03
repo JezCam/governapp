@@ -92,6 +92,9 @@ const columns: ColumnDef<ReportRow>[] = [
           );
         case 'question': {
           const expanded = row.getIsExpanded();
+          const questionNumber = row.original.questionNumber;
+          const responseOptions = row.original.responseOptions;
+          const selectedOptionId = row.original.nearestResponseOptionId;
 
           return (
             <div
@@ -104,14 +107,36 @@ const columns: ColumnDef<ReportRow>[] = [
                 className="mt-0.5 ml-9 shrink-0"
                 expanded={expanded}
               />
-              <span
-                className={cn(
-                  'whitespace-pre-wrap font-medium',
-                  expanded ? '' : 'line-clamp-1 truncate'
+              <div className="flex w-full flex-col gap-4">
+                <span
+                  className={cn(
+                    'whitespace-pre-wrap font-medium',
+                    expanded ? '' : 'line-clamp-1 truncate'
+                  )}
+                >
+                  <div className="mr-2 mb-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full border bg-background align-middle text-xs">
+                    {questionNumber}
+                  </div>
+                  {row.original.question.text}
+                </span>
+                {expanded && (
+                  <ul className="flex w-full list-disc flex-col gap-2">
+                    {responseOptions.map((option) => (
+                      <li
+                        className={cn(
+                          'whitespace-pre-wrap px-2 py-1 text-muted-foreground',
+                          option._id === selectedOptionId
+                            ? 'rounded-md border bg-background font-medium text-foreground'
+                            : ''
+                        )}
+                        key={option._id}
+                      >
+                        {option.text}
+                      </li>
+                    ))}
+                  </ul>
                 )}
-              >
-                {row.original.question.text}
-              </span>
+              </div>
             </div>
           );
         }

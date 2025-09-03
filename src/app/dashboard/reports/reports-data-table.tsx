@@ -241,10 +241,10 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
                           ? 'bg-background'
                           : '',
                         row.original.rowLevel === 'domain'
-                          ? 'bg-ga-blue-50 dark:bg-ga-blue-950'
+                          ? 'bg-ga-blue-50 dark:bg-ga-blue-950/50'
                           : '',
                         row.original.rowLevel === 'section'
-                          ? 'bg-ga-green-50 dark:bg-ga-green-950'
+                          ? 'bg-ga-green-50 dark:bg-ga-green-950/50'
                           : '',
                         row.original.rowLevel === 'question' ? 'bg-accent' : '',
                         row.getIsExpanded() ? 'content-start' : ''
