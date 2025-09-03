@@ -132,8 +132,17 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    onAssessmentChange(assessmentParam ?? '');
-    onAssigneeChange(assigneeParam ?? '');
+    if (assessmentParam) {
+      onAssessmentChange(assessmentParam);
+    }
+    if (assigneeParam) {
+      onAssigneeChange(assigneeParam);
+    }
+    // Clear params from URL after use
+    const url = new URL(window.location.href);
+    url.searchParams.delete('assessment');
+    url.searchParams.delete('assignee');
+    window.history.replaceState({}, '', url.toString());
   }, [assessmentParam, assigneeParam]);
 
   return (
