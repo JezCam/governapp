@@ -1,14 +1,14 @@
 import { v } from 'convex/values';
 import { mutation } from '../_generated/server';
 import { createConvexError } from '../errors';
-import { statuses } from '../schemas/actions';
+import { actionStatuses } from '../schemas/actions';
 
 // Mutations
 
 export const update = mutation({
   args: {
     id: v.id('actions'),
-    status: v.union(...statuses.map(v.literal)),
+    status: v.union(...actionStatuses.map(v.literal)),
     dueDate: v.number(),
     assigneeUserId: v.optional(v.id('users')),
   },

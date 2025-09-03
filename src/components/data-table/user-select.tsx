@@ -15,11 +15,12 @@ import {
   SelectValue,
 } from '../ui/select';
 
-export default function UsersSelect(
-  props: React.ComponentProps<typeof SelectPrimitive.Root> & {
-    className?: string;
-  }
-) {
+export default function UserSelect({
+  className,
+  ...rest
+}: React.ComponentProps<typeof SelectPrimitive.Root> & {
+  className?: string;
+}) {
   const team = useQuery(
     api.services.memberships.listInActiveOrganisationWithUsers
   );
@@ -31,8 +32,8 @@ export default function UsersSelect(
   const users = team.map((member) => member.user);
 
   return (
-    <Select {...props}>
-      <SelectTrigger className={cn('w-fit', props.className)}>
+    <Select {...rest}>
+      <SelectTrigger className={cn('w-fit', className)}>
         <SelectValue placeholder="Select assginee" />
       </SelectTrigger>
       <SelectContent>

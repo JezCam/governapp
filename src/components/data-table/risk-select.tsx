@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import type { DataTableFilterProps } from '@/components/data-table/types';
+import type * as SelectPrimitive from '@radix-ui/react-select';
 import RiskLabel from '@/components/labels/risk-label';
 import {
   Select,
@@ -12,17 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { risks } from '../../../../convex/schemas/frameworks';
+import { risks } from '../../../convex/schemas/frameworks';
 
-export default function ReportsRiskFilter(props: DataTableFilterProps) {
-  const [value, setValue] = useState<string>(props.value || '');
-
-  useEffect(() => {
-    setValue(props.value || '');
-  }, [props.value]);
-
+export default function RiskSelect(
+  props: React.ComponentProps<typeof SelectPrimitive.Root>
+) {
   return (
-    <Select onValueChange={props.onChange} value={value}>
+    <Select {...props}>
       <SelectTrigger className="w-fit">
         <SelectValue placeholder="Select risk" />
       </SelectTrigger>

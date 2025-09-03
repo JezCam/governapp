@@ -17,7 +17,7 @@ import {
 import { SearchIcon, XIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { type ReactNode, Suspense, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,8 +34,8 @@ import type {
   ReportRow,
   ReportRowAssessment,
 } from '../../../../convex/services/assessments';
-import AssessmentFilter from '../../../components/data-table/assessment-filter';
-import ReportsRiskFilter from './reports-risk-filter';
+import AssessmentSelect from '../../../components/data-table/assessment-select';
+import RiskSelect from '../../../components/data-table/risk-select';
 import { expandToDepth, hierarchicalFilterFn } from './reports-row-functions';
 
 interface ReportsDataTableProps {
@@ -132,15 +132,13 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
             <SearchIcon size={16} />
           </div>
         </div>
-        <Suspense>
-          <AssessmentFilter
-            assessments={data}
-            onChange={onAssessmentChange}
-            value={selectedAssessmentId}
-          />
-        </Suspense>
-        <ReportsRiskFilter
-          onChange={(value) => {
+        <AssessmentSelect
+          assessments={data}
+          onValueChange={onAssessmentChange}
+          value={selectedAssessmentId}
+        />
+        <RiskSelect
+          onValueChange={(value) => {
             table.getColumn('risk')?.setFilterValue(value);
           }}
           value={(table.getColumn('risk')?.getFilterValue() as string) ?? ''}

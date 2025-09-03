@@ -1,4 +1,4 @@
-import type { DataTableFilterProps } from '@/components/data-table/types';
+import type * as SelectPrimitive from '@radix-ui/react-select';
 import {
   Select,
   SelectContent,
@@ -10,13 +10,14 @@ import {
 } from '@/components/ui/select';
 import type { Assessment } from '@/types/convex';
 
-export default function AssessmentFilter({
+export default function AssessmentSelect({
   assessments,
-  value,
-  onChange,
-}: DataTableFilterProps & { assessments: Assessment[] }) {
+  ...rest
+}: React.ComponentProps<typeof SelectPrimitive.Root> & {
+  assessments: Assessment[];
+}) {
   return (
-    <Select onValueChange={onChange} value={value}>
+    <Select {...rest}>
       <SelectTrigger className="w-fit">
         <SelectValue placeholder="Select assessment" />
       </SelectTrigger>

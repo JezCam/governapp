@@ -2,7 +2,7 @@ import { defineTable } from 'convex/server';
 import { v } from 'convex/values';
 import { risks } from './frameworks';
 
-export const statuses = [
+export const actionStatuses = [
   'not-started',
   'in-progress',
   'completed',
@@ -13,7 +13,7 @@ export const actionTables = {
   actions: defineTable({
     text: v.string(),
     risk: v.union(...risks.map(v.literal)),
-    status: v.union(...statuses.map(v.literal)),
+    status: v.union(...actionStatuses.map(v.literal)),
     dueDate: v.number(),
     numComments: v.number(),
     assigneeUserId: v.optional(v.id('users')),

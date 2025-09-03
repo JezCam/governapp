@@ -16,11 +16,10 @@ import z from 'zod';
 import type { Action } from '@/types/convex';
 import { api } from '../../../convex/_generated/api';
 import type { Id } from '../../../convex/_generated/dataModel';
-import { statuses } from '../../../convex/schemas/actions';
-import { assessmentStatuses } from '../../../convex/schemas/assessments';
+import { actionStatuses } from '../../../convex/schemas/actions';
+import UsersSelect from '../data-table/user-select';
 import DatePicker from '../date-picker';
 import StatusLabel from '../labels/status-label';
-import UsersSelect from '../memberships/users-select';
 import {
   Form,
   FormControl,
@@ -40,7 +39,7 @@ import FormButtons from './form-buttons';
 import type { FormProps } from './types';
 
 const formSchema = z.object({
-  status: z.enum(statuses, { message: 'Please select a status' }),
+  status: z.enum(actionStatuses, { message: 'Please select a status' }),
   dueDate: z.string().min(1, 'Please select a due date'),
   assigneeUserId: z.string().optional(),
 });
@@ -113,7 +112,7 @@ export default function EditActionForm(props: FormProps & { action: Action }) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {assessmentStatuses.map((status) => (
+                    {actionStatuses.map((status) => (
                       <SelectItem key={status} value={status}>
                         <StatusLabel status={status} />
                       </SelectItem>

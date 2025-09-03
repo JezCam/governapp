@@ -18,8 +18,9 @@ import { SearchIcon, XIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import AssessmentFilter from '@/components/data-table/assessment-filter';
-import UsersSelect from '@/components/memberships/users-select';
+import AssessmentSelect from '@/components/data-table/assessment-select';
+import StatusSelect from '@/components/data-table/status-select';
+import UserSelect from '@/components/data-table/user-select';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -57,6 +58,7 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
   const [selectedAssessmentId, setSelectedAssessmentId] = useState<string>(
     assessmentParam ?? ''
   );
+  const [selectedStatus, setSelectedStatus] = useState<string>();
   const [selectedAssigneeId, setSelectedAssigneeId] = useState<string>(
     assigneeParam ?? ''
   );
@@ -111,6 +113,12 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
       expandToDepth(table, 1);
     }
   };
+
+  const onStatusChange = (value: string) => {
+    setSelectedStatus(value);
+    table.getColumn('status')?.setFilterValue(value);
+  };
+
   const onAssigneeChange = (value: string) => {
     setSelectedAssigneeId(value);
     table.getColumn('assignee')?.setFilterValue(value);
@@ -152,12 +160,13 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
             <SearchIcon size={16} />
           </div>
         </div>
-        <AssessmentFilter
+        <AssessmentSelect
           assessments={data}
-          onChange={onAssessmentChange}
+          onValueChange={onAssessmentChange}
           value={selectedAssessmentId}
         />
-        <UsersSelect
+        <StatusSelect onValueChange={onStatusChange} value={selectedStatus} />
+        <UserSelect
           onValueChange={onAssigneeChange}
           value={selectedAssigneeId}
         />
@@ -165,6 +174,7 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
           disabled={!columnFilters.length}
           onClick={() => {
             setSelectedAssessmentId('');
+            setSelectedStatus('');
             setSelectedAssigneeId('');
             setColumnFilters([]);
             setExpanded({});
@@ -186,7 +196,7 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
             <div className="flex gap-2">
               <Button asChild size="sm" variant="outline">
                 <Link
-                  className="flex gap-2"
+                  className="flex gap-1.5"
                   href={`/dashboard/reports/?assessment=${columnFilters[0].value}`}
                 >
                   <HugeiconsIcon
