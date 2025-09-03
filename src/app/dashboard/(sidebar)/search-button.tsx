@@ -64,9 +64,10 @@ export default function SearchButton() {
         <CommandInput placeholder="Search GovernApp..." />
         <CommandList className="outline-hidden [scrollbar-width:none]">
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Pages">
+          <CommandGroup className="!px-0" heading="Pages">
             {pages.map((page) => (
               <CommandItem
+                className="!px-3"
                 key={page.title}
                 onSelect={() => {
                   router.push(page.url);
@@ -79,8 +80,9 @@ export default function SearchButton() {
             ))}
           </CommandGroup>
           <CommandSeparator className="my-2" />
-          <CommandGroup heading="Settings">
+          <CommandGroup className="!px-0" heading="Settings">
             <CommandItem
+              className="!px-3"
               key={'theme'}
               onSelect={() =>
                 setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')

@@ -42,7 +42,7 @@ export default function AppSidebar() {
             GovernApp
           </span>
           <span className="ml-auto font-mono text-sidebar-primary text-sm tracking-tighter">
-            1.0
+            v1.0
           </span>
         </Link>
         <SidebarSeparator className="mx-auto my-0 w-full" />
