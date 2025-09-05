@@ -62,7 +62,7 @@ const columns: ColumnDef<Framework>[] = [
     id: 'menu',
     cell: () => {
       return (
-        <Button className="float-right" size="sm">
+        <Button className="w-full" size="sm">
           Subscribe
         </Button>
       );

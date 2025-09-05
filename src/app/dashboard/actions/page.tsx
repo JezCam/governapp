@@ -240,7 +240,7 @@ const getActionsColumns = (
 export default function Actions() {
   const actionRows = useQuery(api.services.assessments.listActionRows);
 
-  const [progressUpdatesActionId, setProgressUpdatesAction] =
+  const [progressUpdatesAction, setProgressUpdatesAction] =
     useState<ActionRowAction>();
   const [editAction, setEditAction] = useState<ActionRowAction>();
 
@@ -256,14 +256,14 @@ export default function Actions() {
   return (
     <div className="size-full p-4">
       <ProgressUpdatesSheet
-        actionId={progressUpdatesActionId?._id}
+        actionId={progressUpdatesAction?._id}
         modal={false}
         onOpenChange={(open) => {
           if (!open) {
             setProgressUpdatesAction(undefined);
           }
         }}
-        open={!!progressUpdatesActionId}
+        open={!!progressUpdatesAction}
       />
       <EditActionDialog
         action={editAction}

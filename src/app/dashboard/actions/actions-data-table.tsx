@@ -257,7 +257,7 @@ export function ActionsDataTable({ columns, data }: ActionsDataTableProps) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   className={cn(
-                    'group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:px-3 [&>td]:last:border-l-0',
+                    'group [&>td]:group-hover:!bg-ga-purple-50 dark:[&>td]:group-hover:!bg-ga-purple-950/50 border-none [&>td]:px-3 [&>td]:last:border-l-0',
                     // Table Cell Borders
                     '[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-r',
                     // First Row

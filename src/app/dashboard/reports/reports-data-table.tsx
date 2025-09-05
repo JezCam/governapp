@@ -1,7 +1,7 @@
 'use client';
 
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Download04Icon, ZapIcon } from '@hugeicons-pro/core-stroke-rounded';
+import { FileEmpty02Icon, ZapIcon } from '@hugeicons-pro/core-stroke-rounded';
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -18,6 +18,7 @@ import { SearchIcon, XIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
+import ReportPDFDialog from '@/components/dialogs/report-pdf-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -60,6 +61,8 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
   ]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
+
+  const [reportPDF, setReportPDF] = useState<ReportRowAssessment>();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -176,9 +179,30 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
                   Actions
                 </Link>
               </Button>
-              <Button size="sm" variant="secondary">
-                Download PDF
-                <HugeiconsIcon icon={Download04Icon} strokeWidth={2} />
+              <ReportPDFDialog
+                assessmentReportRow={data.find(
+                  (assessment) => assessment._id === selectedAssessmentId
+                )}
+                onOpenChange={(open) => {
+                  if (!open) {
+                    setReportPDF(undefined);
+                  }
+                }}
+                open={!!reportPDF}
+              />
+              <Button
+                onClick={() =>
+                  setReportPDF(
+                    data.find(
+                      (assessment) => assessment._id === selectedAssessmentId
+                    )
+                  )
+                }
+                size="sm"
+                variant="secondary"
+              >
+                Report PDF
+                <HugeiconsIcon icon={FileEmpty02Icon} strokeWidth={2} />
               </Button>
             </div>
           )}
@@ -214,7 +238,7 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   className={cn(
-                    'group [&>td]:group-hover:!bg-blue-50 dark:[&>td]:group-hover:!bg-blue-950/50 border-none [&>td]:px-3',
+                    'group [&>td]:group-hover:!bg-ga-purple-50 dark:[&>td]:group-hover:!bg-ga-purple-950/50 border-none [&>td]:px-3',
                     // Table Cell Borders
                     '[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-r',
                     // First Row

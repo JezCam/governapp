@@ -87,9 +87,7 @@ export default function ProgressUpdatesSheet(
                       {formatDateTime(comment._creationTime)}
                     </span>
                   </div>
-                  <span className="ml-8 text-muted-foreground text-sm">
-                    {comment.content}
-                  </span>
+                  <span className="ml-8 text-sm">{comment.content}</span>
                 </div>
               ))
             )}

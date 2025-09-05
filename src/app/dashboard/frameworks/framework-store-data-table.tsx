@@ -149,7 +149,7 @@ export function FrameworksStoreDataTable({
           </TableHeader>
           <TableBody
             className={cn(
-              '[&_td]:bg-background [&_td]:px-3 [&_td]:group-hover:bg-blue-50 dark:[&_td]:group-hover:bg-blue-950/50',
+              '[&_td]:bg-background [&_td]:px-3 [&_td]:group-hover:bg-ga-purple-50 dark:[&_td]:group-hover:bg-ga-purple-950/50',
               // Table Cell Borders
               '[&_td]:border-b [&_td]:border-l [&_td]:not-first:[border-left-style:_dashed] [&_td]:last:border-r',
               // First Row

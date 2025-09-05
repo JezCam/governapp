@@ -199,7 +199,7 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   className={cn(
-                    'group relative border-none [&>td]:bg-background [&>td]:px-3 [&>td]:group-hover:bg-blue-50 dark:[&>td]:group-hover:bg-blue-950/50',
+                    'group relative border-none [&>td]:bg-background [&>td]:px-3 [&>td]:group-hover:bg-ga-purple-50 dark:[&>td]:group-hover:bg-ga-purple-950/50',
                     // Table Cell Borders
                     '[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed]',
                     hasMenu
