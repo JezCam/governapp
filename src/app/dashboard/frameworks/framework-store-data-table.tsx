@@ -80,7 +80,7 @@ export function FrameworksStoreDataTable({
           <Input
             className="peer ps-9"
             onChange={(e) => table.setGlobalFilter(e.target.value)}
-            placeholder={'Search frameworks...'}
+            placeholder={'Search frameworks'}
             ref={inputRef}
             type="text"
             value={globalFilter ?? ''}

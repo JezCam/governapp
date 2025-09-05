@@ -57,13 +57,11 @@ const getAssessmentColumns = (
   {
     size: 20,
     maxSize: 20,
-    accessorKey: 'dueDate',
-    header: ({ column }) => (
-      <SortButton column={column}>Due/Close Date</SortButton>
-    ),
+    accessorKey: 'closeDate',
+    header: ({ column }) => <SortButton column={column}>Close Date</SortButton>,
     cell: ({ row }) => {
-      const dueDate = row.original.dueDate;
-      return formatDateTime(new Date(dueDate).getTime());
+      const closeDate = row.original.closeDate;
+      return formatDateTime(new Date(closeDate).getTime());
     },
   },
   {

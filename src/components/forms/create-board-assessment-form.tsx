@@ -45,7 +45,7 @@ const formSchema = z.object({
     message: 'You must select at least one participant',
   }),
   startDate: z.string({ message: 'Please select a start date' }),
-  dueDate: z.string({ message: 'Please select a due date' }),
+  closeDate: z.string({ message: 'Please select a due date' }),
 });
 
 export default function CreateBoardAssessmentForm(props: FormProps) {
@@ -87,7 +87,7 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
     const startDate = parseDate(values.startDate)
       .toDate('Australia/Sydney')
       .getTime();
-    const dueDate = parseDate(values.dueDate)
+    const closeDate = parseDate(values.closeDate)
       .toDate('Australia/Sydney')
       .getTime();
 
@@ -98,7 +98,7 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
       participantsUserIds,
       questionsTotal,
       startDate,
-      dueDate,
+      closeDate,
     })
       .then(() => {
         toast.success('Assessment created successfully');
@@ -264,8 +264,8 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
                   // Disable dates before today and after the due date
                   isDateUnavailable={(date) =>
                     date.compare(today('UTC')) < 0 ||
-                    (!!form.getValues('dueDate') &&
-                      date.compare(parseDate(form.getValues('dueDate'))) > 0)
+                    (!!form.getValues('closeDate') &&
+                      date.compare(parseDate(form.getValues('closeDate'))) > 0)
                   }
                   onChange={(date) => {
                     field.onChange(date?.toString());
@@ -279,12 +279,12 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
                         return;
                       }
                       // Date after due date
-                      const dueDate = form.getValues('dueDate');
-                      if (!dueDate) {
+                      const closeDate = form.getValues('closeDate');
+                      if (!closeDate) {
                         form.clearErrors('startDate');
                         return;
                       }
-                      if (date.compare(parseDate(dueDate)) > 0) {
+                      if (date.compare(parseDate(closeDate)) > 0) {
                         form.setError('startDate', {
                           type: 'manual',
                           message: 'Start date cannot be after the due date',
@@ -302,7 +302,7 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
           />
           <FormField
             control={form.control}
-            name="dueDate"
+            name="closeDate"
             render={({ field, fieldState }) => (
               <FormItem className="flex flex-col">
                 <FormLabel className="w-fit">Due Date</FormLabel>
@@ -319,7 +319,7 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
                     if (date) {
                       // Due date before today
                       if (date.compare(today('UTC')) < 0) {
-                        form.setError('dueDate', {
+                        form.setError('closeDate', {
                           type: 'manual',
                           message: 'Due date must be in the future',
                         });
@@ -328,17 +328,17 @@ export default function CreateBoardAssessmentForm(props: FormProps) {
                       // Date before start date
                       const startDate = form.getValues('startDate');
                       if (!startDate) {
-                        form.clearErrors('dueDate');
+                        form.clearErrors('closeDate');
                         return;
                       }
                       if (date.compare(parseDate(startDate)) < 0) {
-                        form.setError('dueDate', {
+                        form.setError('closeDate', {
                           type: 'manual',
                           message: 'Due date must be after the start date',
                         });
                         return;
                       }
-                      form.clearErrors('dueDate');
+                      form.clearErrors('closeDate');
                     }
                   }}
                   value={field.value ? parseDate(field.value) : undefined}

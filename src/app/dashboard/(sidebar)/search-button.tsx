@@ -67,7 +67,7 @@ export default function SearchButton() {
           <CommandGroup className="!px-0" heading="Pages">
             {pages.map((page) => (
               <CommandItem
-                className="!px-3"
+                className="!px-3 font-medium"
                 key={page.title}
                 onSelect={() => {
                   router.push(page.url);
@@ -80,7 +80,7 @@ export default function SearchButton() {
             ))}
           </CommandGroup>
           <CommandSeparator className="my-2" />
-          <CommandGroup className="!px-0" heading="Settings">
+          <CommandGroup className="!px-0 font-medium" heading="Settings">
             <CommandItem
               className="!px-3"
               key={'theme'}

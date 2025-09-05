@@ -17,7 +17,7 @@ export default function ReportPDFDialog(
         <DialogHeader>
           <DialogTitle>Report PDF</DialogTitle>
         </DialogHeader>
-        <PDFViewer className="w-full rounded-md" height={800}>
+        <PDFViewer className="w-full rounded-md border" height={800}>
           <ReportPDF assessmentReportRow={props.assessmentReportRow} />
         </PDFViewer>
       </DialogContent>

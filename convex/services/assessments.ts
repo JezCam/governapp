@@ -355,7 +355,7 @@ export async function generateAssessmentReportAndActions(
     risk: assessmentRisk,
     feedback: assessmentFeedback,
     status: 'completed',
-    finishDate: Date.now(),
+    closeDate: Date.now(),
   });
 }
 
@@ -797,7 +797,7 @@ export const create = mutation({
     questionsTotal: v.number(),
     participantsUserIds: v.optional(v.array(v.id('users'))),
     startDate: v.optional(v.number()),
-    dueDate: v.optional(v.number()),
+    closeDate: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const currentUserId = await getCurrentUserId(ctx);
@@ -828,7 +828,7 @@ export const create = mutation({
       actualScore: 0,
       calculatedScore: 0,
       startDate: args.startDate ?? Date.now(),
-      dueDate: args.dueDate ?? threeMonthsFromNow.getTime(),
+      closeDate: args.closeDate ?? threeMonthsFromNow.getTime(),
       createdBy: currentUserId,
       frameworkId: args.frameworkId,
       ...(type === 'board' && { organisationId: activeOrganisationId }),
