@@ -17,7 +17,7 @@ import {
 import { SearchIcon, XIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { Fragment, type ReactNode, useEffect, useRef, useState } from 'react';
 import ReportPDFDialog from '@/components/dialogs/report-pdf-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -236,76 +236,109 @@ export function ReportsDataTable({ columns, data }: ReportsDataTableProps) {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  className={cn(
-                    'group [&>td]:group-hover:!bg-ga-purple-50 dark:[&>td]:group-hover:!bg-ga-purple-950/50 border-none [&>td]:px-3',
-                    // Table Cell Borders
-                    '[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-r',
-                    // First Row
-                    'first:[&>td]:border-t',
-                    // Bottom Right
-                    'last:[&>td]:last:rounded-br-md',
-                    // Bottom Left
-                    'last:[&>td]:first:rounded-bl-md',
-                    // Top Right
-                    'first:[&>td]:last:rounded-tr-md',
-                    // Top Left
-                    'first:[&>td]:first:rounded-tl-md'
-                  )}
-                  data-state={row.getIsSelected() && 'selected'}
-                  key={row.id}
-                  onClick={() => row.toggleExpanded()}
-                >
-                  {/** biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
-                  {row.getVisibleCells().map((cell, index) => (
-                    <TableCell
-                      className={cn(
-                        'relative',
-                        row.original.rowLevel === 'assessment'
-                          ? 'bg-background'
-                          : '',
-                        row.original.rowLevel === 'domain'
-                          ? 'bg-ga-blue-50 dark:bg-ga-blue-950/50'
-                          : '',
-                        row.original.rowLevel === 'section'
-                          ? 'bg-ga-green-50 dark:bg-ga-green-950/50'
-                          : '',
-                        row.original.rowLevel === 'question' ? 'bg-accent' : '',
-                        row.getIsExpanded() ? 'content-start' : ''
-                      )}
-                      key={cell.id}
-                    >
-                      {index === 0 && !!row.subRows.length ? (
-                        <div className="flex items-center justify-between">
-                          {flexRender(
+                <Fragment key={row.id}>
+                  <TableRow
+                    className={cn(
+                      'group [&>td]:group-hover:!bg-ga-purple-50 dark:[&>td]:group-hover:!bg-ga-purple-950/50 border-none [&>td]:px-3',
+                      // Table Cell Borders
+                      '[&>td]:border-b [&>td]:border-l [&>td]:not-first:[border-left-style:_dashed] [&>td]:last:border-r',
+                      // First Row
+                      'first:[&>td]:border-t',
+                      // Bottom Right
+                      'last:[&>td]:last:rounded-br-md',
+                      // Bottom Left
+                      'last:[&>td]:first:rounded-bl-md',
+                      // Top Right
+                      'first:[&>td]:last:rounded-tr-md',
+                      // Top Left
+                      'first:[&>td]:first:rounded-tl-md'
+                    )}
+                    data-state={row.getIsSelected() && 'selected'}
+                    key={row.id}
+                    onClick={() => row.toggleExpanded()}
+                  >
+                    {/** biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
+                    {row.getVisibleCells().map((cell, index) => (
+                      <TableCell
+                        className={cn(
+                          'relative',
+                          row.original.rowLevel === 'assessment'
+                            ? 'bg-background'
+                            : '',
+                          row.original.rowLevel === 'domain'
+                            ? 'bg-ga-blue-50 dark:bg-ga-blue-950/50'
+                            : '',
+                          row.original.rowLevel === 'section'
+                            ? 'bg-ga-green-50 dark:bg-ga-green-950/50'
+                            : '',
+                          row.original.rowLevel === 'question'
+                            ? 'bg-accent'
+                            : '',
+                          row.getIsExpanded() ? 'content-start' : ''
+                        )}
+                        key={cell.id}
+                      >
+                        {index === 0 && !!row.subRows.length ? (
+                          <div className="flex items-center justify-between">
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                            <Badge
+                              variant={((type) => {
+                                switch (type) {
+                                  case 'assessment':
+                                    return 'domain';
+                                  case 'domain':
+                                    return 'section';
+                                  case 'section':
+                                    return 'question';
+                                  default:
+                                }
+                              })(row.original.rowLevel)}
+                            >
+                              {row.subRows.length}
+                            </Badge>
+                          </div>
+                        ) : (
+                          flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
+                          )
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                  {row.original.rowLevel !== 'question' &&
+                    row.getIsExpanded() && (
+                      <TableRow>
+                        <TableCell
+                          className={cn(
+                            'whitespace-pre-wrap border border-t-0 bg-background py-3 pr-3',
+                            row.original.rowLevel === 'assessment'
+                              ? 'bg-background pl-9'
+                              : '',
+                            row.original.rowLevel === 'domain'
+                              ? 'bg-ga-blue-50 pl-12 dark:bg-ga-blue-950/50'
+                              : '',
+                            row.original.rowLevel === 'section'
+                              ? 'bg-ga-green-50 pl-15 dark:bg-ga-green-950/50'
+                              : ''
                           )}
-                          <Badge
-                            variant={((type) => {
-                              switch (type) {
-                                case 'assessment':
-                                  return 'domain';
-                                case 'domain':
-                                  return 'section';
-                                case 'section':
-                                  return 'question';
-                                default:
-                              }
-                            })(row.original.rowLevel)}
-                          >
-                            {row.subRows.length}
-                          </Badge>
-                        </div>
-                      ) : (
-                        flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                          colSpan={columns.length}
+                        >
+                          <div className="flex flex-col gap-2">
+                            <span className="font-semibold">
+                              {row.original.rowLevel.charAt(0).toUpperCase() +
+                                row.original.rowLevel.slice(1)}{' '}
+                              feedback
+                            </span>
+                            {row.original.feedback}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                </Fragment>
               ))
             ) : (
               <TableRow>

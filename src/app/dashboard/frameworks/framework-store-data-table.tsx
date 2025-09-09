@@ -186,7 +186,7 @@ export function FrameworksStoreDataTable({
                     <TableRow>
                       <TableCell
                         className="!bg-accent whitespace-pre-wrap border border-t-0 py-3 pr-3 pl-9"
-                        colSpan={5}
+                        colSpan={columns.length}
                       >
                         {row.original.description}
                         {row.original.description}

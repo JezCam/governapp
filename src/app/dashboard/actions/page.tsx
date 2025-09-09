@@ -194,6 +194,27 @@ const getActionsColumns = (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
+                      className="relative float-right h-7 w-fit gap-1 px-1.5"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenProgressUpdates(row.original as ActionRowAction);
+                      }}
+                      size="icon"
+                      variant="outline"
+                    >
+                      {row.original.numComments > 0 && (
+                        <div className="flex items-center justify-center px-0.5 font-semibold text-ga-blue-500 text-xs dark:text-ga-blue-200">
+                          {row.original.numComments}
+                        </div>
+                      )}
+                      <HugeiconsIcon icon={Comment01Icon} strokeWidth={1.8} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Progress updates</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
                       className="relative float-right size-7"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -202,31 +223,10 @@ const getActionsColumns = (
                       size="icon"
                       variant="outline"
                     >
-                      <HugeiconsIcon icon={Edit04Icon} />
+                      <HugeiconsIcon icon={Edit04Icon} strokeWidth={1.8} />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Edit action</TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      className="relative float-right size-7"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onOpenProgressUpdates(row.original as ActionRowAction);
-                      }}
-                      size="icon"
-                      variant="outline"
-                    >
-                      <HugeiconsIcon icon={Comment01Icon} />
-                      {row.original.numComments > 0 && (
-                        <div className="-top-1.5 -right-1.5 absolute flex size-4 items-center justify-center rounded-full bg-red-500 font-bold text-white text-xs">
-                          {row.original.numComments}
-                        </div>
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Progress updates</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </div>

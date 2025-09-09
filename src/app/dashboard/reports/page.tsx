@@ -16,8 +16,8 @@ import Score from './score';
 const columns: ColumnDef<ReportRow>[] = [
   {
     id: 'first',
-    size: 35,
-    maxSize: 35,
+    size: 70,
+    maxSize: 70,
     accessorFn: (row) => {
       switch (row.rowLevel) {
         case 'assessment':
@@ -146,8 +146,8 @@ const columns: ColumnDef<ReportRow>[] = [
   },
   {
     id: 'score',
-    size: 15,
-    maxSize: 15,
+    size: 20,
+    maxSize: 20,
     accessorFn: (row) => {
       switch (row.rowLevel) {
         case 'question':
@@ -193,25 +193,6 @@ const columns: ColumnDef<ReportRow>[] = [
         )}
       >
         <Badge variant={row.original.risk} />
-      </div>
-    ),
-  },
-  {
-    size: 40,
-    maxSize: 40,
-    accessorKey: 'feedback',
-    header: 'Feedback',
-    cell: ({ row }) => (
-      <div
-        className={cn(
-          'whitespace-pre-wrap',
-          row.getIsExpanded() ? '' : 'line-clamp-1',
-          row.getIsExpanded() && row.original.rowLevel === 'assessment'
-            ? 'my-3'
-            : ''
-        )}
-      >
-        {row.original.feedback}
       </div>
     ),
   },

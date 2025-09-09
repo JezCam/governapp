@@ -13,6 +13,7 @@ import {
   SidebarRail,
   SidebarSeparator,
 } from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
 import { NavMain } from './nav-main';
 import NavTeam from './nav-team';
 import OrganisationSwitcher from './organisation-switcher';
@@ -45,21 +46,28 @@ export default function AppSidebar() {
             v1.0
           </span>
         </Link>
-        <SidebarSeparator className="mx-auto my-0 w-full" />
+        <SidebarSeparator className="mx-auto my-0 w-full shadow-[0_-1px_0_0_var(--color-ga-purple-100)] dark:shadow-[0_-1px_0_0_#000]" />
         <div className="px-4.25 py-4">
           <SearchButton />
         </div>
       </SidebarHeader>
-      <SidebarContent className="gap-0 border-sidebar-border border-y">
+      <SidebarContent className="gap-0 border-sidebar-border border-t shadow-[0_-1px_0_0_var(--color-ga-purple-100)] dark:shadow-[0_-1px_0_0_#000]">
         <ScrollArea className="h-full [&_[data-slot=scroll-area-thumb]]:bg-sidebar-border">
           <div className="w-63.75 transition-[width] duration-200 ease-linear group-data-[collapsible=icon]:w-16.5">
             <NavMain />
-            <SidebarSeparator className="mx-auto my-0 w-full" />
+            <SidebarSeparator className="mx-auto my-0 w-full shadow-[0_-1px_0_0_var(--color-ga-purple-100)] dark:shadow-[0_-1px_0_0_#000]" />
             <NavTeam />
           </div>
         </ScrollArea>
       </SidebarContent>
-      <SidebarFooter className="peer z-10 gap-0 bg-sidebar">
+      <SidebarFooter
+        className={cn(
+          'peer z-10 gap-0 border-sidebar-border border-t bg-sidebar',
+          open
+            ? ''
+            : 'shadow-[0_-1px_0_0_var(--color-ga-purple-100)] dark:shadow-[0_-1px_0_0_#000]'
+        )}
+      >
         <OrganisationSwitcher open={open} setOpen={setOpen} />
       </SidebarFooter>
       <button
