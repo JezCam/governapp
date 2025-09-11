@@ -65,7 +65,7 @@ const getFrameworkColumns = (
       <SortButton column={column}>Subscribed On</SortButton>
     ),
     cell: ({ row }) => {
-      const subscribedAt = row.original.subscribedAt;
+      const subscribedAt = row.original.lastRenewalDate;
       return formatDateTime(subscribedAt);
     },
   },

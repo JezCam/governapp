@@ -1,6 +1,18 @@
 import type { DataModel } from '../_generated/dataModel';
 import type { MutationCtx, QueryCtx } from '../_generated/server';
 
+export async function getFrameworkByPriceId(
+  ctx: QueryCtx | MutationCtx,
+  priceId: string
+) {
+  const framework = await ctx.db
+    .query('frameworks')
+    .withIndex('by_priceId', (q) => q.eq('priceId', priceId))
+    .unique();
+
+  return framework;
+}
+
 export async function mapFrameworksWithDomains(
   ctx: QueryCtx | MutationCtx,
   frameworks: DataModel['frameworks']['document'][]

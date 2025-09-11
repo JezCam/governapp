@@ -24,6 +24,10 @@ export const organisationTables = {
     name: v.string(),
     type: v.optional(v.union(...types.map(v.literal))),
     turnoverRange: v.union(...turnoverRanges.map(v.literal)),
+    active: v.boolean(),
+    subscriptionId: v.optional(v.string()),
+    currentPeriodEnd: v.optional(v.number()),
+    lastRenewalDate: v.optional(v.number()),
   }).index('by_abnOrAcn', ['abnOrAcn']),
   memberships: defineTable({
     organisationId: v.id('organisations'),

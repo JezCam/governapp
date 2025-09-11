@@ -27,7 +27,8 @@ export type ErrorCode =
   | 'SECTION_NOT_FOUND'
   | 'DOMAIN_NOT_FOUND'
   | 'QUESTION_NOT_FOUND'
-  | 'ACTION_NOT_FOUND';
+  | 'ACTION_NOT_FOUND'
+  | 'STRIPE_KEY_NOT_CONFIGURED';
 
 export function createConvexError(code: ErrorCode) {
   return new ConvexError(code);

@@ -1,5 +1,12 @@
+import { v } from 'convex/values';
 import type { Id } from '../_generated/dataModel';
-import { type MutationCtx, type QueryCtx, query } from '../_generated/server';
+import {
+  internalMutation,
+  type MutationCtx,
+  mutation,
+  type QueryCtx,
+  query,
+} from '../_generated/server';
 import { listSubscriptionsByOrganisationId } from '../data/subscriptions';
 import { getActiveOrganisationId } from './organisations';
 
@@ -41,5 +48,41 @@ export const listForActiveOrganisationWithFrameworks = query({
     );
 
     return frameworks;
+  },
+});
+
+// Mutations
+
+export const create = internalMutation({
+  args: {
+    organisationId: v.id('organisations'),
+    frameworkId: v.id('frameworks'),
+    subscriptionId: v.string(),
+    currentPeriodEnd: v.number(),
+    lastRenewalDate: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const subscription = await ctx.db.insert('subscriptions', {
+      ...args,
+      active: true,
+    });
+
+    return subscription;
+  },
+});
+
+export const createFreeForActiveOrganisation = mutation({
+  args: {
+    frameworkId: v.id('frameworks'),
+  },
+  handler: async (ctx, { frameworkId }) => {
+    const organisationId = await getActiveOrganisationId(ctx);
+
+    await ctx.db.insert('subscriptions', {
+      organisationId,
+      frameworkId,
+      active: true,
+      lastRenewalDate: Date.now(),
+    });
   },
 });

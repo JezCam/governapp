@@ -4,10 +4,11 @@ import ExpandChevron from '@/components/expand-chevron';
 import FrameworkLabel from '@/components/labels/framework-label';
 import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import type { Framework } from '@/types/convex';
 import { api } from '../../../../convex/_generated/api';
+import FrameworkFreeButton from './framework-free-button';
 import { FrameworksStoreDataTable } from './framework-store-data-table';
+import FrameworkSubscribeButton from './framework-subscribe-button';
 
 const columns: ColumnDef<Framework>[] = [
   {
@@ -60,11 +61,20 @@ const columns: ColumnDef<Framework>[] = [
     size: 10,
     maxSize: 10,
     id: 'menu',
-    cell: () => {
+    cell: ({ row }) => {
+      if (row.original.monthlyCost === 0) {
+        return (
+          <FrameworkFreeButton
+            className="w-full"
+            frameworkId={row.original._id}
+          />
+        );
+      }
       return (
-        <Button className="w-full" size="sm">
-          Subscribe
-        </Button>
+        <FrameworkSubscribeButton
+          className="w-full"
+          priceId={row.original.priceId}
+        />
       );
     },
   },

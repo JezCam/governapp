@@ -52,6 +52,7 @@ import type * as services_storage from "../services/storage.js";
 import type * as services_subscriptions from "../services/subscriptions.js";
 import type * as services_userAssessments from "../services/userAssessments.js";
 import type * as services_users from "../services/users.js";
+import type * as stripe from "../stripe.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -101,6 +102,7 @@ declare const fullApi: ApiFromModules<{
   "services/subscriptions": typeof services_subscriptions;
   "services/userAssessments": typeof services_userAssessments;
   "services/users": typeof services_users;
+  stripe: typeof stripe;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

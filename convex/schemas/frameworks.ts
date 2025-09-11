@@ -19,7 +19,10 @@ export const frameworkTables = {
     legislation: v.optional(v.string()),
     authority: v.string(),
     monthlyCost: v.number(),
-  }).index('by_type', ['type']),
+    priceId: v.optional(v.string()),
+  })
+    .index('by_type', ['type'])
+    .index('by_priceId', ['priceId']),
   domains: defineTable({
     order: v.number(),
     name: v.string(),
@@ -75,9 +78,11 @@ export const frameworkTables = {
     questionId: v.id('questions'),
   }).index('by_question', ['questionId']),
   subscriptions: defineTable({
-    userId: v.id('users'),
     organisationId: v.id('organisations'),
     frameworkId: v.id('frameworks'),
-    subscribedAt: v.number(),
+    active: v.boolean(),
+    subscriptionId: v.optional(v.string()),
+    currentPeriodEnd: v.optional(v.number()),
+    lastRenewalDate: v.number(),
   }).index('by_organisation', ['organisationId']),
 };

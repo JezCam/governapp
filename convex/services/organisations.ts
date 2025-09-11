@@ -61,7 +61,34 @@ export const getByAbnOrAcn = internalQuery({
   },
 });
 
+export const isActiveActive = query({
+  handler: async (ctx) => {
+    const activeOrganisationId = await getActiveOrganisationId(ctx);
+    const activeOrganisation = await ctx.db.get(activeOrganisationId);
+    if (!activeOrganisation) {
+      throw createConvexError('ORGANISATION_NOT_FOUND');
+    }
+    return activeOrganisation.active;
+  },
+});
+
 // Mutations
+
+export const updateById = mutation({
+  args: {
+    organisationId: v.id('organisations'),
+    data: v.object({
+      imageUrl: v.optional(v.string()),
+      active: v.optional(v.boolean()),
+      currentPeriodEnd: v.optional(v.number()),
+      lastRenewalDate: v.optional(v.number()),
+      subscriptionId: v.optional(v.string()),
+    }),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.organisationId, args.data);
+  },
+});
 
 export const updateActive = mutation({
   args: {

@@ -30,6 +30,7 @@ export async function createOrganisationAndMembership(
     type: data.type,
     turnoverRange: data.turnoverRange,
     abnOrAcn: data.abnOrAcn,
+    active: false,
   });
 
   await ctx.db.insert('memberships', {

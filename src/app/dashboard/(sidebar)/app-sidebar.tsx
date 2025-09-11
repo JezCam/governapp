@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import SearchButton from '@/app/dashboard/(sidebar)/search-button';
+import ActivateCard from '@/components/activate-card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Sidebar,
@@ -60,15 +61,20 @@ export default function AppSidebar() {
           </div>
         </ScrollArea>
       </SidebarContent>
-      <SidebarFooter
-        className={cn(
-          'peer z-10 gap-0 border-sidebar-border border-t bg-sidebar',
-          open
-            ? ''
-            : 'shadow-[0_-1px_0_0_var(--color-ga-purple-100)] dark:shadow-[0_-1px_0_0_#000]'
-        )}
-      >
-        <OrganisationSwitcher open={open} setOpen={setOpen} />
+      <SidebarFooter className="peer gap-0 overflow-hidden p-0">
+        <div className="z-10 w-[255px] shrink-0 p-2 transition-opacity duration-200 group-data-[collapsible=icon]:opacity-0">
+          <ActivateCard />
+        </div>
+        <div
+          className={cn(
+            'z-10 gap-0 border-sidebar-border border-t bg-sidebar p-2',
+            open
+              ? ''
+              : 'shadow-[0_-1px_0_0_var(--color-ga-purple-100)] dark:shadow-[0_-1px_0_0_#000]'
+          )}
+        >
+          <OrganisationSwitcher open={open} setOpen={setOpen} />
+        </div>
       </SidebarFooter>
       <button
         className="absolute inset-0 hidden bg-black/30 opacity-0 transition-[display,opacity] transition-discrete peer-has-data-[state=open]:block peer-has-data-[state=open]:opacity-100 peer-has-data-[state=open]:starting:opacity-0"

@@ -83,11 +83,23 @@ export default function Organisation() {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableHead className="rounded-bl-md border-b border-l bg-accent/70">
+              <TableHead className="border-b border-l bg-accent/70">
                 Turnover Range
               </TableHead>
-              <TableCell className="rounded-br-md border border-t-0 bg-background/60 dark:bg-background/40">
+              <TableCell className=" border border-t-0 bg-background/60 dark:bg-background/40">
                 {activeOrganisation.turnoverRange}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead className="rounded-bl-md border-b border-l bg-accent/70">
+                Active Status
+              </TableHead>
+              <TableCell className="rounded-br-md border border-t-0 bg-background/60 dark:bg-background/40">
+                {activeOrganisation.active ? (
+                  <span className="font-bold text-primary">Active</span>
+                ) : (
+                  'Inactive'
+                )}
               </TableCell>
             </TableRow>
           </TableBody>
