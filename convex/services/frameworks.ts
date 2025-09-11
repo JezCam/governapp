@@ -4,7 +4,7 @@ import { v } from 'convex/values';
 import { internalQuery, query } from '../_generated/server';
 import { listDomainsByFrameworkId } from '../data/domains';
 import {
-  getFrameworkByPriceId,
+  getFrameworkByPriceLookupKey,
   mapFrameworksWithDomains,
 } from '../data/frameworks';
 import { listSubscriptionsByOrganisationId } from '../data/subscriptions';
@@ -14,10 +14,10 @@ import { listSubscriptionsWithFrameworkByOrganisationId } from './subscriptions'
 
 // Queries
 
-export const getIdByPriceId = internalQuery({
-  args: { priceId: v.string() },
-  handler: async (ctx, { priceId }) => {
-    const framework = await getFrameworkByPriceId(ctx, priceId);
+export const getIdByPriceLookupKey = internalQuery({
+  args: { priceLookupKey: v.string() },
+  handler: async (ctx, { priceLookupKey }) => {
+    const framework = await getFrameworkByPriceLookupKey(ctx, priceLookupKey);
 
     if (!framework) {
       throw createConvexError('FRAMEWORK_NOT_FOUND');

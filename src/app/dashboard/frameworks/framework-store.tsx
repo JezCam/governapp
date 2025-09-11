@@ -1,16 +1,30 @@
+'use client';
+
 import type { ColumnDef } from '@tanstack/react-table';
 import { useQuery } from 'convex/react';
+import { useState } from 'react';
+import ActivateButton from '@/components/activate-button';
 import ExpandChevron from '@/components/expand-chevron';
 import FrameworkLabel from '@/components/labels/framework-label';
 import SortButton from '@/components/sort-button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import type { Framework } from '@/types/convex';
 import { api } from '../../../../convex/_generated/api';
 import FrameworkFreeButton from './framework-free-button';
 import { FrameworksStoreDataTable } from './framework-store-data-table';
 import FrameworkSubscribeButton from './framework-subscribe-button';
 
-const columns: ColumnDef<Framework>[] = [
+const getFrameworkStoreColumns = (
+  inactiveSubscribe?: () => void
+): ColumnDef<Framework>[] => [
   {
     size: 40,
     maxSize: 40,
@@ -70,23 +84,61 @@ const columns: ColumnDef<Framework>[] = [
           />
         );
       }
+      if (inactiveSubscribe) {
+        return (
+          <Button
+            className="w-full"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              inactiveSubscribe();
+            }}
+            size="sm"
+          >
+            Subscribe
+          </Button>
+        );
+      }
       return (
         <FrameworkSubscribeButton
           className="w-full"
-          priceId={row.original.priceId}
+          priceLookupKey={row.original.priceLookupKey}
         />
       );
     },
   },
 ];
 export default function FrameworkStore() {
+  const isActive = useQuery(api.services.organisations.isActiveActive);
   const frameworks = useQuery(
     api.services.frameworks.listUnsubscribedForActiveOrganisation
   );
 
-  if (frameworks === undefined) {
+  const [open, setOpen] = useState(false);
+
+  const columns = getFrameworkStoreColumns(
+    isActive ? undefined : () => setOpen(true)
+  );
+
+  if (frameworks === undefined || isActive === undefined) {
     return null; // TODO: Add loading state
   }
 
-  return <FrameworksStoreDataTable columns={columns} data={frameworks} />;
+  return (
+    <>
+      <Dialog onOpenChange={setOpen} open={open}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Activate Organisation</DialogTitle>
+            <DialogDescription>
+              In order to subscribe to a framework, you first need to activate
+              your organisation.
+            </DialogDescription>
+          </DialogHeader>
+          <ActivateButton className="w-fit" />
+        </DialogContent>
+      </Dialog>
+      <FrameworksStoreDataTable columns={columns} data={frameworks} />
+    </>
+  );
 }

@@ -19,10 +19,10 @@ export const frameworkTables = {
     legislation: v.optional(v.string()),
     authority: v.string(),
     monthlyCost: v.number(),
-    priceId: v.optional(v.string()),
+    priceLookupKey: v.optional(v.string()),
   })
     .index('by_type', ['type'])
-    .index('by_priceId', ['priceId']),
+    .index('by_priceLookupKey', ['priceLookupKey']),
   domains: defineTable({
     order: v.number(),
     name: v.string(),

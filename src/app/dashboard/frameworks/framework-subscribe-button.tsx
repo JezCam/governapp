@@ -9,10 +9,10 @@ import { api } from '../../../../convex/_generated/api';
 
 export default function FrameworkSubscribeButton({
   className,
-  priceId,
+  priceLookupKey,
 }: {
   className?: string;
-  priceId?: string;
+  priceLookupKey?: string;
 }) {
   const subscribe = useAction(api.stripe.checkout);
 
@@ -20,7 +20,7 @@ export default function FrameworkSubscribeButton({
 
   const handleSubscribe = () => {
     setIsLoading(true);
-    subscribe({ priceId })
+    subscribe({ priceLookupKey })
       .then(async (session) => {
         const stripe = await loadStripe(
           // biome-ignore lint/style/noNonNullAssertion: <explanation>

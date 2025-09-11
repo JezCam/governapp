@@ -6,18 +6,18 @@ import { action, internalAction } from './_generated/server';
 import { createConvexError } from './errors';
 import { turnoverRanges } from './schemas/organisations';
 
-const turnoverRangeToPriceId = {
-  [turnoverRanges[0]]: 'price_1S60ByRGwIlDXvmIc2j3EmkO', // $0 - $50,000 = $600 p/yr
-  [turnoverRanges[1]]: 'price_1S60ByRGwIlDXvmIc2j3EmkO', // $50,001 - $250,000 = $840 p/yr
-  [turnoverRanges[2]]: 'price_1S60ByRGwIlDXvmIc2j3EmkO', // $250,001 - $1m = $1,200 p/yr
-  [turnoverRanges[3]]: 'price_1S60ByRGwIlDXvmIc2j3EmkO', // $1m - $10m = $1,800 p/yr
-  [turnoverRanges[4]]: 'price_1S60ByRGwIlDXvmIc2j3EmkO', // $10m - $100m = $4,200 p/yr
-  [turnoverRanges[5]]: 'price_1S60ByRGwIlDXvmIc2j3EmkO', // $100m+ = $12,000 p/yr
+const turnoverRangeToPriceLookupKey = {
+  [turnoverRanges[0]]: 'active_extra_small', // $0 - $50,000 = $600 p/yr
+  [turnoverRanges[1]]: 'active_small', // $50,001 - $250,000 = $840 p/yr
+  [turnoverRanges[2]]: 'active_medium', // $250,001 - $1m = $1,200 p/yr
+  [turnoverRanges[3]]: 'active_large', // $1m - $10m = $1,800 p/yr
+  [turnoverRanges[4]]: 'active_very_large', // $10m - $100m = $4,200 p/yr
+  [turnoverRanges[5]]: 'active_extra_large', // $100m+ = $12,000 p/yr
 } as const;
 
 export const checkout = action({
-  args: { priceId: v.optional(v.string()) },
-  handler: async (ctx, { priceId }) => {
+  args: { priceLookupKey: v.optional(v.string()) },
+  handler: async (ctx, { priceLookupKey }) => {
     const currentUser = await ctx.runQuery(api.services.users.getCurrent);
 
     if (!currentUser) {
@@ -46,26 +46,38 @@ export const checkout = action({
     }
 
     const stripe = new Stripe(process.env.STRIPE_KEY);
+
+    const priceId = (
+      await stripe.prices.list({
+        lookup_keys: [
+          priceLookupKey ??
+            turnoverRangeToPriceLookupKey[activeOrganisation.turnoverRange],
+        ],
+      })
+    ).data[0].id;
+
+    const activation = !priceLookupKey;
+
     const session: Stripe.Checkout.Session =
       await stripe.checkout.sessions.create({
         line_items: [
           {
-            price:
-              priceId ??
-              turnoverRangeToPriceId[activeOrganisation.turnoverRange],
+            price: priceId,
             quantity: 1,
           },
         ],
         customer_email: currentUser.email,
         metadata: {
           organisationId: activeOrganisationId as string,
-          activation: priceId ? null : 'true',
+          activation: activation ? 'true' : null,
         },
         mode: 'subscription',
-        success_url: priceId
-          ? `${domain}/dashboard/frameworks`
-          : `${domain}/dashboard/organisation`,
-        cancel_url: `${domain}/dashboard`,
+        success_url: activation
+          ? `${domain}/dashboard/organisation`
+          : `${domain}/dashboard/frameworks`,
+        cancel_url: activation
+          ? `${domain}/dashboard/organisation`
+          : `${domain}/dashboard/frameworks`,
       });
 
     return session;
@@ -120,8 +132,11 @@ export const fulfill = internalAction({
           } else {
             // Framework subscription
             const frameworkId = await ctx.runQuery(
-              internal.services.frameworks.getIdByPriceId,
-              { priceId: subscription.items.data[0].price.id }
+              internal.services.frameworks.getIdByPriceLookupKey,
+              {
+                priceLookupKey: subscription.items.data[0].price
+                  .lookup_key as string,
+              }
             );
 
             await ctx.runMutation(internal.services.subscriptions.create, {
@@ -137,8 +152,10 @@ export const fulfill = internalAction({
 
           break;
         }
-        case 'customer.subscription.updated':
+
+        case 'customer.subscription.updated': {
           break;
+        }
         case 'customer.subscription.deleted':
           break;
         default:
